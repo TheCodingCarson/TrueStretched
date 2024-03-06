@@ -8,6 +8,7 @@ Imports System.Net.Http
 Imports Emgu.CV
 Imports Emgu.CV.CvEnum
 Imports Emgu.CV.Structure
+Imports System.Reflection
 
 Public Class Form1
     Private Declare Function EnumWindows Lib "user32.dll" (ByVal lpEnumFunc As EnumWindowCallback, ByVal lParam As IntPtr) As Boolean
@@ -60,7 +61,7 @@ Public Class Form1
             DevMenu.Show()
             Me.Text = "True Stretched (Dev)"
         ElseIf My.Settings.BetaBuild = True Then
-            Me.Text = "True Stretched (Beta)"
+            Me.Text = "True Stretched (Beta " + My.Settings.BetaLetter.ToUpper() + ")"
         End If
 
         ' Ensure Native & Stretched Resolutions Don't match (Fixes "Disable True Stretched" being the only option)
@@ -196,8 +197,8 @@ Public Class Form1
         Dim serverVersionString As String = jsonObject("Version").ToString()
         Dim serverVersion As Version = New Version(serverVersionString)
 
-        Dim currentVersion As Version = New Version(Application.ProductVersion)
-        Dim currentVersionString As String = Application.ProductVersion
+        Dim currentVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
+        Dim currentVersionString As String = Assembly.GetExecutingAssembly().GetName().Version.ToString()
         If My.Settings.BetaBuild Then
             currentVersionString = currentVersionString & My.Settings.BetaLetter
         End If
