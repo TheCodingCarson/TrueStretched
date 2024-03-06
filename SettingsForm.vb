@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.Reflection
+Imports System.Windows.Forms
 
 Public Class SettingsForm
     Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -49,10 +50,13 @@ Public Class SettingsForm
         ComboBox3.Items.AddRange(My.Settings.Monitors.Split(","c))
 
         'Load In Version Info
+        Dim currentVersionLong As Version = Assembly.GetExecutingAssembly().GetName().Version
+        Dim currentVersionString As String = String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build)
+
         If My.Settings.BetaBuild = True Then
-            Label3.Text = "Version: " & Application.ProductVersion & My.Settings.BetaLetter & " Beta"
+            Label3.Text = "Version: " & currentVersionString & My.Settings.BetaLetter & " Beta"
         Else
-            Label3.Text = "Version: " & Application.ProductVersion
+            Label3.Text = "Version: " & currentVersionString
         End If
 
     End Sub

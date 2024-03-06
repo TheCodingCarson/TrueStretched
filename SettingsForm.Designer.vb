@@ -157,7 +157,7 @@ Partial Class SettingsForm
         ComboBox1.AutoCompleteMode = AutoCompleteMode.Suggest
         ComboBox1.AutoCompleteSource = AutoCompleteSource.ListItems
         ComboBox1.FormattingEnabled = True
-        ComboBox1.Items.AddRange(New Object() {"7680x4320", "3840x2160", "2560x1440", "1920x1080", "1280x720", "720x576", "720x480"})
+        ComboBox1.Items.AddRange(New Object() {"7680x4320", "3840x2160", "2560x1440", "2560x1080", "1920x1080", "1280x720", "720x576", "720x480"})
         ComboBox1.Location = New Point(6, 87)
         ComboBox1.Name = "ComboBox1"
         ComboBox1.Size = New Size(260, 23)

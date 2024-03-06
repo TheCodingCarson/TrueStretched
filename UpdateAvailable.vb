@@ -1,5 +1,4 @@
 ﻿Imports System.IO
-Imports System.Net
 Imports System.Net.Http
 Imports System.Windows.Forms
 Imports Newtonsoft.Json.Linq
@@ -55,26 +54,22 @@ Public Class UpdateAvailable
         Dim json As String = String.Empty
 
         Try
-            Dim request As WebRequest = WebRequest.Create("https://download.truestretched.com/latestversion.json")
-            Dim response As WebResponse = request.GetResponse()
-            Using dataStream As Stream = response.GetResponseStream()
-                Dim reader As New StreamReader(dataStream)
-                json = reader.ReadToEnd()
-            End Using
-            response.Close()
+            json = GetLatestVersionJson().Result ' Consider using Async/Await pattern instead
 
             Dim jsonObject As JObject = JObject.Parse(json)
             Dim newVersion As String = jsonObject("Version").ToString()
             Dim isBeta As Boolean = Boolean.Parse(jsonObject("Beta").ToString())
             Dim newBetaLetter As Char = jsonObject("BetaLetter").ToString().ToCharArray()(0)
 
-            ' Display the new version number and, if it's a beta, the beta letter
-            Label2.Text = newVersion
-            If betaSetting = True Then
-                Label2.Text &= newBetaLetter
-            End If
+            ' Safely update Label2.Text on the UI thread
+            Me.Invoke(Sub()
+                          Label2.Text = newVersion
+                          If betaSetting Then
+                              Label2.Text &= newBetaLetter
+                          End If
+                      End Sub)
 
-            ' Extract the release notes, replace each "*" with a newline and a dot, and set the RichTextBox text
+            ' Extract the release notes, replace each "*" with a newline and a dot
             Dim releaseNotes As String = jsonObject("ReleaseNotes")("Updates").ToString()
             releaseNotes = releaseNotes.Replace("*", vbCrLf & "•")
 
@@ -83,46 +78,78 @@ Public Class UpdateAvailable
             If lines.Count > 0 AndAlso String.IsNullOrWhiteSpace(lines(0)) Then
                 lines.RemoveAt(0)
             End If
-            RichTextBox1.Text = String.Join(vbCrLf, lines)
 
-            If (newVersion > currentVersion) AndAlso (isBeta = False Or (isBeta = True And betaSetting = True)) Then
-                ' Update available
-                Button1.Enabled = True
-            ElseIf (newVersion = currentVersion And isBeta = True And betaSetting = True And newBetaLetter > currentBetaLetter) Then
-                ' Beta update available
-                Button1.Enabled = True
-            End If
+            ' Safely update RichTextBox1.Text on the UI thread
+            Me.Invoke(Sub() RichTextBox1.Text = String.Join(vbCrLf, lines))
+
+            ' Check if an update is available and safely update Button1.Enabled on the UI thread
+            Dim updateAvailable As Boolean = (newVersion > currentVersion) AndAlso (isBeta = False OrElse (isBeta = True AndAlso betaSetting = True)) OrElse (newVersion = currentVersion AndAlso isBeta = True AndAlso betaSetting = True AndAlso newBetaLetter > currentBetaLetter)
+
+            Me.Invoke(Sub() Button1.Enabled = updateAvailable)
+
         Catch ex As Exception
-            ' Handle exceptions if any
+            ' Handle exceptions
+            Me.Invoke(Sub() MessageBox.Show("An error occurred while checking for updates."))
         End Try
     End Sub
 
+    Async Function GetLatestVersionJson() As Task(Of String)
+        Dim httpClient As New HttpClient()
+        Return Await httpClient.GetStringAsync("https://download.truestretched.com/latestversion.json")
+    End Function
+
     Private downloadPath As String
 
-    Sub DownloadUpdate(jsonUrl As String)
+    ' Ensure method is marked as Async and returns a Task
+    Async Sub DownloadUpdate(jsonUrl As String)
         Try
-            Dim json As String = String.Empty
-            Dim request As WebRequest = WebRequest.Create(jsonUrl)
-            Dim response As WebResponse = request.GetResponse()
-            Using dataStream As Stream = response.GetResponseStream()
-                Dim reader As New StreamReader(dataStream)
-                json = reader.ReadToEnd()
-            End Using
-            response.Close()
+            Dim httpClient As New HttpClient()
+
+            ' Use HttpClient to get the JSON string
+            Dim json As String = Await httpClient.GetStringAsync(jsonUrl)
 
             Dim jsonObject As JObject = JObject.Parse(json)
             Dim downloadLink As String = jsonObject("Download")("DownloadLink").ToString()
             Dim fileName As String = Path.GetFileName(downloadLink)
-            downloadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", fileName)
+            Dim downloadPath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", fileName)
 
-            Using client As New WebClient()
-                AddHandler client.DownloadFileCompleted, AddressOf WebClient_DownloadFileCompleted
-                client.DownloadFileAsync(New Uri(downloadLink), downloadPath)
+            ' Progress reporting
+            Dim progressIndicator As New Progress(Of Integer)(Sub(percentage) Me.Invoke(Sub() ProgressBar1.Value = percentage))
+
+            ' Download the file with progress reporting
+            Using response As HttpResponseMessage = Await httpClient.GetAsync(downloadLink, HttpCompletionOption.ResponseHeadersRead)
+                response.EnsureSuccessStatusCode()
+
+                Dim totalBytes As Long = response.Content.Headers.ContentLength.GetValueOrDefault(-1L)
+                Using contentStream As Stream = Await response.Content.ReadAsStreamAsync(), fileStream As New FileStream(downloadPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, True)
+                    Dim totalBytesRead As Long = 0L
+                    Dim bytesRead As Integer
+                    Dim buffer As Byte() = New Byte(8191) {}
+                    While (InlineAssignHelper(bytesRead, Await contentStream.ReadAsync(buffer, 0, buffer.Length))) > 0
+                        Await fileStream.WriteAsync(buffer, 0, bytesRead)
+                        totalBytesRead += bytesRead
+                        If totalBytes <> -1L Then
+                            Dim progressPercentage As Integer = Convert.ToInt32((totalBytesRead / totalBytes) * 100)
+                            DirectCast(progressIndicator, IProgress(Of Integer)).Report(progressPercentage)
+                        End If
+                    End While
+                End Using
             End Using
+
+            ' Mimic the DownloadFileCompleted event
+            Dim args As New AsyncCompletedEventArgs(Nothing, False, Nothing)
+            Me.Invoke(New Action(Sub() WebClient_DownloadFileCompleted(Me, args)))
         Catch ex As Exception
-            ' Handle exceptions if any
+            Dim errorArgs As New AsyncCompletedEventArgs(ex, False, Nothing)
+            Me.Invoke(New Action(Sub() WebClient_DownloadFileCompleted(Me, errorArgs)))
         End Try
     End Sub
+
+    ' Helper method for inline assignments within While loops
+    Private Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+        target = value
+        Return value
+    End Function
 
     Private Sub WebClient_DownloadFileCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
         If Not e.Cancelled AndAlso e.Error Is Nothing Then

@@ -197,8 +197,9 @@ Public Class Form1
         Dim serverVersionString As String = jsonObject("Version").ToString()
         Dim serverVersion As Version = New Version(serverVersionString)
 
-        Dim currentVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
-        Dim currentVersionString As String = Assembly.GetExecutingAssembly().GetName().Version.ToString()
+        Dim currentVersionLong As Version = Assembly.GetExecutingAssembly().GetName().Version
+        Dim currentVersion As Version = New Version(String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build))
+        Dim currentVersionString As String = String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build)
         If My.Settings.BetaBuild Then
             currentVersionString = currentVersionString & My.Settings.BetaLetter
         End If

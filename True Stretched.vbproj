@@ -7,7 +7,7 @@
     <StartupObject>Sub Main</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
-    <ImportedNamespaces>ManagementEventWatcher=False,ManagementObject=False,System.ComponentModel=False,System.Data=False,System.Drawing=False,System.Management=False,System.Resources=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,True Stretched=True</ImportedNamespaces>
+    <ImportedNamespaces>System.ComponentModel=False,System.Data=False,System.Drawing=False,System.Management=False,System.Resources=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,True Stretched=True</ImportedNamespaces>
     <ApplicationIcon>True Stretched Logo.ico</ApplicationIcon>
     <PackageProjectUrl>truestretched.com</PackageProjectUrl>
     <PackageIcon>True Stretched Logo.png</PackageIcon>
@@ -34,8 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Import Include="ManagementEventWatcher" />
-    <Import Include="ManagementObject" />
     <Import Include="System.ComponentModel" />
     <Import Include="System.Data" />
     <Import Include="System.Drawing" />
