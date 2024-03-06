@@ -1,6 +1,7 @@
 # True Stretched
-Enable True Stretched Resolution in Unsupported Games!
-<br/>
+Enable True Stretched Resolution in Unsupported Games! <br/>
+[True Stretched Website](https://truestretched.com) <br/>
+
 ### Development Info
 | Section | Section Description |
 | :---: | :---: |
