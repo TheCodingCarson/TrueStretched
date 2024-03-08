@@ -9,6 +9,7 @@ Imports Emgu.CV
 Imports Emgu.CV.CvEnum
 Imports Emgu.CV.Structure
 Imports System.Reflection
+Imports System.Globalization
 
 Public Class Form1
     Private Declare Function EnumWindows Lib "user32.dll" (ByVal lpEnumFunc As EnumWindowCallback, ByVal lParam As IntPtr) As Boolean
@@ -402,31 +403,57 @@ Public Class Form1
             End If
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
-                If My.Settings.SetDisplayResolution = True Then
-                    ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
-                    '-Widescreen Fix-
-                    If WidescreenFixCheckBox.Checked = True Then
 
-                    Else
-                        '-End of Widescreen Fix-
-                        Label3.Text = "Changing Screen Resolution"
-                        ChangeScreenResolutionStretched()
-                        StretchedEnabled = True
+                ' First Valorant True Stretch Run - Popup
+                Dim message As String = "FIRST RUN NOTE: If this is your first time please close Valorant if it's running then click 'Okay' to change necessary graphics setting automatically! After please open Valorant and once at the main menu click on 'Enable True Stretched' once more."
+                Dim caption As String = "Important First Run Information"
+                Dim buttons As MessageBoxButtons = MessageBoxButtons.OKCancel
+                Dim icon As MessageBoxIcon = MessageBoxIcon.Exclamation
+
+                If My.Settings.ValorantFirstTime = True Then
+                    ' Show First Run Message Box
+                    Dim result As DialogResult = MessageBox.Show(message, caption, buttons, icon)
+
+                    If result = DialogResult.OK Then
+                        ' Is Val First Run - Switch Config File
+                        ValorantConfigFileSwitch()
+                        My.Settings.ValorantFirstTime = False
+                        My.Settings.Save()
+                    ElseIf result = DialogResult.Cancel Then
+                        ' Not First Run
+                        My.Settings.ValorantFirstTime = False
+                        My.Settings.Save()
                     End If
-                End If
-                RemoveBorderAndMaximizeValorant()
-                If Label3.Text = "Game is not running!" Then
-                    ChangeScreenResolutionNative()
-                    Label3.ForeColor = Color.Red
-                    Label3.Text = "Game is not running!"
-                Else
-                    Label3.ForeColor = Color.Green
-                    Label3.Text = "Successfully enabled True Stretched Res"
 
-                    If My.Settings.AutoClose = True Then
-                        AutoCloseTimer.Start()
-                    ElseIf My.Settings.AutoMinimize = True Then
-                        AutoMinimizeTimer.Start()
+                ElseIf My.Settings.ValorantFirstTime = False Then
+
+                    If My.Settings.SetDisplayResolution = True Then
+                        ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
+                        '-Widescreen Fix-
+                        If WidescreenFixCheckBox.Checked = True Then
+
+                        Else
+                            '-End of Widescreen Fix-
+                            Label3.Text = "Changing Screen Resolution"
+                            ChangeScreenResolutionStretched()
+                            StretchedEnabled = True
+                        End If
+                    End If
+                    RemoveBorderAndMaximizeValorant()
+                    If Label3.Text = "Game is not running!" Then
+                        ChangeScreenResolutionNative()
+                        Label3.ForeColor = Color.Red
+                        Label3.Text = "Game is not running!"
+                    Else
+                        Label3.ForeColor = Color.Green
+                        Label3.Text = "Successfully enabled True Stretched Res"
+
+                        If My.Settings.AutoClose = True Then
+                            AutoCloseTimer.Start()
+                        ElseIf My.Settings.AutoMinimize = True Then
+                            AutoMinimizeTimer.Start()
+                        End If
+
                     End If
 
                 End If
@@ -436,6 +463,7 @@ Public Class Form1
                 If My.Settings.RevertDisplayResolution = True Then
                     ChangeScreenResolutionNative()
                 End If
+                ValorantConfigFileSwitch()
                 Label3.ForeColor = Color.Green
                 Label3.Text = "Successfully disabled True Stretched Res"
                 StretchedEnabled = False
@@ -1012,6 +1040,74 @@ Public Class Form1
 
             File.WriteAllLines(filePath, lines.ToArray())
         End If
+    End Sub
+
+    Function GetValorantRegionCode() As String
+        ' Get the two-letter ISO region name for the current culture's region
+        Dim regionInfo As New RegionInfo(CultureInfo.CurrentCulture.Name)
+        Return regionInfo.TwoLetterISORegionName.ToLower()
+    End Function
+
+    Private Sub ValorantConfigFileSwitch()
+
+        ' Get last Valorant User ID
+        Dim useridfilepath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VALORANT/Saved/Config/Windows/RiotLocalMachine.ini")
+        Dim LastKnownValorantUser As String = ""
+
+        If File.Exists(useridfilepath) Then
+            ' Read all lines of the file
+            Dim lines As String() = File.ReadAllLines(useridfilepath)
+
+            ' Iterate through each line
+            For Each line As String In lines
+                ' Check if the line contains the key
+                If line.StartsWith("LastKnownUser" & "=", StringComparison.OrdinalIgnoreCase) Then
+                    ' Extract and return the value after the '='
+                    LastKnownValorantUser = line.Substring(line.IndexOf("="c) + 1).Trim()
+                End If
+            Next
+        Else
+            'Key not found
+        End If
+
+        ' Set the desired screen resolution
+        Dim regionCode As String = GetValorantRegionCode()
+        Dim filePath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VALORANT/Saved/Config/" + LastKnownValorantUser + "-" + regionCode + "/Windows/GameUserSettings.ini")
+        Dim width As Integer = 1920
+        Dim height As Integer = 1080
+        Dim UseLetterbox As String = "False"
+        Dim FullscreenMode As Integer = 2
+
+        If File.Exists(filePath) Then
+            ' Create a FileInfo object
+            Dim fileInfo As New FileInfo(filePath)
+
+            Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
+
+            For i As Integer = 0 To lines.Count - 1
+
+                If lines(i).StartsWith("FullscreenMode=") Then
+                    lines(i) = "FullscreenMode=" & FullscreenMode
+                ElseIf lines(i).StartsWith("LastConfirmedFullscreenMode=") Then
+                    lines(i) = "LastConfirmedFullscreenMode=" & FullscreenMode
+                ElseIf lines(i).StartsWith("bShouldLetterbox=") Then
+                    lines(i) = "bShouldLetterbox=" & UseLetterbox
+                ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox") Then
+                    lines(i) = "bLastConfirmedShouldLetterbox" & UseLetterbox
+                ElseIf lines(i).StartsWith("ResolutionSizeX=") Then
+                    lines(i) = "ResolutionSizeX=" & height
+                ElseIf lines(i).StartsWith("ResolutionSizeY=") Then
+                    lines(i) = "ResolutionSizeY=" & height
+                ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeX=") Then
+                    lines(i) = "LastUserConfirmedResolutionSizeX=" & width
+                ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeY=") Then
+                    lines(i) = "LastUserConfirmedResolutionSizeY=" & height
+                End If
+            Next
+
+            File.WriteAllLines(filePath, lines.ToArray())
+        End If
+
     End Sub
 
     Private Sub RemoveBorderAndMaximizeValorant()
