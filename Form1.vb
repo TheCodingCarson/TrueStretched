@@ -12,16 +12,20 @@ Imports System.Reflection
 Imports System.Globalization
 
 Public Class Form1
-    Private Declare Function EnumWindows Lib "user32.dll" (ByVal lpEnumFunc As EnumWindowCallback, ByVal lParam As IntPtr) As Boolean
-    Private Declare Function GetWindowText Lib "user32.dll" Alias "GetWindowTextA" (ByVal hWnd As IntPtr, ByVal lpString As StringBuilder, ByVal nMaxCount As Integer) As Integer
-    Private Declare Function GetWindowTextLength Lib "user32.dll" Alias "GetWindowTextLengthA" (ByVal hWnd As IntPtr) As Integer
-    Private Declare Function GetWindowThreadProcessId Lib "user32.dll" (ByVal hWnd As IntPtr, ByRef processId As Integer) As Integer
-    Private Declare Function ShowWindow Lib "user32.dll" (ByVal hWnd As IntPtr, ByVal nCmdShow As Integer) As Integer
-    Private Declare Function SetForegroundWindow Lib "user32.dll" (ByVal hWnd As IntPtr) As Integer
-    Private Declare Function GetWindowLong Lib "user32.dll" Alias "GetWindowLongA" (ByVal hWnd As IntPtr, ByVal nIndex As Integer) As Integer
-    Private Declare Function SetWindowLong Lib "user32.dll" Alias "SetWindowLongA" (ByVal hWnd As IntPtr, ByVal nIndex As Integer, ByVal dwNewLong As Integer) As Integer
-    Private Declare Function SetWindowPos Lib "user32.dll" (ByVal hWnd As IntPtr, ByVal hWndInsertAfter As IntPtr, ByVal X As Integer, ByVal Y As Integer, ByVal cx As Integer, ByVal cy As Integer, ByVal uFlags As UInteger) As Boolean
-    Private Declare Function GetClassName Lib "user32.dll" Alias "GetClassNameA" (ByVal hWnd As IntPtr, ByVal lpClassName As StringBuilder, ByVal nMaxCount As Integer) As Integer
+    Private Declare Function EnumWindows Lib "user32.dll" (lpEnumFunc As EnumWindowCallback, lParam As IntPtr) As Boolean
+    <DllImport("user32.dll", CharSet:=CharSet.Unicode, EntryPoint:="GetWindowTextW")>
+    Private Shared Function GetWindowText(hWnd As IntPtr, lpString As StringBuilder, nMaxCount As Integer) As Integer
+    End Function
+    Private Declare Function GetWindowTextLength Lib "user32.dll" Alias "GetWindowTextLengthA" (hWnd As IntPtr) As Integer
+    Private Declare Function GetWindowThreadProcessId Lib "user32.dll" (hWnd As IntPtr, ByRef processId As Integer) As Integer
+    Private Declare Function ShowWindow Lib "user32.dll" (hWnd As IntPtr, nCmdShow As Integer) As Integer
+    Private Declare Function SetForegroundWindow Lib "user32.dll" (hWnd As IntPtr) As Integer
+    Private Declare Function GetWindowLong Lib "user32.dll" Alias "GetWindowLongA" (hWnd As IntPtr, nIndex As Integer) As Integer
+    Private Declare Function SetWindowLong Lib "user32.dll" Alias "SetWindowLongA" (hWnd As IntPtr, nIndex As Integer, dwNewLong As Integer) As Integer
+    Private Declare Function SetWindowPos Lib "user32.dll" (hWnd As IntPtr, hWndInsertAfter As IntPtr, X As Integer, Y As Integer, cx As Integer, cy As Integer, uFlags As UInteger) As Boolean
+    <DllImport("user32.dll", CharSet:=CharSet.Unicode, EntryPoint:="GetClassNameW")>
+    Private Shared Function GetClassName(hWnd As IntPtr, lpClassName As StringBuilder, nMaxCount As Integer) As Integer
+    End Function
 
     Private Delegate Function EnumWindowCallback(ByVal hWnd As IntPtr, ByVal lParam As IntPtr) As Boolean
 
@@ -182,11 +186,12 @@ Public Class Form1
         Label6.BackColor = Color.Transparent
 
         'Tooltips for Game Icons
-        Dim toolTip1 As New Windows.Forms.ToolTip()
-        toolTip1.AutoPopDelay = 5000
-        toolTip1.InitialDelay = 1000
-        toolTip1.ReshowDelay = 500
-        toolTip1.ShowAlways = True
+        Dim toolTip1 As New Windows.Forms.ToolTip With {
+            .AutoPopDelay = 5000,
+            .InitialDelay = 1000,
+            .ReshowDelay = 500,
+            .ShowAlways = True
+        }
 
         toolTip1.SetToolTip(Me.ApexPictureBox, "Apex Legends")
         toolTip1.SetToolTip(Me.Farlight84PictureBox, "Farlight 84")
@@ -211,18 +216,18 @@ Public Class Form1
     End Sub
 
     Private Async Sub CheckForUpdates()
-        Dim httpClient As HttpClient = New HttpClient()
+        Dim httpClient As New HttpClient()
         Dim json As String = Await httpClient.GetStringAsync("https://download.truestretched.com/latestversion.json")
         Dim jsonObject As JObject = JObject.Parse(json)
 
         Dim serverVersionString As String = jsonObject("Version").ToString()
-        Dim serverVersion As Version = New Version(serverVersionString)
+        Dim serverVersion As New Version(serverVersionString)
 
         Dim currentVersionLong As Version = Assembly.GetExecutingAssembly().GetName().Version
-        Dim currentVersion As Version = New Version(String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build))
+        Dim currentVersion As New Version(String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build))
         Dim currentVersionString As String = String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build)
         If My.Settings.BetaBuild Then
-            currentVersionString = currentVersionString & My.Settings.BetaLetter
+            currentVersionString &= My.Settings.BetaLetter
         End If
 
         Dim serverBeta As Boolean = jsonObject("Beta").ToObject(Of Boolean)()
@@ -232,7 +237,7 @@ Public Class Form1
 
         If serverBeta Then
             If My.Settings.BetaBuild Then ' If user has opted in for beta updates
-                serverVersionString = serverVersionString & serverBetaLetter ' Append beta letter to the server version
+                serverVersionString &= serverBetaLetter ' Append beta letter to the server version
             Else ' If user has not opted in for beta updates
                 Return ' Do not prompt for update
             End If
@@ -267,8 +272,9 @@ Public Class Form1
                 CheckForWindow("Apex Legends")
                 If IsWindowFound = False Then
                     Dim url As String = "steam://rungameid/1172470"
-                    Dim psi As New ProcessStartInfo(url)
-                    psi.UseShellExecute = True
+                    Dim psi As New ProcessStartInfo(url) With {
+                        .UseShellExecute = True
+                    }
 
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen
@@ -314,8 +320,9 @@ Public Class Form1
                 CheckForWindow("Farlight 84")
                 If IsWindowFound = False Then
                     Dim url As String = "steam://rungameid/1928420"
-                    Dim psi As New ProcessStartInfo(url)
-                    psi.UseShellExecute = True
+                    Dim psi As New ProcessStartInfo(url) With {
+                        .UseShellExecute = True
+                    }
 
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen
@@ -371,8 +378,9 @@ Public Class Form1
                 CheckForWindow("Fortnite")
                 If IsWindowFound = False Then
                     Dim url As String = "com.epicgames.launcher://apps/fn%3A4fe75bbc5a674f4f9b356b5c90567da5%3AFortnite?action=launch&silent=true"
-                    Dim psi As New ProcessStartInfo(url)
-                    psi.UseShellExecute = True
+                    Dim psi As New ProcessStartInfo(url) With {
+                        .UseShellExecute = True
+                    }
 
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen
@@ -507,7 +515,7 @@ Public Class Form1
 
                      While Not ApexMenuMatchFound
                          ' Capture the screen
-                         Dim screenSize As Size = New Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height)
+                         Dim screenSize As New Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height)
                          Dim screenImage As New Bitmap(screenSize.Width, screenSize.Height)
                          Using g As Graphics = Graphics.FromImage(screenImage)
                              g.CopyFromScreen(New Point(0, 0), New Point(0, 0), screenSize)
@@ -876,10 +884,10 @@ Public Class Form1
 
         If File.Exists(Farlight84ConfigFilePath) Then
             ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(Farlight84ConfigFilePath)
-
             ' Turn off read-only
-            fileInfo.IsReadOnly = False
+            Dim fileInfo As New FileInfo(Farlight84ConfigFilePath) With {
+                .IsReadOnly = False
+            }
 
             Dim lines As List(Of String) = File.ReadAllLines(Farlight84ConfigFilePath).ToList()
 
@@ -930,10 +938,10 @@ Public Class Form1
 
         If File.Exists(Farlight84ConfigFilePath) Then
             ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(Farlight84ConfigFilePath)
-
             ' Turn off read-only
-            fileInfo.IsReadOnly = False
+            Dim fileInfo As New FileInfo(Farlight84ConfigFilePath) With {
+                .IsReadOnly = False
+            }
 
             Dim lines As List(Of String) = File.ReadAllLines(Farlight84ConfigFilePath).ToList()
 
@@ -979,10 +987,10 @@ Public Class Form1
 
         If File.Exists(filePath) Then
             ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(filePath)
-
             ' Turn off read-only
-            fileInfo.IsReadOnly = False
+            Dim fileInfo As New FileInfo(filePath) With {
+                .IsReadOnly = False
+            }
 
             Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
 
@@ -1031,10 +1039,10 @@ Public Class Form1
 
         If File.Exists(filePath) Then
             ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(filePath)
-
             ' Turn off read-only
-            fileInfo.IsReadOnly = False
+            Dim fileInfo As New FileInfo(filePath) With {
+                .IsReadOnly = False
+            }
 
             Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
 
@@ -1062,13 +1070,13 @@ Public Class Form1
         End If
     End Sub
 
-    Function GetValorantRegionCode() As String
+    Shared Function GetValorantRegionCode() As String
         Dim regionInfo As New RegionInfo(CultureInfo.CurrentCulture.Name)
         Dim isoRegionName As String = regionInfo.TwoLetterISORegionName.ToUpper()
 
         ' Lists of ISO country codes for North America and Europe
-        Dim naCountries As HashSet(Of String) = New HashSet(Of String) From {"US", "CA", "MX"}
-        Dim euCountries As HashSet(Of String) = New HashSet(Of String) From {"FR", "DE", "IT", "ES", "GB"}
+        Dim naCountries As New HashSet(Of String) From {"US", "CA", "MX"}
+        Dim euCountries As New HashSet(Of String) From {"FR", "DE", "IT", "ES", "GB"}
 
         ' Map countries to Valorant regions
         If naCountries.Contains(isoRegionName) Then
@@ -1153,7 +1161,7 @@ Public Class Form1
         Function(hWnd As IntPtr, lParam As IntPtr) As Boolean
             Dim windowTextLength As Integer = GetWindowTextLength(hWnd) + 1
             Dim windowText As New StringBuilder(windowTextLength)
-            GetWindowText(hWnd, windowText, windowTextLength)
+            Dim unused1 = GetWindowText(hWnd, windowText, windowTextLength)
 
             If windowText.ToString().Contains(targetWindowTitle) Then
                 targetHWnd = hWnd
@@ -1167,22 +1175,22 @@ Public Class Form1
 
         If targetHWnd <> IntPtr.Zero Then
             Dim processId As Integer = 0
-            GetWindowThreadProcessId(targetHWnd, processId)
+            Dim unused2 = GetWindowThreadProcessId(targetHWnd, processId)
 
             Dim process As Process = Process.GetProcessById(processId)
 
             If Not process.HasExited Then
                 Dim windowStyle As Integer = GetWindowLong(targetHWnd, GWL_STYLE)
                 windowStyle = windowStyle And Not WS_BORDER
-                SetWindowLong(targetHWnd, GWL_STYLE, windowStyle)
+                Dim unused4 = SetWindowLong(targetHWnd, GWL_STYLE, windowStyle)
                 SetWindowPos(targetHWnd, IntPtr.Zero, 0, 0, 0, 0, SWP_NOZORDER Or SWP_NOSIZE Or SWP_FRAMECHANGED Or SWP_SHOWWINDOW)
 
-                ShowWindow(targetHWnd, SW_MAXIMIZE)
+                Dim unused = ShowWindow(targetHWnd, SW_MAXIMIZE)
 
                 Dim taskbarHWnd As IntPtr = GetTaskbarHWnd()
                 SetWindowPos(targetHWnd, taskbarHWnd, -8, -8, 0, 0, SWP_NOZORDER Or SWP_NOSIZE Or SWP_FRAMECHANGED Or SWP_SHOWWINDOW)
 
-                SetForegroundWindow(targetHWnd)
+                Dim unused3 = SetForegroundWindow(targetHWnd)
             End If
 
             '-Widescreen Fix-
@@ -1205,7 +1213,7 @@ Public Class Form1
             Function(hWnd As IntPtr, lParam As IntPtr) As Boolean
                 Dim classNameLength As Integer = 256
                 Dim className As New StringBuilder(classNameLength)
-                GetClassName(hWnd, className, classNameLength)
+                Dim unused = GetClassName(hWnd, className, classNameLength)
 
                 If className.ToString() = "Shell_TrayWnd" Then
                     taskbarHWnd = hWnd
@@ -1231,10 +1239,10 @@ Public Class Form1
 
         If File.Exists(ApexConfigFilePath) Then
             ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(ApexConfigFilePath)
-
             ' Turn off read-only
-            fileInfo.IsReadOnly = False
+            Dim fileInfo As New FileInfo(ApexConfigFilePath) With {
+                .IsReadOnly = False
+            }
 
             Dim lines As List(Of String) = File.ReadAllLines(ApexConfigFilePath).ToList()
 
@@ -1275,10 +1283,10 @@ Public Class Form1
 
         If File.Exists(ApexConfigFilePath) Then
             ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(ApexConfigFilePath)
-
             ' Turn off read-only
-            fileInfo.IsReadOnly = False
+            Dim fileInfo As New FileInfo(ApexConfigFilePath) With {
+                .IsReadOnly = False
+            }
 
             Dim lines As List(Of String) = File.ReadAllLines(ApexConfigFilePath).ToList()
 
@@ -1302,19 +1310,19 @@ Public Class Form1
         End If
     End Sub
 
-    <DllImport("user32.dll")>
+    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function FindWindow(lpClassName As String, lpWindowName As String) As IntPtr
     End Function
 
-    Public Sub FullToWinToFullScreenApex()
+    Public Shared Sub FullToWinToFullScreenApex()
         Dim hWnd As IntPtr = FindWindow(Nothing, "Apex Legends")
         If hWnd <> IntPtr.Zero Then
-            SetForegroundWindow(hWnd)
+            Dim unused = SetForegroundWindow(hWnd)
             Threading.Thread.Sleep(3000) 'Wait 3 seconds
             SendKeys.SendWait("%{ENTER}") 'Alt+Enter to toggle fullscreen
             Threading.Thread.Sleep(100) 'Wait 100ms
             SendKeys.SendWait("^") 'Release Alt
-            SetForegroundWindow(hWnd)
+            Dim unused1 = SetForegroundWindow(hWnd)
             Threading.Thread.Sleep(3000) 'Wait 3 seconds
             SendKeys.SendWait("%{ENTER}") 'Alt+Enter to toggle fullscreen again
             Threading.Thread.Sleep(100) 'Wait 100ms
@@ -1459,7 +1467,7 @@ Public Class Form1
 
             If AutoMinimizeCounter < 0 Then
                 AutoMinimizeTimer.Stop()
-                checkWindowTimer.Start()
+                CheckWindowTimer.Start()
                 AutoMinimizeCounter = 5
                 Label3.Text = "Minimizing Now"
                 Me.WindowState = FormWindowState.Minimized
@@ -1472,7 +1480,7 @@ Public Class Form1
 
             If AutoMinimizeCounter < 0 Then
                 AutoMinimizeTimer.Stop()
-                checkWindowTimer.Start()
+                CheckWindowTimer.Start()
                 AutoMinimizeCounter = 5
                 Label3.Text = "Minimizing Now"
                 Me.WindowState = FormWindowState.Minimized
@@ -1481,7 +1489,7 @@ Public Class Form1
 
     End Sub
 
-    Private Sub checkWindowTimer_Tick(sender As Object, e As EventArgs) Handles checkWindowTimer.Tick
+    Private Sub CheckWindowTimer_Tick(sender As Object, e As EventArgs) Handles CheckWindowTimer.Tick
 
         '--Apex Section---
         If Game = "Apex Legends" Then
@@ -1492,7 +1500,7 @@ Public Class Form1
                 Function(hWnd As IntPtr, lParam As IntPtr) As Boolean
                     Dim windowTextLength As Integer = GetWindowTextLength(hWnd) + 1
                     Dim windowText As New StringBuilder(windowTextLength)
-                    GetWindowText(hWnd, windowText, windowTextLength)
+                    Dim unused = GetWindowText(hWnd, windowText, windowTextLength)
 
                     If windowText.ToString().Contains(targetWindowTitle) Then
                         targetHWnd = hWnd
@@ -1506,7 +1514,7 @@ Public Class Form1
 
             If targetHWnd <> IntPtr.Zero Then
                 Dim processId As Integer = 0
-                GetWindowThreadProcessId(targetHWnd, processId)
+                Dim unused3 = GetWindowThreadProcessId(targetHWnd, processId)
 
                 Dim process As Process = Process.GetProcessById(processId)
 
@@ -1517,7 +1525,7 @@ Public Class Form1
                     If My.Settings.DevBuild = True Then
                         DevMenu.Show()
                     End If
-                    checkWindowTimer.Stop()
+                    CheckWindowTimer.Stop()
                 End If
             Else
                 ' "Apex Legends" window is not found, Unminimize Form1 And Change Label3
@@ -1526,7 +1534,7 @@ Public Class Form1
                 If My.Settings.DevBuild = True Then
                     DevMenu.Show()
                 End If
-                checkWindowTimer.Stop()
+                CheckWindowTimer.Stop()
             End If
 
             '--Fortnite Section---
@@ -1538,7 +1546,7 @@ Public Class Form1
                 Function(hWnd As IntPtr, lParam As IntPtr) As Boolean
                     Dim windowTextLength As Integer = GetWindowTextLength(hWnd) + 1
                     Dim windowText As New StringBuilder(windowTextLength)
-                    GetWindowText(hWnd, windowText, windowTextLength)
+                    Dim unused1 = GetWindowText(hWnd, windowText, windowTextLength)
 
                     If windowText.ToString().Contains(targetWindowTitle) Then
                         targetHWnd = hWnd
@@ -1552,7 +1560,7 @@ Public Class Form1
 
             If targetHWnd <> IntPtr.Zero Then
                 Dim processId As Integer = 0
-                GetWindowThreadProcessId(targetHWnd, processId)
+                Dim unused4 = GetWindowThreadProcessId(targetHWnd, processId)
 
                 Dim process As Process = Process.GetProcessById(processId)
 
@@ -1563,7 +1571,7 @@ Public Class Form1
                     If My.Settings.DevBuild = True Then
                         DevMenu.Show()
                     End If
-                    checkWindowTimer.Stop()
+                    CheckWindowTimer.Stop()
                 End If
             Else
                 ' "Fortnite" window is not found, Unminimize Form1 And Change Label3
@@ -1572,7 +1580,7 @@ Public Class Form1
                 If My.Settings.DevBuild = True Then
                     DevMenu.Show()
                 End If
-                checkWindowTimer.Stop()
+                CheckWindowTimer.Stop()
             End If
 
             '--Valorant Section---
@@ -1584,7 +1592,7 @@ Public Class Form1
                 Function(hWnd As IntPtr, lParam As IntPtr) As Boolean
                     Dim windowTextLength As Integer = GetWindowTextLength(hWnd) + 1
                     Dim windowText As New StringBuilder(windowTextLength)
-                    GetWindowText(hWnd, windowText, windowTextLength)
+                    Dim unused2 = GetWindowText(hWnd, windowText, windowTextLength)
 
                     If windowText.ToString().Contains(targetWindowTitle) Then
                         targetHWnd = hWnd
@@ -1598,7 +1606,7 @@ Public Class Form1
 
             If targetHWnd <> IntPtr.Zero Then
                 Dim processId As Integer = 0
-                GetWindowThreadProcessId(targetHWnd, processId)
+                Dim unused5 = GetWindowThreadProcessId(targetHWnd, processId)
 
                 Dim process As Process = Process.GetProcessById(processId)
 
@@ -1609,7 +1617,7 @@ Public Class Form1
                     If My.Settings.DevBuild = True Then
                         DevMenu.Show()
                     End If
-                    checkWindowTimer.Stop()
+                    CheckWindowTimer.Stop()
                 End If
             Else
                 ' "VALORANT" window is not found, Unminimize Form1 And Change Label3
@@ -1618,7 +1626,7 @@ Public Class Form1
                 If My.Settings.DevBuild = True Then
                     DevMenu.Show()
                 End If
-                checkWindowTimer.Stop()
+                CheckWindowTimer.Stop()
             End If
         End If
     End Sub
@@ -1627,23 +1635,27 @@ Public Class Form1
 
         If Game = "Apex Legends" Then
             Dim url As String = "https://truestretched.com/ApexLegends"
-            Dim psi As New ProcessStartInfo(url)
-            psi.UseShellExecute = True
+            Dim psi As New ProcessStartInfo(url) With {
+                .UseShellExecute = True
+            }
             Process.Start(psi)
         ElseIf Game = "Farlight 84" Then
             Dim url As String = "https://truestretched.com/Farlight84"
-            Dim psi As New ProcessStartInfo(url)
-            psi.UseShellExecute = True
+            Dim psi As New ProcessStartInfo(url) With {
+                .UseShellExecute = True
+            }
             Process.Start(psi)
         ElseIf Game = "Fortnite" Then
             Dim url As String = "https://truestretched.com/Fortnite"
-            Dim psi As New ProcessStartInfo(url)
-            psi.UseShellExecute = True
+            Dim psi As New ProcessStartInfo(url) With {
+                .UseShellExecute = True
+            }
             Process.Start(psi)
         ElseIf Game = "Valorant" Then
             Dim url As String = "https://truestretched.com/Valorant"
-            Dim psi As New ProcessStartInfo(url)
-            psi.UseShellExecute = True
+            Dim psi As New ProcessStartInfo(url) With {
+                .UseShellExecute = True
+            }
             Process.Start(psi)
         End If
 

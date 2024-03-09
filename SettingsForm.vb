@@ -108,15 +108,17 @@ Public Class SettingsForm
 
     Private Sub Label5_Click(sender As Object, e As EventArgs) Handles Label5.Click
         Dim url As String = "https://truestretched.com"
-        Dim psi As New ProcessStartInfo(url)
-        psi.UseShellExecute = True
+        Dim psi As New ProcessStartInfo(url) With {
+            .UseShellExecute = True
+        }
         Process.Start(psi)
     End Sub
 
     Private Sub Label4_Click(sender As Object, e As EventArgs) Handles Label4.Click
         Dim url As String = "https://www.youtube.com/@CodingCarson"
-        Dim psi As New ProcessStartInfo(url)
-        psi.UseShellExecute = True
+        Dim psi As New ProcessStartInfo(url) With {
+            .UseShellExecute = True
+        }
         Process.Start(psi)
     End Sub
 

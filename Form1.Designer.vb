@@ -39,7 +39,7 @@ Partial Class Form1
         Label4 = New Label()
         AutoCloseTimer = New Timer(components)
         AutoMinimizeTimer = New Timer(components)
-        checkWindowTimer = New Timer(components)
+        CheckWindowTimer = New Timer(components)
         GroupBox1 = New GroupBox()
         LinkLabel1 = New LinkLabel()
         Label5 = New Label()
@@ -183,9 +183,9 @@ Partial Class Form1
         ' 
         AutoMinimizeTimer.Interval = 1000
         ' 
-        ' checkWindowTimer
+        ' CheckWindowTimer
         ' 
-        checkWindowTimer.Interval = 1000
+        CheckWindowTimer.Interval = 1000
         ' 
         ' GroupBox1
         ' 
@@ -340,7 +340,7 @@ Partial Class Form1
     Friend WithEvents Label4 As Label
     Friend WithEvents AutoCloseTimer As Timer
     Friend WithEvents AutoMinimizeTimer As Timer
-    Friend WithEvents checkWindowTimer As Timer
+    Friend WithEvents CheckWindowTimer As Timer
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents Label5 As Label
     Friend WithEvents LinkLabel1 As LinkLabel

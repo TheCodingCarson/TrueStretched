@@ -55,13 +55,13 @@ Public Class UpdateAvailable
     End Sub
 
     Private Async Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim httpClient As HttpClient = New HttpClient()
+        Dim httpClient As New HttpClient()
         Dim json As String = Await httpClient.GetStringAsync("https://download.truestretched.com/latestversion.json")
         Dim jsonObject As JObject = JObject.Parse(json)
 
         Dim version As String = jsonObject("Version").ToString()
         If jsonObject("Beta").ToObject(Of Boolean)() AndAlso My.Settings.BetaBuild Then
-            version = version & jsonObject("BetaLetter").ToString()
+            version &= jsonObject("BetaLetter").ToString()
         End If
 
         My.Settings.SkippedVersion = version
@@ -118,7 +118,7 @@ Public Class UpdateAvailable
         End Try
     End Function
 
-    Async Function GetLatestVersionJson() As Task(Of String)
+    Shared Async Function GetLatestVersionJson() As Task(Of String)
         Dim httpClient As New HttpClient()
         Return Await httpClient.GetStringAsync("https://download.truestretched.com/latestversion.json")
     End Function
@@ -150,8 +150,8 @@ Public Class UpdateAvailable
                     Dim totalBytesRead As Long = 0L
                     Dim bytesRead As Integer
                     Dim buffer As Byte() = New Byte(8191) {}
-                    While (InlineAssignHelper(bytesRead, Await contentStream.ReadAsync(buffer, 0, buffer.Length))) > 0
-                        Await fileStream.WriteAsync(buffer, 0, bytesRead)
+                    While (InlineAssignHelper(bytesRead, Await contentStream.ReadAsync(buffer))) > 0
+                        Await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead))
                         totalBytesRead += bytesRead
                         If totalBytes <> -1L Then
                             Dim progressPercentage As Integer = Convert.ToInt32((totalBytesRead / totalBytes) * 100)
