@@ -1,4 +1,6 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.Globalization
+Imports System.IO
+Imports System.Windows.Forms
 
 Public Class DevMenu
     Private Sub DevMenu_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -49,7 +51,7 @@ Public Class DevMenu
 
     End Sub
 
-    Private Sub TestButton3_Click(sender As Object, e As EventArgs) Handles TestButton3.Click
+    Private Sub TestButtonUpdateAvailable_Click(sender As Object, e As EventArgs) Handles TestButtonUpdateAvailable.Click
         UpdateAvailable.Show()
     End Sub
 End Class
