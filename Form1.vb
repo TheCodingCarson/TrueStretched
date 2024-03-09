@@ -1137,7 +1137,7 @@ Public Class Form1
                 ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox=") Then
                     lines(i) = "bLastConfirmedShouldLetterbox=" & UseLetterbox
                 ElseIf lines(i).StartsWith("ResolutionSizeX=") Then
-                    lines(i) = "ResolutionSizeX=" & height
+                    lines(i) = "ResolutionSizeX=" & width
                 ElseIf lines(i).StartsWith("ResolutionSizeY=") Then
                     lines(i) = "ResolutionSizeY=" & height
                 ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeX=") Then
