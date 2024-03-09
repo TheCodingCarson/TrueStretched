@@ -7,20 +7,43 @@ Public Class UpdateAvailable
     Private Sub UpdateAvailable_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Form1.Enabled = False
+        SettingsForm.Close()
         Me.TopMost = True
 
-        ' Check if the LastLocation is set in My.Settings
+        ' Check if the LastLocation is set in My.Settings and the form is fully visible on any screen
+        Dim fixedFormSize As New Size(316, 230) ' Fixed size of the form
+        Dim formRectangle As New Rectangle(My.Settings.LastLocation, fixedFormSize)
+        Dim isFormFullyVisible As Boolean = False
+
         If Not My.Settings.LastLocation.IsEmpty Then
-            ' Load the last location from My.Settings
-            Me.Location = My.Settings.LastLocation
+            ' Iterate through all screens to check if the form is fully visible on any screen
+            For Each scr In Screen.AllScreens
+                ' Check if the formRectangle is within the screen's bounds considering the fixed size
+                If scr.Bounds.IntersectsWith(formRectangle) Then
+                    ' Further check if the form's entire size is within the screen's working area
+                    If scr.WorkingArea.Contains(formRectangle) Then
+                        isFormFullyVisible = True
+                        Exit For
+                    End If
+                End If
+            Next
+
+            ' If the form is fully visible on a screen, load its last location; otherwise, use WindowsDefaultLocation
+            If isFormFullyVisible Then
+                Me.Location = My.Settings.LastLocation
+            Else
+                Me.StartPosition = FormStartPosition.WindowsDefaultLocation
+            End If
         Else
             ' Set a default location for the form
             Me.StartPosition = FormStartPosition.WindowsDefaultLocation
         End If
 
-        'Check for updates
-        CheckForUpdates()
+    End Sub
 
+    Private Async Sub UpdateAvailable_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        'Check for updates (After form has completely loaded to prevent UI freezing)
+        Await CheckForUpdates()
     End Sub
 
     Private Sub UpdateAvailable_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
@@ -47,15 +70,17 @@ Public Class UpdateAvailable
         Me.Close()
     End Sub
 
-    Sub CheckForUpdates()
+    Private Async Function CheckForUpdates() As Task
         Dim currentVersion As String = Application.ProductVersion
         Dim currentBetaLetter As Char = My.Settings.BetaLetter
         Dim betaSetting As Boolean = My.Settings.BetaBuild
         Dim json As String = String.Empty
 
         Try
-            json = GetLatestVersionJson().Result ' Consider using Async/Await pattern instead
+            ' Await the async call properly
+            json = Await GetLatestVersionJson()
 
+            ' Parse JSON and update UI elements in a thread-safe manner
             Dim jsonObject As JObject = JObject.Parse(json)
             Dim newVersion As String = jsonObject("Version").ToString()
             Dim isBeta As Boolean = Boolean.Parse(jsonObject("Beta").ToString())
@@ -91,7 +116,7 @@ Public Class UpdateAvailable
             ' Handle exceptions
             Me.Invoke(Sub() MessageBox.Show("An error occurred while checking for updates."))
         End Try
-    End Sub
+    End Function
 
     Async Function GetLatestVersionJson() As Task(Of String)
         Dim httpClient As New HttpClient()
