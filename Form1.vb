@@ -43,10 +43,30 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        ' Check if the LastLocation is set in My.Settings
+        ' Check if the LastLocation is set in My.Settings and the form is fully visible on any screen
+        Dim fixedFormSize As New Size(316, 572) ' Fixed size of the form
+        Dim formRectangle As New Rectangle(My.Settings.LastLocation, fixedFormSize)
+        Dim isFormFullyVisible As Boolean = False
+
         If Not My.Settings.LastLocation.IsEmpty Then
-            ' Load the last location from My.Settings
-            Me.Location = My.Settings.LastLocation
+            ' Iterate through all screens to check if the form is fully visible on any screen
+            For Each scr In Screen.AllScreens
+                ' Check if the formRectangle is within the screen's bounds considering the fixed size
+                If scr.Bounds.IntersectsWith(formRectangle) Then
+                    ' Further check if the form's entire size is within the screen's working area
+                    If scr.WorkingArea.Contains(formRectangle) Then
+                        isFormFullyVisible = True
+                        Exit For
+                    End If
+                End If
+            Next
+
+            ' If the form is fully visible on a screen, load its last location; otherwise, use WindowsDefaultLocation
+            If isFormFullyVisible Then
+                Me.Location = My.Settings.LastLocation
+            Else
+                Me.StartPosition = FormStartPosition.WindowsDefaultLocation
+            End If
         Else
             ' Set a default location for the form
             Me.StartPosition = FormStartPosition.WindowsDefaultLocation
