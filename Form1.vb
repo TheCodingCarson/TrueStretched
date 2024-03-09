@@ -1043,9 +1043,23 @@ Public Class Form1
     End Sub
 
     Function GetValorantRegionCode() As String
-        ' Get the two-letter ISO region name for the current culture's region
         Dim regionInfo As New RegionInfo(CultureInfo.CurrentCulture.Name)
-        Return regionInfo.TwoLetterISORegionName.ToLower()
+        Dim isoRegionName As String = regionInfo.TwoLetterISORegionName.ToUpper()
+
+        ' Lists of ISO country codes for North America and Europe
+        Dim naCountries As HashSet(Of String) = New HashSet(Of String) From {"US", "CA", "MX"}
+        Dim euCountries As HashSet(Of String) = New HashSet(Of String) From {"FR", "DE", "IT", "ES", "GB"}
+
+        ' Map countries to Valorant regions
+        If naCountries.Contains(isoRegionName) Then
+            Return "na"
+        ElseIf euCountries.Contains(isoRegionName) Then
+            Return "eu"
+        Else
+            ' Return actual region code if not listed above (Maybe: tell user the region isn't found then display region code it's giving so they can create report)
+            ' TODO: add all regions that Valorant has
+            Return isoRegionName.ToLower()
+        End If
     End Function
 
     Private Sub ValorantConfigFileSwitch()
@@ -1092,8 +1106,8 @@ Public Class Form1
                     lines(i) = "LastConfirmedFullscreenMode=" & FullscreenMode
                 ElseIf lines(i).StartsWith("bShouldLetterbox=") Then
                     lines(i) = "bShouldLetterbox=" & UseLetterbox
-                ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox") Then
-                    lines(i) = "bLastConfirmedShouldLetterbox" & UseLetterbox
+                ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox=") Then
+                    lines(i) = "bLastConfirmedShouldLetterbox=" & UseLetterbox
                 ElseIf lines(i).StartsWith("ResolutionSizeX=") Then
                     lines(i) = "ResolutionSizeX=" & height
                 ElseIf lines(i).StartsWith("ResolutionSizeY=") Then
