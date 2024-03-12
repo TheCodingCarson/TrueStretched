@@ -198,10 +198,12 @@ Public Class Form1
         toolTip1.SetToolTip(Me.FortnitePictureBox, "Fortnite")
         toolTip1.SetToolTip(Me.ValorantPictureBox, "Valorant")
 
-        'Check for Updates on Startup
+        'Check for Updates on Startup (Make Sure Application Has Network Access)
         If My.Settings.CheckForUpdateOnStart = True Then
             If My.Settings.DevBuild = False Then
-                CheckForUpdates()
+                If InternetConnection() = True Then
+                    CheckForUpdates()
+                End If
             End If
         End If
 
@@ -1070,84 +1072,50 @@ Public Class Form1
         End If
     End Sub
 
-    Shared Function GetValorantRegionCode() As String
-        Dim regionInfo As New RegionInfo(CultureInfo.CurrentCulture.Name)
-        Dim isoRegionName As String = regionInfo.TwoLetterISORegionName.ToUpper()
-
-        ' Lists of ISO country codes for North America and Europe
-        Dim naCountries As New HashSet(Of String) From {"US", "CA", "MX"}
-        Dim euCountries As New HashSet(Of String) From {"FR", "DE", "IT", "ES", "GB"}
-
-        ' Map countries to Valorant regions
-        If naCountries.Contains(isoRegionName) Then
-            Return "na"
-        ElseIf euCountries.Contains(isoRegionName) Then
-            Return "eu"
-        Else
-            ' Return actual region code if not listed above (Maybe: tell user the region isn't found then display region code it's giving so they can create report)
-            ' TODO: add all regions that Valorant has
-            Return isoRegionName.ToLower()
-        End If
-    End Function
-
     Private Sub ValorantConfigFileSwitch()
 
-        ' Get last Valorant User ID
-        Dim useridfilepath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VALORANT/Saved/Config/Windows/RiotLocalMachine.ini")
-        Dim LastKnownValorantUser As String = ""
-
-        If File.Exists(useridfilepath) Then
-            ' Read all lines of the file
-            Dim lines As String() = File.ReadAllLines(useridfilepath)
-
-            ' Iterate through each line
-            For Each line As String In lines
-                ' Check if the line contains the key
-                If line.StartsWith("LastKnownUser" & "=", StringComparison.OrdinalIgnoreCase) Then
-                    ' Extract and return the value after the '='
-                    LastKnownValorantUser = line.Substring(line.IndexOf("="c) + 1).Trim()
-                End If
-            Next
-        Else
-            'Key not found
-        End If
-
         ' Set the desired screen resolution
-        Dim regionCode As String = GetValorantRegionCode()
-        Dim filePath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VALORANT/Saved/Config/" + LastKnownValorantUser + "-" + regionCode + "/Windows/GameUserSettings.ini")
-        Dim width As Integer = 1920
-        Dim height As Integer = 1080
-        Dim UseLetterbox As String = "False"
-        Dim FullscreenMode As Integer = 2
+        Dim filePath As String = FindConfigLocation("Valorant")
+        If filePath = "'Valorant' not found in configuration paths." Or "'Valorant Last Riot User ID' not found in 'RiotLocalMachine.ini'" Or "'Valorant Last Riot User ID' configuration folder not found." Then
+            ' Valorant Last User Riot ID Config File ERROR
+            Label3.ForeColor = Color.Red
+            Label3.Text = "Error - Missing Riot ID Config"
+        Else
+            ' Valorant Last User Riot ID Config File Found
+            Dim width As Integer = 1920
+            Dim height As Integer = 1080
+            Dim UseLetterbox As String = "False"
+            Dim FullscreenMode As Integer = 2
 
-        If File.Exists(filePath) Then
-            ' Create a FileInfo object
-            Dim fileInfo As New FileInfo(filePath)
+            If File.Exists(filePath) Then
+                ' Create a FileInfo object
+                Dim fileInfo As New FileInfo(filePath)
 
-            Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
+                Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
 
-            For i As Integer = 0 To lines.Count - 1
+                For i As Integer = 0 To lines.Count - 1
 
-                If lines(i).StartsWith("FullscreenMode=") Then
-                    lines(i) = "FullscreenMode=" & FullscreenMode
-                ElseIf lines(i).StartsWith("LastConfirmedFullscreenMode=") Then
-                    lines(i) = "LastConfirmedFullscreenMode=" & FullscreenMode
-                ElseIf lines(i).StartsWith("bShouldLetterbox=") Then
-                    lines(i) = "bShouldLetterbox=" & UseLetterbox
-                ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox=") Then
-                    lines(i) = "bLastConfirmedShouldLetterbox=" & UseLetterbox
-                ElseIf lines(i).StartsWith("ResolutionSizeX=") Then
-                    lines(i) = "ResolutionSizeX=" & width
-                ElseIf lines(i).StartsWith("ResolutionSizeY=") Then
-                    lines(i) = "ResolutionSizeY=" & height
-                ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeX=") Then
-                    lines(i) = "LastUserConfirmedResolutionSizeX=" & width
-                ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeY=") Then
-                    lines(i) = "LastUserConfirmedResolutionSizeY=" & height
-                End If
-            Next
+                    If lines(i).StartsWith("FullscreenMode=") Then
+                        lines(i) = "FullscreenMode=" & FullscreenMode
+                    ElseIf lines(i).StartsWith("LastConfirmedFullscreenMode=") Then
+                        lines(i) = "LastConfirmedFullscreenMode=" & FullscreenMode
+                    ElseIf lines(i).StartsWith("bShouldLetterbox=") Then
+                        lines(i) = "bShouldLetterbox=" & UseLetterbox
+                    ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox=") Then
+                        lines(i) = "bLastConfirmedShouldLetterbox=" & UseLetterbox
+                    ElseIf lines(i).StartsWith("ResolutionSizeX=") Then
+                        lines(i) = "ResolutionSizeX=" & width
+                    ElseIf lines(i).StartsWith("ResolutionSizeY=") Then
+                        lines(i) = "ResolutionSizeY=" & height
+                    ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeX=") Then
+                        lines(i) = "LastUserConfirmedResolutionSizeX=" & width
+                    ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeY=") Then
+                        lines(i) = "LastUserConfirmedResolutionSizeY=" & height
+                    End If
+                Next
 
-            File.WriteAllLines(filePath, lines.ToArray())
+                File.WriteAllLines(filePath, lines.ToArray())
+            End If
         End If
 
     End Sub
