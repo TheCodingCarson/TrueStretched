@@ -4,6 +4,13 @@ Module InternetConnection_Module
     Private hasChecked As Boolean = False
     Private lastResult As Boolean = False
 
+    ' {-Summary-}
+    '
+    ' To Check if Application Has Internet Access, simply call: "InternetConnection()"
+    ' Will return value in a Boolean
+    '
+    ' {-Summary-}
+
     Public Function InternetConnection() As Boolean
 
         If hasChecked Then

@@ -2,6 +2,13 @@
 
 Module FindInstallLocation_Module
 
+    ' {-Summary-}
+    '
+    ' To Find Install Location of Game Listed In Dictionary, simply call: "*var* = FindInstallLocation(*Game Name*)"
+    ' Will return full path of install FOLDER location
+    '
+    ' {-Summary-}
+
     ' Default Program Dictionary Map Program Names to Registry Keys
     Private ReadOnly programRegistryPaths As New Dictionary(Of String, String) From {
         {"Apex Legends", "Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1172470\InstallLocation"},

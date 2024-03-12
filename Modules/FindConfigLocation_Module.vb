@@ -3,6 +3,13 @@ Imports System.Text.RegularExpressions
 
 Module FindConfigLocation_Module
 
+    ' {-Summary-}
+    '
+    ' To Find Config File of Game Listed In Dictionary, simply call: "*var* = FindConfigLocation(*Game Name*)"
+    ' Will return full path of config location
+    '
+    ' {-Summary-}
+
     ' Program Dictionary Map Program Names to Config File Location (Either Full Location or marked "Individual Method Required")
     Private ReadOnly programConfigPaths As New Dictionary(Of String, String) From {
         {"Apex Legends", (Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) & "\Saved Games\Respawn\Apex\local\videoconfig.txt")},
