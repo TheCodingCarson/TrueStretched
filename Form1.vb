@@ -465,7 +465,7 @@ Public Class Form1
                         ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
                         '-Widescreen Fix-
                         If WidescreenFixCheckBox.Checked = True Then
-
+                            ' Skip changing resolution if Widescreen Fix is enabled
                         Else
                             '-End of Widescreen Fix-
                             Label3.Text = "Changing Screen Resolution"
@@ -480,12 +480,22 @@ Public Class Form1
                         Label3.Text = "Game is not running!"
                     Else
                         Label3.ForeColor = Color.Green
-                        Label3.Text = "Successfully enabled True Stretched Res"
+                        If WidescreenFixCheckBox.Checked = True Then
+                            ' Set success label depending on enabling "True Stretched Res" or "Widescreen Fix"
+                            Label3.Text = "Successfully enabled Widescreen Fix"
+                        Else
+                            Label3.Text = "Successfully enabled True Stretched Res"
+                        End If
 
-                        If My.Settings.AutoClose = True Then
+                        If WidescreenFixCheckBox.Checked = True Then
+                            'If Widescreen Fix is enabled only close after Enabling Widescreen fix (Auto Minimize makes no sense for Widescreen Fix)
                             AutoCloseTimer.Start()
-                        ElseIf My.Settings.AutoMinimize = True Then
-                            AutoMinimizeTimer.Start()
+                        Else
+                            If My.Settings.AutoClose = True Then
+                                AutoCloseTimer.Start()
+                            ElseIf My.Settings.AutoMinimize = True Then
+                                AutoMinimizeTimer.Start()
+                            End If
                         End If
 
                     End If
