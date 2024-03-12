@@ -9,7 +9,6 @@ Imports Emgu.CV
 Imports Emgu.CV.CvEnum
 Imports Emgu.CV.Structure
 Imports System.Reflection
-Imports System.Globalization
 
 Public Class Form1
     Private Declare Function EnumWindows Lib "user32.dll" (lpEnumFunc As EnumWindowCallback, lParam As IntPtr) As Boolean
@@ -258,7 +257,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub Button1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Button1.Click
+    Private Async Sub Button1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Button1.Click
 
         '---Apex Legends Mode Code Starts---
         If Game = "Apex Legends" Then
@@ -434,28 +433,33 @@ Public Class Form1
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
-                ' First Valorant True Stretch Run - Popup
-                Dim message As String = "FIRST RUN NOTE: If this is your first time please close Valorant if it's running then click 'Okay' to change necessary graphics setting automatically! After please open Valorant and once at the main menu click on 'Enable True Stretched' once more."
-                Dim caption As String = "Important First Run Information"
-                Dim buttons As MessageBoxButtons = MessageBoxButtons.OKCancel
-                Dim icon As MessageBoxIcon = MessageBoxIcon.Exclamation
+                CheckForWindow("VALORANT")
+                If IsWindowFound = False Then
+                    ' Switch Config Files For Stretched
+                    Label3.Text = "Switching Valorant Config"
+                    ValorantConfigFileSwitch()
 
-                If My.Settings.ValorantFirstTime = True Then
-                    ' Show First Run Message Box
-                    Dim result As DialogResult = MessageBox.Show(message, caption, buttons, icon)
+                    ' Valorant Launch Parameters
+                    Dim valstartInfo As New ProcessStartInfo()
+                    Dim valinstallLocation As String = FindInstallLocation("Valorant")
+                    Dim valexeLocation As String = valinstallLocation + "\RiotClientServices.exe"
+                    ' Launch Valorant
+                    valstartInfo.FileName = valexeLocation
+                    valstartInfo.WorkingDirectory = valinstallLocation
+                    valstartInfo.Arguments = "--launch-product=valorant --launch-patchline=live"
+                    valstartInfo.WindowStyle = ProcessWindowStyle.Normal
+                    Label3.Text = "Starting Valorant"
+                    Process.Start(valstartInfo)
 
-                    If result = DialogResult.OK Then
-                        ' Is Val First Run - Switch Config File
-                        ValorantConfigFileSwitch()
-                        My.Settings.ValorantFirstTime = False
-                        My.Settings.Save()
-                    ElseIf result = DialogResult.Cancel Then
-                        ' Not First Run
-                        My.Settings.ValorantFirstTime = False
-                        My.Settings.Save()
-                    End If
+                    ' Disable Enable Button Long Starting Valorant
+                    Button1.Text = "Enabling True Stretched"
+                    Button1.Enabled = False
 
-                ElseIf My.Settings.ValorantFirstTime = False Then
+                    ' 5 Second Countdown Before Continuing
+                    Await CountdownTimer(5, True, True)
+
+                    ' Renable Main Button
+                    Button1.Enabled = True
 
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
@@ -485,8 +489,11 @@ Public Class Form1
                         End If
 
                     End If
-
+                Else
+                    ' Ask User to close Valorant
+                    MessageBox.Show("Please close Valorant before running True Stretched!")
                 End If
+
 
             Else 'Disable True Stretched
                 Button1.Text = "Enable True Stretched"
@@ -1074,14 +1081,17 @@ Public Class Form1
 
     Private Sub ValorantConfigFileSwitch()
 
-        ' Set the desired screen resolution
+        ' Valorant Get Config Location (Handle Errors)
         Dim filePath As String = FindConfigLocation("Valorant")
-        If filePath = "'Valorant' not found in configuration paths." Or "'Valorant Last Riot User ID' not found in 'RiotLocalMachine.ini'" Or "'Valorant Last Riot User ID' configuration folder not found." Then
+        If filePath = "'Valorant' not found in configuration paths." OrElse
+        filePath = "'Valorant Last Riot User ID' not found in 'RiotLocalMachine.ini'" OrElse
+        filePath = "'Valorant Last Riot User ID' configuration folder not found." Then
             ' Valorant Last User Riot ID Config File ERROR
             Label3.ForeColor = Color.Red
-            Label3.Text = "Error - Missing Riot ID Config"
+            Label3.Text = filePath
         Else
             ' Valorant Last User Riot ID Config File Found
+            ' Set the desired screen resolution
             Dim width As Integer = 1920
             Dim height As Integer = 1080
             Dim UseLetterbox As String = "False"
@@ -1372,12 +1382,13 @@ Public Class Form1
 
             ' Check if the resolution change was successful
             If result = 0 Then
-                ' Show a message box to indicate that the resolution has been changed
+                ' Set status to indicate that the resolution has been changed
                 Label3.ForeColor = Color.Green
                 Label3.Text = "Screen resolution changed successfully!"
             Else
-                ' Display an error message if the resolution change failed
-                MessageBox.Show("Failed to change screen resolution!")
+                ' Set status to indicate error message if the resolution change failed
+                Label3.ForeColor = Color.Red
+                Label3.Text = "Failed to change screen resolution!"
             End If
         End Sub
     )
@@ -1595,6 +1606,11 @@ Public Class Form1
                     DevMenu.Show()
                 End If
                 CheckWindowTimer.Stop()
+
+                ' "VALORANT" - Disable True Stretched Automatically
+                If Button1.Text = "Disable True Stretched" Then
+                    Button1.PerformClick()
+                End If
             End If
         End If
     End Sub
