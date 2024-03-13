@@ -30,6 +30,7 @@ Partial Class DevMenu
         TestButton1 = New Windows.Forms.Button()
         TestButton2 = New Windows.Forms.Button()
         TestButtonUpdateAvailable = New Windows.Forms.Button()
+        TestButton3 = New Windows.Forms.Button()
         SuspendLayout()
         ' 
         ' WindowLocationTimer
@@ -56,7 +57,7 @@ Partial Class DevMenu
         ' 
         ' TestButton1
         ' 
-        TestButton1.Location = New Point(12, 421)
+        TestButton1.Location = New Point(12, 392)
         TestButton1.Name = "TestButton1"
         TestButton1.Size = New Size(136, 23)
         TestButton1.TabIndex = 2
@@ -65,7 +66,7 @@ Partial Class DevMenu
         ' 
         ' TestButton2
         ' 
-        TestButton2.Location = New Point(12, 450)
+        TestButton2.Location = New Point(12, 421)
         TestButton2.Name = "TestButton2"
         TestButton2.Size = New Size(136, 23)
         TestButton2.TabIndex = 3
@@ -81,12 +82,22 @@ Partial Class DevMenu
         TestButtonUpdateAvailable.Text = "Show UpdateAvailable Dialog"
         TestButtonUpdateAvailable.UseVisualStyleBackColor = True
         ' 
+        ' TestButton3
+        ' 
+        TestButton3.Location = New Point(12, 450)
+        TestButton3.Name = "TestButton3"
+        TestButton3.Size = New Size(136, 23)
+        TestButton3.TabIndex = 5
+        TestButton3.Text = "Test Button 3"
+        TestButton3.UseVisualStyleBackColor = True
+        ' 
         ' DevMenu
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = Windows.Forms.AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(29), CByte(29), CByte(29))
         ClientSize = New Size(160, 533)
+        Controls.Add(TestButton3)
         Controls.Add(TestButtonUpdateAvailable)
         Controls.Add(TestButton2)
         Controls.Add(TestButton1)
@@ -107,4 +118,5 @@ Partial Class DevMenu
     Friend WithEvents TestButton1 As Windows.Forms.Button
     Friend WithEvents TestButton2 As Windows.Forms.Button
     Friend WithEvents TestButtonUpdateAvailable As Windows.Forms.Button
+    Friend WithEvents TestButton3 As Windows.Forms.Button
 End Class
