@@ -11,9 +11,6 @@
     <Setting Name="AutoMinimize" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="NativeResolution" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1920x1080</Value>
-    </Setting>
     <Setting Name="StretchedResolution" Type="System.String" Scope="User">
       <Value Profile="(Default)">1440x1080</Value>
     </Setting>
@@ -35,7 +32,7 @@
     <Setting Name="GameLabelLocation" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">75, 11</Value>
     </Setting>
-    <Setting Name="MonitorGameRunsOn" Type="System.String" Scope="User">
+    <Setting Name="GameMonitor" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="MainGPU" Type="System.String" Scope="User">

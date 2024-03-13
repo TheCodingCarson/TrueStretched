@@ -92,18 +92,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("1920x1080")>  _
-        Public Property NativeResolution() As String
-            Get
-                Return CType(Me("NativeResolution"),String)
-            End Get
-            Set
-                Me("NativeResolution") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("1440x1080")>  _
         Public Property StretchedResolution() As String
             Get
@@ -189,12 +177,12 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("")>  _
-        Public Property MonitorGameRunsOn() As String
+        Public Property GameMonitor() As String
             Get
-                Return CType(Me("MonitorGameRunsOn"),String)
+                Return CType(Me("GameMonitor"),String)
             End Get
             Set
-                Me("MonitorGameRunsOn") = value
+                Me("GameMonitor") = value
             End Set
         End Property
         
