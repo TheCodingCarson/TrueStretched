@@ -31,10 +31,10 @@ Partial Class SettingsForm
         CheckBox2 = New CheckBox()
         CheckBox1 = New CheckBox()
         GroupBox2 = New GroupBox()
+        TextBox1 = New TextBox()
         Label2 = New Label()
         ComboBox2 = New ComboBox()
         Label1 = New Label()
-        ComboBox1 = New ComboBox()
         CheckBox4 = New CheckBox()
         CheckBox3 = New CheckBox()
         GroupBox3 = New GroupBox()
@@ -110,10 +110,10 @@ Partial Class SettingsForm
         ' 
         ' GroupBox2
         ' 
+        GroupBox2.Controls.Add(TextBox1)
         GroupBox2.Controls.Add(Label2)
         GroupBox2.Controls.Add(ComboBox2)
         GroupBox2.Controls.Add(Label1)
-        GroupBox2.Controls.Add(ComboBox1)
         GroupBox2.Controls.Add(CheckBox4)
         GroupBox2.Controls.Add(CheckBox3)
         GroupBox2.Location = New Point(12, 206)
@@ -122,6 +122,14 @@ Partial Class SettingsForm
         GroupBox2.TabIndex = 1
         GroupBox2.TabStop = False
         GroupBox2.Text = "Resolution Settings"
+        ' 
+        ' TextBox1
+        ' 
+        TextBox1.Enabled = False
+        TextBox1.Location = New Point(6, 87)
+        TextBox1.Name = "TextBox1"
+        TextBox1.Size = New Size(260, 23)
+        TextBox1.TabIndex = 6
         ' 
         ' Label2
         ' 
@@ -148,20 +156,9 @@ Partial Class SettingsForm
         Label1.AutoSize = True
         Label1.Location = New Point(6, 69)
         Label1.Name = "Label1"
-        Label1.Size = New Size(104, 15)
+        Label1.Size = New Size(100, 15)
         Label1.TabIndex = 3
-        Label1.Text = "Default Resolution"
-        ' 
-        ' ComboBox1
-        ' 
-        ComboBox1.AutoCompleteMode = AutoCompleteMode.Suggest
-        ComboBox1.AutoCompleteSource = AutoCompleteSource.ListItems
-        ComboBox1.FormattingEnabled = True
-        ComboBox1.Items.AddRange(New Object() {"7680x4320", "3840x2160", "2560x1440", "2560x1080", "1920x1080", "1280x720", "720x576", "720x480"})
-        ComboBox1.Location = New Point(6, 87)
-        ComboBox1.Name = "ComboBox1"
-        ComboBox1.Size = New Size(260, 23)
-        ComboBox1.TabIndex = 2
+        Label1.Text = "Native Resolution"
         ' 
         ' CheckBox4
         ' 
@@ -265,6 +262,7 @@ Partial Class SettingsForm
         ' 
         ' ComboBox3
         ' 
+        ComboBox3.DropDownStyle = ComboBoxStyle.DropDownList
         ComboBox3.FormattingEnabled = True
         ComboBox3.Location = New Point(6, 43)
         ComboBox3.Name = "ComboBox3"
@@ -337,7 +335,6 @@ Partial Class SettingsForm
     Friend WithEvents Label2 As Label
     Friend WithEvents ComboBox2 As ComboBox
     Friend WithEvents Label1 As Label
-    Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents CheckBox4 As CheckBox
     Friend WithEvents CheckBox3 As CheckBox
     Friend WithEvents Button1 As Button
@@ -354,4 +351,5 @@ Partial Class SettingsForm
     Friend WithEvents ComboBox4 As ComboBox
     Friend WithEvents Label8 As Label
     Friend WithEvents CheckBox5 As CheckBox
+    Friend WithEvents TextBox1 As TextBox
 End Class
