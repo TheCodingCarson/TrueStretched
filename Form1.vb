@@ -478,7 +478,7 @@ Public Class Form1
                     Button1.Enabled = False
 
                     ' 5 Second Countdown Before Continuing
-                    Await CountdownTimer(5, True, True)
+                    Await CountdownTimer(15, True, True)
 
                     ' Renable Main Button
                     Button1.Enabled = True
