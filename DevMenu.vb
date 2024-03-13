@@ -1,6 +1,7 @@
 ﻿Imports System.Globalization
 Imports System.IO
 Imports System.Windows.Forms
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class DevMenu
     Private Sub DevMenu_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -30,7 +31,6 @@ Public Class DevMenu
         My.Settings.LastLocation = New Point(0, 0)
         My.Settings.AutoClose = "False"
         My.Settings.AutoMinimize = "True"
-        My.Settings.NativeResolution = "1920x1080"
         My.Settings.StretchedResolution = "1024x768"
         My.Settings.FirstRun = "True"
         My.Settings.SetDisplayResolution = "True"
@@ -38,7 +38,7 @@ Public Class DevMenu
         My.Settings.Monitors = ""
         My.Settings.SelectedGame = "Valorant"
         My.Settings.GameLabelLocation = New Point(75, 11)
-        My.Settings.MonitorGameRunsOn = ""
+        My.Settings.GameMonitor = ""
         My.Settings.MainGPU = ""
         My.Settings.Save()
     End Sub
@@ -51,7 +51,12 @@ Public Class DevMenu
 
     End Sub
 
+    Private Sub TestButton3_Click(sender As Object, e As EventArgs) Handles TestButton3.Click
+
+    End Sub
+
     Private Sub TestButtonUpdateAvailable_Click(sender As Object, e As EventArgs) Handles TestButtonUpdateAvailable.Click
         UpdateAvailable.Show()
     End Sub
+
 End Class
