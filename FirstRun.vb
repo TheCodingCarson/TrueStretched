@@ -20,8 +20,9 @@ Public Class FirstRun
         Dim mainScreen As Screen = Screen.PrimaryScreen
         Dim nativeResolution As Size = mainScreen.Bounds.Size
 
-        ' Save native resolution to settings
-        My.Settings.NativeResolution = nativeResolution.Width & "x" & nativeResolution.Height
+        ' Save monitor settings to desired settings values
+        SaveMonitorInfo()
+        My.Settings.GameMonitor = GetPrimaryMonitor()
         My.Settings.Save()
 
         ' Get monitors in friendly name format
@@ -73,7 +74,7 @@ Public Class FirstRun
         End If
 
         'TEMPORARY SOLUTION PLEASE UPDATE (SETS THE PRIMARY MONITOR)
-        My.Settings.MonitorGameRunsOn = monitorNames(0)
+        My.Settings.GameMonitor = monitorNames(0)
         My.Settings.Save()
 
         ' Save the settings
