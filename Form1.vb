@@ -9,6 +9,7 @@ Imports Emgu.CV
 Imports Emgu.CV.CvEnum
 Imports Emgu.CV.Structure
 Imports System.Reflection
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class Form1
     Private Declare Function EnumWindows Lib "user32.dll" (lpEnumFunc As EnumWindowCallback, lParam As IntPtr) As Boolean
@@ -89,10 +90,10 @@ Public Class Form1
         End If
 
         ' Ensure Native & Stretched Resolutions Don't match (Fixes "Disable True Stretched" being the only option)
-        If My.Settings.NativeResolution = My.Settings.StretchedResolution Then
-            My.Settings.NativeResolution = "1920x1080"
+        If GetGameMonitor("Resolution") = My.Settings.StretchedResolution Then
             My.Settings.StretchedResolution = "1440x1080"
             My.Settings.Save()
+        Else
         End If
 
         'Check to see if opening long already enabled
@@ -210,9 +211,30 @@ Public Class Form1
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
 
-        ' Save the form's location in My.Settings
-        My.Settings.LastLocation = Me.Location
-        My.Settings.Save()
+        ' Check if the Form1 Location is fully visible on any screen
+        Dim fixedFormSize As New Size(316, 572) ' Fixed size of the form
+        Dim formRectangle As New Rectangle(Me.Location, fixedFormSize)
+        Dim isFormFullyVisible As Boolean = False
+
+        ' Iterate through all screens to check if the form is fully visible on any screen
+        For Each scr In Screen.AllScreens
+                ' Check if the formRectangle is within the screen's bounds considering the fixed size
+                If scr.Bounds.IntersectsWith(formRectangle) Then
+                    ' Further check if the form's entire size is within the screen's working area
+                    If scr.WorkingArea.Contains(formRectangle) Then
+                        isFormFullyVisible = True
+                        Exit For
+                    End If
+                End If
+            Next
+
+        ' If the form is fully visible on a screen, save its location; otherwise, don't save
+        If isFormFullyVisible Then
+            My.Settings.LastLocation = Me.Location
+            My.Settings.Save()
+        Else
+            'If Form1 isn't fully visible don't save location
+        End If
 
     End Sub
 
@@ -945,11 +967,11 @@ Public Class Form1
         Button1.Text = "Disable True Stretched"
     End Sub
 
-    Public Sub DisableFarlight84Stretched()
+    Public Shared Sub DisableFarlight84Stretched()
         Dim Farlight84ConfigFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) & "\Solarland\Saved\Config\WindowsClient\GameUserSettings.ini"
 
         ' Set the desired screen resolution
-        Dim resolution As String = My.Settings.NativeResolution
+        Dim resolution As String = GetGameMonitor("Resolution")
         Dim dimensions() As String = resolution.Split("x"c)
 
         Dim width As Integer = Integer.Parse(dimensions(0))
@@ -1050,7 +1072,7 @@ Public Class Form1
         Dim filePath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FortniteGame/Saved/Config/WindowsClient/GameUserSettings.ini")
 
         ' Set the desired screen resolution
-        Dim resolution As String = My.Settings.NativeResolution
+        Dim resolution As String = GetGameMonitor("Resolution")
         Dim dimensions() As String = resolution.Split("x"c)
 
         Dim width As Integer = Integer.Parse(dimensions(0))
@@ -1259,11 +1281,11 @@ Public Class Form1
         Button1.Text = "Disable True Stretched"
     End Sub
 
-    Public Sub DisableApexStretched()
-        Dim ApexConfigFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) & "\Saved Games\Respawn\Apex\local\videoconfig.txt"
+    Public Shared Sub DisableApexStretched()
+        Dim ApexConfigFilePath As String = FindConfigLocation("Apex Legends")
 
         ' Set the desired screen resolution
-        Dim resolution As String = My.Settings.NativeResolution
+        Dim resolution As String = GetGameMonitor("Resolution")
         Dim dimensions() As String = resolution.Split("x"c)
 
         Dim width As Integer = Integer.Parse(dimensions(0))
@@ -1407,7 +1429,7 @@ Public Class Form1
 
     Private Sub ChangeScreenResolutionNative()
         ' Set the desired screen resolution
-        Dim resolution As String = My.Settings.NativeResolution
+        Dim resolution As String = GetGameMonitor("Resolution")
         Dim dimensions() As String = resolution.Split("x"c)
 
         Dim width As Integer = Integer.Parse(dimensions(0))
