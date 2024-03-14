@@ -608,7 +608,9 @@ Public Module MonitorManagement_Module
     ' <param name="height">The desired height in pixels.</param>
     Public Sub SetMonitorResolution(monitorIdentifier As String, width As Integer, height As Integer)
         Dim monitors As List(Of MonitorInfo) = EnumerateMonitors()
-        Dim targetMonitor As MonitorInfo = monitors.FirstOrDefault(Function(m) m.FriendlyName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase))
+        Dim targetMonitor As MonitorInfo = monitors.FirstOrDefault(Function(m) m.DeviceName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
+                                                    m.FriendlyName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
+                                                    m.HardwareID.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase))
 
         If targetMonitor Is Nothing Then
             Throw New ArgumentException("Specified monitor not found.")
@@ -783,17 +785,30 @@ Public Module MonitorManagement_Module
                                                                   m.HardwareID.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase))
 
         If targetMonitor Is Nothing Then
-                                                                           MessageBox.Show("Specified monitor not found.")
-                                                                           Return
-                                                                       End If
+            MessageBox.Show("Specified monitor not found.")
+            Return
+        End If
 
-                                                                       ' Example saves the FriendlyName; adjust according to which attributes are most relevant or required.
-                                                                       Dim infoToSave As String = targetMonitor.FriendlyName
+        ' Example saves the FriendlyName; adjust according to which attributes are most relevant or required.
+        Dim infoToSave As String = targetMonitor.FriendlyName
 
-                                                                       ' Assuming My.Settings.GameMonitor is the setting created to store the game monitor information
-                                                                       My.Settings.GameMonitor = infoToSave
-                                                                       My.Settings.Save() ' Persist the change
-                                                                       MessageBox.Show($"Game monitor set to: {infoToSave}")
+        ' Assuming My.Settings.GameMonitor is the setting created to store the game monitor information
+        My.Settings.GameMonitor = infoToSave
+        My.Settings.Save() ' Persist the change
+        MessageBox.Show($"Game monitor set to: {infoToSave}")
     End Sub
+
+    ' -ParseResolution Function-
+    '
+    ' <summary>
+    ' Parses a combined resolution into Width and Height
+    ' Usage:
+    ' - To split a resolution into two parts: ParseResolution("Resolution")
+    ' </summary>
+    ' <param name="resolution">The combined resolution you want to split. Could be based on in the format of "widthxheight"</param>
+    Public Function ParseResolution(resolution As String) As (Width As Integer, Height As Integer)
+        Dim parts = resolution.Split("x"c)
+        Return (Integer.Parse(parts(0)), Integer.Parse(parts(1)))
+    End Function
 
 End Module
