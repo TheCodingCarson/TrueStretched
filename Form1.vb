@@ -286,6 +286,11 @@ Public Class Form1
 
     Private Async Sub Button1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Button1.Click
 
+        ' Get Stretched and Native Resoultion in and format for needed
+        Dim StretchedResolution = ParseResolution(GetGameMonitor("Resolution"))
+        Dim NativeResolution = ParseResolution(GetGameMonitor("MaxResolution"))
+
+
         '---Apex Legends Mode Code Starts---
         If Game = "Apex Legends" Then
             If GPU = "Amd GPU" Then
@@ -307,7 +312,7 @@ Public Class Form1
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen
                         Label3.Text = "Changing Screen Resolution"
-                        ChangeScreenResolutionStretched()
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
                     End If
                     StretchedEnabled = True
                     EnableApexStretched()
@@ -323,7 +328,7 @@ Public Class Form1
             Else 'Disable True Stretched
                 Button1.Text = "Enable True Stretched"
                 If My.Settings.RevertDisplayResolution = True Then
-                    ChangeScreenResolutionNative()
+                    SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                 End If
                 DisableApexStretched()
                 ApexMenuMatchFound = True
@@ -355,13 +360,13 @@ Public Class Form1
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen
                         Label3.Text = "Changing Screen Resolution"
-                        ChangeScreenResolutionStretched()
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
                     End If
                     StretchedEnabled = True
                     EnableFarlight84Stretched()
                     Process.Start(psi)
                     If Label3.Text = "Game is not running!" Then
-                        ChangeScreenResolutionNative()
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                         DisableFarlight84Stretched()
                         Label3.ForeColor = Color.Red
                         Label3.Text = "Game is not running!"
@@ -383,7 +388,7 @@ Public Class Form1
             Else 'Disable True Stretched
                 Button1.Text = "Enable True Stretched"
                 If My.Settings.RevertDisplayResolution = True Then
-                    ChangeScreenResolutionNative()
+                    SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                 End If
                 DisableFarlight84Stretched()
                 Label3.ForeColor = Color.Green
@@ -413,13 +418,13 @@ Public Class Form1
                     If My.Settings.SetDisplayResolution = True Then
                         ' Change the resolution of the screen
                         Label3.Text = "Changing Screen Resolution"
-                        ChangeScreenResolutionStretched()
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
                     End If
                     StretchedEnabled = True
                     EnableFortniteStretched()
                     Process.Start(psi)
                     If Label3.Text = "Game is not running!" Then
-                        ChangeScreenResolutionNative()
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                         DisableFortniteStretched()
                         Label3.ForeColor = Color.Red
                         Label3.Text = "Game is not running!"
@@ -440,7 +445,7 @@ Public Class Form1
             Else 'Disable True Stretched
                 Button1.Text = "Enable True Stretched"
                 If My.Settings.RevertDisplayResolution = True Then
-                    ChangeScreenResolutionNative()
+                    SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                 End If
                 DisableFortniteStretched()
                 Label3.ForeColor = Color.Green
@@ -496,13 +501,13 @@ Public Class Form1
                         Else
                             '-End of Widescreen Fix-
                             Label3.Text = "Changing Screen Resolution"
-                            ChangeScreenResolutionStretched()
+                            SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
                             StretchedEnabled = True
                         End If
                     End If
                     RemoveBorderAndMaximizeValorant()
                     If Label3.Text = "Game is not running!" Then
-                        ChangeScreenResolutionNative()
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                         Label3.ForeColor = Color.Red
                         Label3.Text = "Game is not running!"
                     Else
@@ -535,7 +540,7 @@ Public Class Form1
             Else 'Disable True Stretched
                 Button1.Text = "Enable True Stretched"
                 If My.Settings.RevertDisplayResolution = True Then
-                    ChangeScreenResolutionNative()
+                    SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
                 End If
                 ValorantConfigFileSwitch()
                 Label3.ForeColor = Color.Green
@@ -1397,69 +1402,6 @@ Public Class Form1
         Public dmDisplayFlags As Integer
         Public dmDisplayFrequency As Integer
     End Structure
-
-    Private Sub ChangeScreenResolutionStretched()
-        ' Set the desired screen resolution
-        Dim resolution As String = My.Settings.StretchedResolution
-        Dim dimensions() As String = resolution.Split("x"c)
-
-        Dim width As Integer = Integer.Parse(dimensions(0))
-        Dim height As Integer = Integer.Parse(dimensions(1))
-
-        Dim devMode As New DEVMODE()
-        devMode.dmSize = CShort(Marshal.SizeOf(devMode))
-        devMode.dmPelsWidth = width
-        devMode.dmPelsHeight = height
-        devMode.dmFields = DM_PELSWIDTH Or DM_PELSHEIGHT
-
-        ' Change the screen resolution
-        Me.BeginInvoke(
-        Sub()
-            Dim result As Integer = ChangeDisplaySettings(devMode, 0)
-
-            ' Check if the resolution change was successful
-            If result = 0 Then
-                ' Set status to indicate that the resolution has been changed
-                Label3.ForeColor = Color.Green
-                Label3.Text = "Screen resolution changed successfully!"
-            Else
-                ' Set status to indicate error message if the resolution change failed
-                Label3.ForeColor = Color.Red
-                Label3.Text = "Failed to change screen resolution!"
-            End If
-        End Sub
-    )
-
-    End Sub
-
-    Private Sub ChangeScreenResolutionNative()
-        ' Set the desired screen resolution
-        Dim resolution As String = GetGameMonitor("MaxResolution")
-        Dim dimensions() As String = resolution.Split("x"c)
-
-        Dim width As Integer = Integer.Parse(dimensions(0))
-        Dim height As Integer = Integer.Parse(dimensions(1))
-
-        Dim devMode As New DEVMODE()
-        devMode.dmSize = CShort(Marshal.SizeOf(devMode))
-        devMode.dmPelsWidth = width
-        devMode.dmPelsHeight = height
-        devMode.dmFields = DM_PELSWIDTH Or DM_PELSHEIGHT
-
-        ' Change the screen resolution
-        Me.Invoke(
-        Sub()
-            Dim result As Integer = ChangeDisplaySettings(devMode, 0)
-
-            ' Check if the resolution change was successful
-            If result = 0 Then
-                ' Successful if the resolution change failed
-            Else
-                ' Error message if the resolution change failed
-            End If
-        End Sub
-    )
-    End Sub
 
     Private Sub AutoCloseTimer_Tick(sender As Object, e As EventArgs) Handles AutoCloseTimer.Tick
 
