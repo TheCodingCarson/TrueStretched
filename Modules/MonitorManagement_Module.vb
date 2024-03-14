@@ -406,7 +406,7 @@ Public Module MonitorManagement_Module
             Case "friendlyname"
                 If detailsArray.Length > 1 Then Return detailsArray(1).Replace("FriendlyName: ", "") Else Return "Attribute not found."
             Case "orientation"
-                If detailsArray.Length > 4 Then Return (detailsArray(4).Replace("Resolution: ", "")).Trim Else Return "Attribute not found."
+                If detailsArray.Length > 4 Then Return (detailsArray(4).Replace("Orientation: ", "")).Trim Else Return "Attribute not found."
             Case "resolution"
                 If detailsArray.Length > 5 Then Return (detailsArray(5).Replace("Resolution: ", "")).Trim Else Return "Attribute not found."
             Case ""
@@ -435,7 +435,8 @@ Public Module MonitorManagement_Module
         If String.IsNullOrEmpty(monitorIdentifier) Then
             targetMonitor = monitors.FirstOrDefault(Function(m) m.IsPrimary)
         Else
-            targetMonitor = monitors.FirstOrDefault(Function(m) m.FriendlyName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
+            targetMonitor = monitors.FirstOrDefault(Function(m) m.DeviceName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
+                                                    m.FriendlyName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
                                                     m.HardwareID.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase))
         End If
 
