@@ -103,6 +103,7 @@ Public Module MonitorManagement_Module
         Public Property FriendlyName As String
         Public Property HardwareID As String
         Public Property Resolution As String
+        Public Property MaxResolution As String
         Public Property Location As String
         Public Property Orientation As String
         Public Property IsPrimary As Boolean
@@ -120,7 +121,8 @@ Public Module MonitorManagement_Module
             .DeviceName = display.DisplayFullName,
             .HardwareID = GetHardwareIDFromRegistry(display.DeviceKey),
             .FriendlyName = display.DeviceName,
-            .Resolution = GetMonitorMaxResolutionFromRegistry(display.DeviceKey),
+            .Resolution = ResolutionFormatted(display),
+            .MaxResolution = GetMonitorMaxResolutionFromRegistry(display.DeviceKey),
             .Location = GetMonitorLocation(display),
             .Orientation = GetMonitorOrientationAsString(display),
             .IsPrimary = display.IsGDIPrimary
@@ -159,6 +161,25 @@ Public Module MonitorManagement_Module
         Return HardwareID
     End Function
 
+    Private Function ResolutionFormatted(CurrentDisplay As Display) As String
+        Dim FormatedResolution As String = String.Empty
+
+        ' Gets All of Displays Settings
+        Dim AllCurrentDisplaySettings As String = (CurrentDisplay.CurrentSetting.Resolution).ToString
+
+        Dim pattern As String = "Width=(.*?), Height=(.*?)\}"
+        Dim match As Match = Regex.Match(AllCurrentDisplaySettings, pattern)
+
+        If match.Success Then
+            Dim widthValue As String = match.Groups(1).Value
+            Dim heightValue As String = match.Groups(2).Value
+            Return $"{widthValue}x{heightValue}"
+        Else
+            Return "Width,Height values not found"
+        End If
+
+    End Function
+
     Private Function GetMonitorMaxResolutionFromRegistry(deviceKey As String) As String
         Dim MaxResolution As String = String.Empty
 
@@ -191,8 +212,8 @@ Public Module MonitorManagement_Module
 
     Private Function GetMonitorLocation(CurrentDisplay As Display)
 
-        ' Gets All of Displays Settings
-        Dim AllCurrentDisplaySettings As String = CurrentDisplay.SavedSetting.ToString
+        ' Gets Resolution from Display Settings
+        Dim AllCurrentDisplaySettings As String = (CurrentDisplay.SavedSetting.Position).ToString
 
         Dim pattern As String = "X=(.*?),Y=(.*?)\}"
         Dim match As Match = Regex.Match(AllCurrentDisplaySettings, pattern)
@@ -258,11 +279,13 @@ Public Module MonitorManagement_Module
                 Return primaryMonitor.HardwareID
             Case "resolution"
                 Return primaryMonitor.Resolution
+            Case "maxresolution"
+                Return primaryMonitor.MaxResolution
             Case ""
                 ' If no attribute is specified, return a formatted string with all details
-                Return $"DeviceName: {primaryMonitor.DeviceName}, FriendlyName: {primaryMonitor.FriendlyName}, " &
-                       $"HardwareID: {primaryMonitor.HardwareID}, " &
-                       $"Resolution: {primaryMonitor.Resolution}, IsPrimary: {primaryMonitor.IsPrimary}"
+                Return $"DeviceName: {primaryMonitor.DeviceName}; FriendlyName: {primaryMonitor.FriendlyName}; " &
+                       $"HardwareID: {primaryMonitor.HardwareID}; Location: {primaryMonitor.Location}; Orientation: {primaryMonitor.Orientation}; " &
+                       $"Resolution: {primaryMonitor.Resolution}; MaxResolution: {primaryMonitor.MaxResolution}; IsPrimary: {primaryMonitor.IsPrimary}"
             Case Else
                 Return $"Unknown attribute: {attribute}."
         End Select
@@ -292,9 +315,9 @@ Public Module MonitorManagement_Module
                     monitorDetails.Add(monitor.Resolution)
                 Case ""
                     ' If no attribute is specified, return a formatted string with all details for each monitor
-                    monitorDetails.Add($"DeviceName: {monitor.DeviceName}, FriendlyName: {monitor.FriendlyName}, " &
-                                   $"HardwareID: {monitor.HardwareID}, Location: {monitor.Location}," &
-                                   $"Resolution: {monitor.Resolution}, IsPrimary: {monitor.IsPrimary}")
+                    monitorDetails.Add($"DeviceName: {monitor.DeviceName}; FriendlyName: {monitor.FriendlyName}; " &
+                             $"HardwareID: {monitor.HardwareID}; Location: {monitor.Location}; Orientation: {monitor.Orientation}; " &
+                             $"Resolution: {monitor.Resolution}; MaxResolution: {monitor.MaxResolution}; IsPrimary: {monitor.IsPrimary}")
                 Case Else
                     monitorDetails.Add($"Unknown attribute: {attribute} for monitor {monitor.DeviceName}.")
             End Select
@@ -316,7 +339,8 @@ Public Module MonitorManagement_Module
     ' <returns>A string containing the requested information for the specified monitor. If the attribute is not found, returns a message indicating the attribute is unknown.</returns>
     Public Function GetMonitorInfo(monitorIdentifier As String, Optional ByVal attribute As String = "") As String
         Dim monitors As List(Of MonitorInfo) = EnumerateMonitors()
-        Dim targetMonitor As MonitorInfo = monitors.FirstOrDefault(Function(m) m.FriendlyName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
+        Dim targetMonitor As MonitorInfo = monitors.FirstOrDefault(Function(m) m.DeviceName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
+                                                                  m.FriendlyName.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase) OrElse
                                                                   m.HardwareID.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase))
 
         If targetMonitor Is Nothing Then
@@ -338,7 +362,7 @@ Public Module MonitorManagement_Module
                 ' If no attribute is specified, return a formatted string with all details
                 Return $"DeviceName: {targetMonitor.DeviceName}; FriendlyName: {targetMonitor.FriendlyName}; " &
                        $"HardwareID: {targetMonitor.HardwareID}; Location: {targetMonitor.Location}; Orientation: {targetMonitor.Orientation}; " &
-                       $"Resolution: {targetMonitor.Resolution}; IsPrimary: {targetMonitor.IsPrimary}"
+                       $"Resolution: {targetMonitor.Resolution}; MaxResolution: {targetMonitor.MaxResolution}; IsPrimary: {targetMonitor.IsPrimary}"
             Case Else
                 Return $"Unknown attribute: {attribute}."
         End Select
@@ -373,8 +397,8 @@ Public Module MonitorManagement_Module
             Case ""
                 ' If no attribute is specified, return a formatted string with all details
                 Return $"DeviceName: {currentMonitor.DeviceName}; FriendlyName: {currentMonitor.FriendlyName}; " &
-                       $"HardwareID: {currentMonitor.HardwareID}; Location: {currentMonitor.Location};" &
-                       $"Resolution: {currentMonitor.Resolution}; IsPrimary: {currentMonitor.IsPrimary}"
+                       $"HardwareID: {currentMonitor.HardwareID}; Location: {currentMonitor.Location}; Orientation: {currentMonitor.Orientation}; " &
+                       $"Resolution: {currentMonitor.Resolution}; MaxResolution: {currentMonitor.MaxResolution}; IsPrimary: {currentMonitor.IsPrimary}"
             Case Else
                 Return $"Unknown attribute: {attribute}."
         End Select
@@ -399,7 +423,7 @@ Public Module MonitorManagement_Module
         ' Split the details that are saved in a delimited format
         Dim detailsArray As String() = gameMonitorDetails.Split(";"c)
 
-        ' Structure: [0] DeviceName, [1] FriendlyName, [4] Orientation, [5] Resolution
+        ' Structure: [0] DeviceName, [1] FriendlyName, [4] Orientation, [5] Resolution, [6] MaxResolution
         Select Case attribute.ToLower()
             Case "devicename"
                 If detailsArray.Length > 0 Then Return detailsArray(0).Replace("DeviceName: ", "") Else Return "Attribute not found."
@@ -409,6 +433,8 @@ Public Module MonitorManagement_Module
                 If detailsArray.Length > 4 Then Return (detailsArray(4).Replace("Orientation: ", "")).Trim Else Return "Attribute not found."
             Case "resolution"
                 If detailsArray.Length > 5 Then Return (detailsArray(5).Replace("Resolution: ", "")).Trim Else Return "Attribute not found."
+            Case "maxresolution"
+                If detailsArray.Length > 6 Then Return (detailsArray(6).Replace("MaxResolution: ", "")).Trim Else Return "Attribute not found."
             Case ""
                 Return gameMonitorDetails ' Return all details if no specific attribute is requested
             Case Else
@@ -702,7 +728,7 @@ Public Module MonitorManagement_Module
             For Each monitor In monitors
                 infoToSave &= $"DeviceName: {monitor.DeviceName}; FriendlyName: {monitor.FriendlyName}; " &
                           $"HardwareID: {monitor.HardwareID}; Location: {monitor.Location}; Orientation: {monitor.Orientation}; " &
-                          $"Resolution: {monitor.Resolution}; IsPrimary: {monitor.IsPrimary}" & Environment.NewLine
+                          $"Resolution: {monitor.Resolution}; MaxResolution: {monitor.MaxResolution}; IsPrimary: {monitor.IsPrimary}" & Environment.NewLine
             Next
         Else
             ' Find and save details for a specified monitor
@@ -730,7 +756,7 @@ Public Module MonitorManagement_Module
                 Case "all"
                     infoToSave = $"DeviceName: {targetMonitor.DeviceName}; FriendlyName: {targetMonitor.FriendlyName}; " &
                              $"HardwareID: {targetMonitor.HardwareID}; Location: {targetMonitor.Location}; Orientation: {targetMonitor.Orientation}; " &
-                             $"Resolution: {targetMonitor.Resolution}; IsPrimary: {targetMonitor.IsPrimary}"
+                             $"Resolution: {targetMonitor.Resolution}; MaxResolution: {targetMonitor.MaxResolution}; IsPrimary: {targetMonitor.IsPrimary}"
                 Case Else
                     MessageBox.Show($"Unknown attribute: {attribute}.")
                     Return
