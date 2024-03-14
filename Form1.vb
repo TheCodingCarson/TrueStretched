@@ -9,7 +9,6 @@ Imports Emgu.CV
 Imports Emgu.CV.CvEnum
 Imports Emgu.CV.Structure
 Imports System.Reflection
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class Form1
     Private Declare Function EnumWindows Lib "user32.dll" (lpEnumFunc As EnumWindowCallback, lParam As IntPtr) As Boolean
@@ -82,7 +81,7 @@ Public Class Form1
         End If
 
         'Check If It's A Dev Build
-        If My.Settings.DevBuild = True Then
+        If DevBuild = True Then
             DevMenu.Show()
             Me.Text = "True Stretched (Dev)"
         ElseIf My.Settings.BetaBuild = True Then
@@ -97,10 +96,7 @@ Public Class Form1
         End If
 
         'Check to see if opening long already enabled
-        Dim MainScreen As Screen = Screen.PrimaryScreen
-        Dim CurrentResolution As Size = MainScreen.Bounds.Size
-        Dim CurrentResolutionConverted As String = CurrentResolution.Width & "x" & CurrentResolution.Height
-        If CurrentResolutionConverted = My.Settings.StretchedResolution Then
+        If GetMonitorResolution(, GetGameMonitor("DeviceName")) = My.Settings.StretchedResolution Then
             StretchedEnabled = True
             Button1.Text = "Disable True Stretched"
         End If
@@ -200,7 +196,7 @@ Public Class Form1
 
         'Check for Updates on Startup (Make Sure Application Has Network Access)
         If My.Settings.CheckForUpdateOnStart = True Then
-            If My.Settings.DevBuild = False Then
+            If DevBuild = False Then
                 If InternetConnection() = True Then
                     CheckForUpdates()
                 End If
@@ -218,15 +214,15 @@ Public Class Form1
 
         ' Iterate through all screens to check if the form is fully visible on any screen
         For Each scr In Screen.AllScreens
-                ' Check if the formRectangle is within the screen's bounds considering the fixed size
-                If scr.Bounds.IntersectsWith(formRectangle) Then
-                    ' Further check if the form's entire size is within the screen's working area
-                    If scr.WorkingArea.Contains(formRectangle) Then
-                        isFormFullyVisible = True
-                        Exit For
-                    End If
+            ' Check if the formRectangle is within the screen's bounds considering the fixed size
+            If scr.Bounds.IntersectsWith(formRectangle) Then
+                ' Further check if the form's entire size is within the screen's working area
+                If scr.WorkingArea.Contains(formRectangle) Then
+                    isFormFullyVisible = True
+                    Exit For
                 End If
-            Next
+            End If
+        Next
 
         ' If the form is fully visible on a screen, save its location; otherwise, don't save
         If isFormFullyVisible Then
@@ -234,6 +230,15 @@ Public Class Form1
             My.Settings.Save()
         Else
             'If Form1 isn't fully visible don't save location
+        End If
+
+    End Sub
+
+    Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles Me.Shown ' Code to run after Form1 has loaded fully
+
+        ' Auto Disable True Stretched if command line argument exists
+        If AutoDisable = True Then
+            Button1.PerformClick()
         End If
 
     End Sub
@@ -1533,7 +1538,7 @@ Public Class Form1
                     ' "Apex Legends" window is closed, Unminimize Form1 And Change Label3
                     Label3.Text = "Apex Closed, Unminimized"
                     Me.WindowState = FormWindowState.Normal
-                    If My.Settings.DevBuild = True Then
+                    If DevBuild = True Then
                         DevMenu.Show()
                     End If
                     CheckWindowTimer.Stop()
@@ -1542,7 +1547,7 @@ Public Class Form1
                 ' "Apex Legends" window is not found, Unminimize Form1 And Change Label3
                 Label3.Text = "Apex Closed, Unminimized"
                 Me.WindowState = FormWindowState.Normal
-                If My.Settings.DevBuild = True Then
+                If DevBuild = True Then
                     DevMenu.Show()
                 End If
                 CheckWindowTimer.Stop()
@@ -1579,7 +1584,7 @@ Public Class Form1
                     ' "Fortnite" window is closed, Unminimize Form1 And Change Label3
                     Label3.Text = "Fortnite Closed, Unminimized"
                     Me.WindowState = FormWindowState.Normal
-                    If My.Settings.DevBuild = True Then
+                    If DevBuild = True Then
                         DevMenu.Show()
                     End If
                     CheckWindowTimer.Stop()
@@ -1588,7 +1593,7 @@ Public Class Form1
                 ' "Fortnite" window is not found, Unminimize Form1 And Change Label3
                 Label3.Text = "Fortnite Closed, Unminimized"
                 Me.WindowState = FormWindowState.Normal
-                If My.Settings.DevBuild = True Then
+                If DevBuild = True Then
                     DevMenu.Show()
                 End If
                 CheckWindowTimer.Stop()
@@ -1625,7 +1630,7 @@ Public Class Form1
                     ' "VALORANT" window is closed, Unminimize Form1 And Change Label3
                     Label3.Text = "Valorant Closed, Unminimized"
                     Me.WindowState = FormWindowState.Normal
-                    If My.Settings.DevBuild = True Then
+                    If DevBuild = True Then
                         DevMenu.Show()
                     End If
                     CheckWindowTimer.Stop()
@@ -1634,7 +1639,7 @@ Public Class Form1
                 ' "VALORANT" window is not found, Unminimize Form1 And Change Label3
                 Label3.Text = "Valorant Closed, Unminimized"
                 Me.WindowState = FormWindowState.Normal
-                If My.Settings.DevBuild = True Then
+                If DevBuild = True Then
                     DevMenu.Show()
                 End If
                 CheckWindowTimer.Stop()
