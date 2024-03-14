@@ -63,6 +63,22 @@ Public Class SettingsForm
         TextBox1.BackColor = Color.White
         TextBox1.ForeColor = Color.Black
 
+        'Tooltips for options
+        Dim toolTip1 As New Windows.Forms.ToolTip With {
+            .AutoPopDelay = 5000,
+            .InitialDelay = 1000,
+            .ReshowDelay = 500,
+            .ShowAlways = True
+        }
+
+        If My.Settings.SelectedGame = "Valorant" Then
+            toolTip1.SetToolTip(Me.CheckBox1, "Will Always Be Applied If Widescreen Fix Is Enabled")
+            toolTip1.SetToolTip(Me.CheckBox2, "Will Not Be Applied If Widescreen Fix Is Enabled")
+        Else
+
+        End If
+
+
         ' Add event handlers
         AddHandler ComboBox2.Leave, AddressOf ComboBox2_Leave
         AddHandler ComboBox3.Enter, AddressOf ComboBox3_Enter
