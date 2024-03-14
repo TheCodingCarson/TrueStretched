@@ -37,8 +37,7 @@ Public Class SettingsForm
         End If
 
         ' Ensure Native & Stretched Resolutions Don't match (Fixes "Disable True Stretched" being the only option)
-        If GetGameMonitor("Resolution") = My.Settings.StretchedResolution Then
-            TextBox1.Text = GetGameMonitor("Resolution")
+        If My.Settings.StretchedResolution = GetGameMonitor("MaxResolution") Then
             ComboBox2.Text = "1440x1080"
             My.Settings.StretchedResolution = "1440x1080"
             My.Settings.Save()
@@ -156,7 +155,7 @@ Public Class SettingsForm
         End If
 
         ' Update TextBox1 Native Resolution Display
-        TextBox1.Text = GetGameMonitor("Resolution")
+        TextBox1.Text = GetGameMonitor("MaxResolution")
 
         ' Set FormLoading to False To Allow Gaming Monitor to be set by user
         FormLoading = False
@@ -317,7 +316,7 @@ Public Class SettingsForm
         My.Settings.GameMonitor = GetPrimaryMonitor()
 
         ' GetPrimaryMonitor("Resolution") to update primary monitor's resolution correctly.
-        TextBox1.Text = GetPrimaryMonitor("Resolution")
+        TextBox1.Text = GetPrimaryMonitor("MaxResolution")
 
         ' Save settings
         My.Settings.Save()
@@ -339,7 +338,7 @@ Public Class SettingsForm
             My.Settings.Save()
 
             ' Update Native Display Resolution Textbox
-            TextBox1.Text = GetGameMonitor("Resolution")
+            TextBox1.Text = GetGameMonitor("MaxResolution")
 
             ' Restarts Monitor Highlight Overlay (Otherwise it gets stuck)
             HighlightMonitor(False)

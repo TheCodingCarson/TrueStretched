@@ -1434,7 +1434,7 @@ Public Class Form1
 
     Private Sub ChangeScreenResolutionNative()
         ' Set the desired screen resolution
-        Dim resolution As String = GetGameMonitor("Resolution")
+        Dim resolution As String = GetGameMonitor("MaxResolution")
         Dim dimensions() As String = resolution.Split("x"c)
 
         Dim width As Integer = Integer.Parse(dimensions(0))
