@@ -237,7 +237,7 @@ Public Class Form1
     Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles Me.Shown ' Code to run after Form1 has loaded fully
 
         ' Auto Disable True Stretched if command line argument exists
-        If AutoDisable = True Then
+        If AutoDisable = True AndAlso StretchedEnabled = True Then
             Button1.PerformClick()
         End If
 
