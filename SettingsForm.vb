@@ -64,7 +64,7 @@ Public Class SettingsForm
         TextBox1.ForeColor = Color.Black
 
         'Tooltips for options
-        Dim toolTip1 As New Windows.Forms.ToolTip With {
+        Dim toolTip1 As New System.Windows.Forms.ToolTip With {
             .AutoPopDelay = 5000,
             .InitialDelay = 1000,
             .ReshowDelay = 500,

@@ -23,12 +23,12 @@ Partial Class UpdateAvailable
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(UpdateAvailable))
-        Label1 = New Windows.Forms.Label()
-        Label2 = New Windows.Forms.Label()
-        RichTextBox1 = New Windows.Forms.RichTextBox()
-        Button1 = New Windows.Forms.Button()
-        Button2 = New Windows.Forms.Button()
-        ProgressBar1 = New Windows.Forms.ProgressBar()
+        Label1 = New System.Windows.Forms.Label()
+        Label2 = New System.Windows.Forms.Label()
+        RichTextBox1 = New System.Windows.Forms.RichTextBox()
+        Button1 = New System.Windows.Forms.Button()
+        Button2 = New System.Windows.Forms.Button()
+        ProgressBar1 = New System.Windows.Forms.ProgressBar()
         SuspendLayout()
         ' 
         ' Label1
@@ -55,7 +55,7 @@ Partial Class UpdateAvailable
         RichTextBox1.Location = New Point(12, 61)
         RichTextBox1.Name = "RichTextBox1"
         RichTextBox1.ReadOnly = True
-        RichTextBox1.ScrollBars = Windows.Forms.RichTextBoxScrollBars.ForcedVertical
+        RichTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical
         RichTextBox1.Size = New Size(276, 96)
         RichTextBox1.TabIndex = 2
         RichTextBox1.Text = ""
@@ -89,7 +89,7 @@ Partial Class UpdateAvailable
         ' UpdateAvailable
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = Windows.Forms.AutoScaleMode.Font
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         ClientSize = New Size(300, 191)
         Controls.Add(ProgressBar1)
         Controls.Add(Button2)
@@ -97,7 +97,7 @@ Partial Class UpdateAvailable
         Controls.Add(RichTextBox1)
         Controls.Add(Label2)
         Controls.Add(Label1)
-        FormBorderStyle = Windows.Forms.FormBorderStyle.FixedSingle
+        FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
@@ -107,10 +107,10 @@ Partial Class UpdateAvailable
         PerformLayout()
     End Sub
 
-    Friend WithEvents Label1 As Windows.Forms.Label
-    Friend WithEvents Label2 As Windows.Forms.Label
-    Friend WithEvents RichTextBox1 As Windows.Forms.RichTextBox
-    Friend WithEvents Button1 As Windows.Forms.Button
-    Friend WithEvents Button2 As Windows.Forms.Button
-    Friend WithEvents ProgressBar1 As Windows.Forms.ProgressBar
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents RichTextBox1 As System.Windows.Forms.RichTextBox
+    Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents ProgressBar1 As System.Windows.Forms.ProgressBar
 End Class

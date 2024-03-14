@@ -23,7 +23,7 @@ Partial Class Highlight_Overlay
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(Highlight_Overlay))
-        Panel1 = New Windows.Forms.Panel()
+        Panel1 = New System.Windows.Forms.Panel()
         SuspendLayout()
         ' 
         ' Panel1
@@ -38,25 +38,25 @@ Partial Class Highlight_Overlay
         ' Highlight_Overlay
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = Windows.Forms.AutoScaleMode.Font
-        AutoValidate = Windows.Forms.AutoValidate.Disable
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        AutoValidate = System.Windows.Forms.AutoValidate.Disable
         BackColor = Color.Cyan
         ClientSize = New Size(350, 200)
         ControlBox = False
         Controls.Add(Panel1)
         Enabled = False
-        FormBorderStyle = Windows.Forms.FormBorderStyle.None
+        FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "Highlight_Overlay"
         ShowInTaskbar = False
-        SizeGripStyle = Windows.Forms.SizeGripStyle.Hide
-        StartPosition = Windows.Forms.FormStartPosition.Manual
+        SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
+        StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Text = "True Stretched - Monitor Highlight"
         TransparencyKey = Color.Black
         ResumeLayout(False)
     End Sub
 
-    Friend WithEvents Panel1 As Windows.Forms.Panel
+    Friend WithEvents Panel1 As System.Windows.Forms.Panel
 End Class

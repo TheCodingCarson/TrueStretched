@@ -25,12 +25,12 @@ Partial Class DevMenu
         components = New Container()
         Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(DevMenu))
         WindowLocationTimer = New System.Windows.Forms.Timer(components)
-        Button1 = New Windows.Forms.Button()
-        Button2 = New Windows.Forms.Button()
-        TestButton1 = New Windows.Forms.Button()
-        TestButton2 = New Windows.Forms.Button()
-        TestButtonUpdateAvailable = New Windows.Forms.Button()
-        TestButton3 = New Windows.Forms.Button()
+        Button1 = New System.Windows.Forms.Button()
+        Button2 = New System.Windows.Forms.Button()
+        TestButton1 = New System.Windows.Forms.Button()
+        TestButton2 = New System.Windows.Forms.Button()
+        TestButtonUpdateAvailable = New System.Windows.Forms.Button()
+        TestButton3 = New System.Windows.Forms.Button()
         SuspendLayout()
         ' 
         ' WindowLocationTimer
@@ -94,7 +94,7 @@ Partial Class DevMenu
         ' DevMenu
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = Windows.Forms.AutoScaleMode.Font
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(29), CByte(29), CByte(29))
         ClientSize = New Size(160, 533)
         Controls.Add(TestButton3)
@@ -103,7 +103,7 @@ Partial Class DevMenu
         Controls.Add(TestButton1)
         Controls.Add(Button2)
         Controls.Add(Button1)
-        FormBorderStyle = Windows.Forms.FormBorderStyle.FixedSingle
+        FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
@@ -112,11 +112,11 @@ Partial Class DevMenu
         ResumeLayout(False)
     End Sub
 
-    Friend WithEvents WindowLocationTimer As Windows.Forms.Timer
-    Friend WithEvents Button1 As Windows.Forms.Button
-    Friend WithEvents Button2 As Windows.Forms.Button
-    Friend WithEvents TestButton1 As Windows.Forms.Button
-    Friend WithEvents TestButton2 As Windows.Forms.Button
-    Friend WithEvents TestButtonUpdateAvailable As Windows.Forms.Button
-    Friend WithEvents TestButton3 As Windows.Forms.Button
+    Friend WithEvents WindowLocationTimer As System.Windows.Forms.Timer
+    Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents TestButton1 As System.Windows.Forms.Button
+    Friend WithEvents TestButton2 As System.Windows.Forms.Button
+    Friend WithEvents TestButtonUpdateAvailable As System.Windows.Forms.Button
+    Friend WithEvents TestButton3 As System.Windows.Forms.Button
 End Class

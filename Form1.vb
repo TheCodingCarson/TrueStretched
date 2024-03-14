@@ -182,7 +182,7 @@ Public Class Form1
         Label6.BackColor = Color.Transparent
 
         'Tooltips for Game Icons
-        Dim toolTip1 As New Windows.Forms.ToolTip With {
+        Dim toolTip1 As New System.Windows.Forms.ToolTip With {
             .AutoPopDelay = 5000,
             .InitialDelay = 1000,
             .ReshowDelay = 500,
