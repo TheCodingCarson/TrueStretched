@@ -287,7 +287,7 @@ Public Class Form1
     Private Async Sub Button1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Button1.Click
 
         ' Get Stretched and Native Resoultion in and format for needed
-        Dim StretchedResolution = ParseResolution(GetGameMonitor("Resolution"))
+        Dim StretchedResolution = ParseResolution(My.Settings.StretchedResolution)
         Dim NativeResolution = ParseResolution(GetGameMonitor("MaxResolution"))
 
 
@@ -480,6 +480,7 @@ Public Class Form1
                     valstartInfo.WorkingDirectory = valinstallLocation
                     valstartInfo.Arguments = "--launch-product=valorant --launch-patchline=live"
                     valstartInfo.WindowStyle = ProcessWindowStyle.Normal
+                    valstartInfo.UseShellExecute = True
                     Label3.Text = "Starting Valorant"
                     Process.Start(valstartInfo)
 
