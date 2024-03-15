@@ -488,8 +488,8 @@ Public Class Form1
                     Button1.Text = "Enabling True Stretched"
                     Button1.Enabled = False
 
-                    ' 5 Second Countdown Before Continuing
-                    Await CountdownTimer(15, True, True)
+                    ' 20 Second Countdown Before Continuing
+                    Await CountdownTimer(20, True, True)
 
                     ' Renable Main Button
                     Button1.Enabled = True
