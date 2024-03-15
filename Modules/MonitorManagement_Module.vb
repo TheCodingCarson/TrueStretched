@@ -617,27 +617,29 @@ Public Module MonitorManagement_Module
             Return
         End If
 
-        Dim devMode As New DEVMODE With {
+        Dim devMode As DEVMODE = New DEVMODE With {
             .dmSize = CShort(Marshal.SizeOf(GetType(DEVMODE)))
         }
 
-        ' Fetch the current settings before modifying
-        If EnumDisplaySettings(targetMonitor.DeviceName, ENUM_CURRENT_SETTINGS, devMode) Then
-            devMode.dmPelsWidth = width
-            devMode.dmPelsHeight = height
-            devMode.dmFields = DM_PELSWIDTH Or DM_PELSHEIGHT
+        ' Adjust the DeviceName to use the correct format for EnumDisplaySettings and ChangeDisplaySettingsEx
+        Dim deviceNameAdjusted As String = targetMonitor.DeviceName.Split("\Monitor")(0)
 
-            ' Apply the new settings
-            Dim result As Integer = ChangeDisplaySettingsEx(targetMonitor.DeviceName, devMode, IntPtr.Zero, CDS_UPDATEREGISTRY, IntPtr.Zero)
-            If result = DISP_CHANGE_SUCCESSFUL Then
-                ' Resolution change was successful.
-                MessageBox.Show($"Resolution changed successfully to {width}x{height} for monitor: {monitorIdentifier}")
-            Else
-                ' Handle potential failure here
-                MessageBox.Show($"Failed to change resolution for monitor: {monitorIdentifier}. Error code: {result}")
-            End If
+        ' Fetch the current settings before modifying
+        If EnumDisplaySettings(deviceNameAdjusted, ENUM_CURRENT_SETTINGS, devMode) = False Then
+            MessageBox.Show("Failed to retrieve current display settings.")
+            Return
+        End If
+
+        devMode.dmPelsWidth = width
+        devMode.dmPelsHeight = height
+        devMode.dmFields = DM_PELSWIDTH Or DM_PELSHEIGHT
+
+        ' Apply the new settings
+        Dim result As Integer = ChangeDisplaySettingsEx(deviceNameAdjusted, devMode, IntPtr.Zero, CDS_UPDATEREGISTRY, IntPtr.Zero)
+        If result = DISP_CHANGE_SUCCESSFUL Then
+
         Else
-            Throw New InvalidOperationException("Failed to retrieve current display settings.")
+            MessageBox.Show($"Failed to change resolution for monitor: {monitorIdentifier}. Error code: {result}")
         End If
     End Sub
 
