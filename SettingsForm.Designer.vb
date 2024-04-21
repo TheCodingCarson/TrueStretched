@@ -49,6 +49,7 @@ Partial Class SettingsForm
         GroupBox5 = New GroupBox()
         ComboBox4 = New ComboBox()
         Label8 = New Label()
+        Label9 = New Label()
         GroupBox1.SuspendLayout()
         GroupBox2.SuspendLayout()
         GroupBox3.SuspendLayout()
@@ -244,7 +245,7 @@ Partial Class SettingsForm
         ' Label7
         ' 
         Label7.AutoSize = True
-        Label7.Font = New Font("Segoe UI", 7.5F, FontStyle.Regular, GraphicsUnit.Point)
+        Label7.Font = New Font("Segoe UI", 7.5F)
         Label7.Location = New Point(17, 76)
         Label7.Name = "Label7"
         Label7.Size = New Size(243, 12)
@@ -298,12 +299,23 @@ Partial Class SettingsForm
         Label8.TabIndex = 0
         Label8.Text = "Main GPU:"
         ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.Cursor = Cursors.Hand
+        Label9.Location = New Point(190, 2)
+        Label9.Name = "Label9"
+        Label9.Size = New Size(95, 15)
+        Label9.TabIndex = 6
+        Label9.Text = "Open Log Folder"
+        ' 
         ' SettingsForm
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.Control
         ClientSize = New Size(300, 533)
+        Controls.Add(Label9)
         Controls.Add(GroupBox5)
         Controls.Add(GroupBox4)
         Controls.Add(GroupBox3)
@@ -326,6 +338,7 @@ Partial Class SettingsForm
         GroupBox5.ResumeLayout(False)
         GroupBox5.PerformLayout()
         ResumeLayout(False)
+        PerformLayout()
     End Sub
 
     Friend WithEvents GroupBox1 As GroupBox
@@ -352,4 +365,5 @@ Partial Class SettingsForm
     Friend WithEvents Label8 As Label
     Friend WithEvents CheckBox5 As CheckBox
     Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents Label9 As Label
 End Class

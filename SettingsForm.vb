@@ -1,6 +1,6 @@
-﻿Imports System.Reflection
+﻿Imports System.IO
+Imports System.Reflection
 Imports System.Windows.Forms
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class SettingsForm
     Dim FormLoading As Boolean = True
@@ -402,4 +402,24 @@ Public Class SettingsForm
         UpdateAvailable.Show()
     End Sub
 
+    Private Sub Label9_Click(sender As Object, e As EventArgs) Handles Label9.Click
+        Dim appDataTrueStretchedPath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "True Stretched")
+
+        ' Open Folder In Appdata\Local containing log file
+        Try
+            ' Check if the directory exists
+            If System.IO.Directory.Exists(appDataTrueStretchedPath) Then
+                Process.Start("explorer.exe", appDataTrueStretchedPath)
+            Else
+                ' Log Foldor doesn't exist
+                Console.WriteLine($"Log Folder Directory Doesn't exist: {appDataTrueStretchedPath}")
+                TrueLog("Error", $"Log Folder Directory Doesn't exist: {appDataTrueStretchedPath}")
+            End If
+        Catch ex As Exception
+            ' Log Error opening Appdata Log Folder Directory
+            Console.WriteLine($"Error Opening Log Folder: {ex.Message}")
+            TrueLog("Error", $"Error Opening Log Folder: {ex.Message}")
+        End Try
+
+    End Sub
 End Class
