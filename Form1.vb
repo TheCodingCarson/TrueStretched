@@ -101,18 +101,6 @@ Public Class Form1
             Button1.Text = "Disable True Stretched"
         End If
 
-        'Load GPU Guide
-        If GPU = "Nvidia GPU" Then
-            GroupBox2.Text = "Nvidia Guide"
-        ElseIf GPU = "Amd GPU" Then
-            GroupBox2.Text = "Amd Guide"
-        ElseIf GPU = "Intel GPU" Then
-            GroupBox2.Text = "Intel Guide"
-        Else
-            GPU = "Nvidia GPU"
-            GroupBox2.Text = "Nvidia Guide"
-        End If
-
         'Load Last Selected Game & Guide
         Label4.Location = My.Settings.GameLabelLocation
         Label4.Text = Game
@@ -121,36 +109,18 @@ Public Class Form1
             GroupBox1.Text = "Apex Guide"
             LinkLabel1.Location = New Point(0, 65)
             LinkLabel1.Text = "https://TrueStretched.com/ApexLegends"
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
         ElseIf Game = "Farlight 84" Then 'Settings For Farlight 84
             Me.BackgroundImage = My.Resources.Farlight84_Background
             GroupBox1.Text = "Farlight 84 Guide"
             LinkLabel1.Location = New Point(6, 65)
             LinkLabel1.Text = "https://TrueStretched.com/Farlight84"
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
         ElseIf Game = "Fortnite" Then 'Settings For Fortnite
             Me.BackgroundImage = My.Resources.Fortnight_Background
             GroupBox1.Text = "Fortnite Guide"
             LinkLabel1.Location = New Point(6, 65)
             LinkLabel1.Text = "https://TrueStretched.com/Fortnite"
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
         ElseIf Game = "Valorant" Then 'Settings For Valorant
             Me.BackgroundImage = My.Resources.Valorant_Background
@@ -164,21 +134,21 @@ Public Class Form1
                 Button1.Text = "Enable Widescreen Fix"
             End If
             '-End of Valorant Widescreen Fix
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
         End If
 
         ' Set the groupbox backgrounds color to black with translucency
         Dim translucentBlack As Color = Color.FromArgb(128, 29, 29, 29)
         GroupBox1.BackColor = translucentBlack
+        GroupBox3.BackColor = translucentBlack
         Label5.BackColor = Color.Transparent
         LinkLabel1.BackColor = Color.Transparent
-        GroupBox2.BackColor = translucentBlack
+        WidescreenFixCheckBox.BackColor = Color.Transparent
+        Label7.BackColor = Color.Transparent
+
+        '-Valorant Delayed Stretching Fix Checkbox
+        DelayValSwapCheckBox.Checked = My.Settings.ValorantDelayStretchFix
+        DelayValSwapCheckBox.BackColor = Color.Transparent
         Label6.BackColor = Color.Transparent
 
         'Tooltips for Game Icons
@@ -231,6 +201,9 @@ Public Class Form1
         Else
             'If Form1 isn't fully visible don't save location
         End If
+
+        ' Send Closing Log Message
+        TrueLog("Close", "--True Stretched Closing--")
 
     End Sub
 
@@ -293,12 +266,6 @@ Public Class Form1
 
         '---Apex Legends Mode Code Starts---
         If Game = "Apex Legends" Then
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
@@ -341,12 +308,6 @@ Public Class Form1
 
             '---Farlight 84 Mode Code Starts---
         ElseIf Game = "Farlight 84" Then
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
@@ -399,12 +360,6 @@ Public Class Form1
 
             '---Fortnite Mode Code Starts---
         ElseIf Game = "Fortnite" Then
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
@@ -456,18 +411,16 @@ Public Class Form1
 
             '---Valorant Mode Code Starts---
         ElseIf Game = "Valorant" Then
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
+
+                ' Log Valorant Start of Enabling Stretched to File
+                TrueLog("Info", "Enabling Valorant Stretched...")
 
                 CheckForWindow("VALORANT")
                 If IsWindowFound = False Then
                     ' Switch Config Files For Stretched
+                    TrueLog("Info", "Valorant isn't running proceeding")
                     Label3.Text = "Switching Valorant Config"
                     ValorantConfigFileSwitch()
 
@@ -475,78 +428,132 @@ Public Class Form1
                     Dim valstartInfo As New ProcessStartInfo()
                     Dim valinstallLocation As String = FindInstallLocation("Valorant")
                     Dim valexeLocation As String = valinstallLocation + "\RiotClientServices.exe"
-                    ' Launch Valorant
                     valstartInfo.FileName = valexeLocation
                     valstartInfo.WorkingDirectory = valinstallLocation
                     valstartInfo.Arguments = "--launch-product=valorant --launch-patchline=live"
                     valstartInfo.WindowStyle = ProcessWindowStyle.Normal
                     valstartInfo.UseShellExecute = True
                     Label3.Text = "Starting Valorant"
-                    Process.Start(valstartInfo)
 
-                    ' Disable Enable Button Long Starting Valorant
-                    Button1.Text = "Enabling True Stretched"
-                    Button1.Enabled = False
+                    ' Launch Valorant
+                    Dim proc As Process = Nothing
+                    proc = Process.Start(valstartInfo)
 
-                    ' 20 Second Countdown Before Continuing
-                    Await CountdownTimer(20, True, True)
+                    ' Check if Valorant started successfully
+                    If proc IsNot Nothing AndAlso Not proc.HasExited Then
+                        ' Log Valorant Successful Start to File
+                        TrueLog("Info", "Valorant Started Successfully")
 
-                    ' Renable Main Button
-                    Button1.Enabled = True
+                        ' Disable Enable Button Long Starting Valorant
+                        Button1.Text = "Enabling True Stretched"
+                        Button1.Enabled = False
 
-                    If My.Settings.SetDisplayResolution = True Then
-                        ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
-                        '-Widescreen Fix-
-                        If WidescreenFixCheckBox.Checked = True Then
-                            ' Skip changing resolution if Widescreen Fix is enabled
+                        If DelayValSwapCheckBox.Checked Then
+                            ' 40 Second Countdown Before Continuing
+                            TrueLog("Info", "Valorant Delayed Stretching Enabled")
+                            Await CountdownTimer(40, True, True)
                         Else
-                            '-End of Widescreen Fix-
-                            Label3.Text = "Changing Screen Resolution"
-                            SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
-                            StretchedEnabled = True
-                        End If
-                    End If
-                    RemoveBorderAndMaximizeValorant()
-                    If Label3.Text = "Game is not running!" Then
-                        SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
-                        Label3.ForeColor = Color.Red
-                        Label3.Text = "Game is not running!"
-                    Else
-                        Label3.ForeColor = Color.Green
-                        If WidescreenFixCheckBox.Checked = True Then
-                            ' Set success label depending on enabling "True Stretched Res" or "Widescreen Fix"
-                            Label3.Text = "Successfully enabled Widescreen Fix"
-                        Else
-                            Label3.Text = "Successfully enabled True Stretched Res"
+                            ' 15 Second Countdown Before Continuing
+                            TrueLog("Info", "Valorant Delayed Stretching Disabled")
+                            Await CountdownTimer(15, True, True)
                         End If
 
-                        If WidescreenFixCheckBox.Checked = True Then
-                            'If Widescreen Fix is enabled only close after Enabling Widescreen fix (Auto Minimize makes no sense for Widescreen Fix)
-                            AutoCloseTimer.Start()
-                        Else
-                            If My.Settings.AutoClose = True Then
-                                AutoCloseTimer.Start()
-                            ElseIf My.Settings.AutoMinimize = True Then
-                                AutoMinimizeTimer.Start()
+                        ' Renable Main Button
+                        Button1.Enabled = True
+
+                        If My.Settings.SetDisplayResolution = True Then
+                            ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
+                            '-Widescreen Fix-
+                            If WidescreenFixCheckBox.Checked = True Then
+                                ' Skip changing resolution if Widescreen Fix is enabled
+                                ' Log to File
+                                TrueLog("Info", "Valorant Skipping resolution change, Widescreen Fix is enabled")
+                            Else
+                                '-End of Widescreen Fix-
+                                Label3.Text = "Changing Screen Resolution"
+
+                                ' Log to File
+                                TrueLog("Info", "Changing Monitor Resolution...")
+                                SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
+                                StretchedEnabled = True
+                                TrueLog("Info", "Changing Monitor Completed")
                             End If
                         End If
+                        ' Switch to True Stretched Valorant - Remove Black Bars & Log to File
+                        TrueLog("Info", "Stretching Valorant...")
+                        RemoveBorderAndMaximizeValorant()
+                        If Label3.Text = "Game is not running!" Then
+                            SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
+                            Label3.ForeColor = Color.Red
+                            Label3.Text = "Game is not running!"
 
+                            ' Log Error
+                            TrueLog("Error", "Stretching Valorant Failed - Game is not running!")
+                        Else
+                            Label3.ForeColor = Color.Green
+                            If WidescreenFixCheckBox.Checked = True Then
+                                ' Set success label depending on enabling "True Stretched Res" or "Widescreen Fix"
+                                Label3.Text = "Successfully enabled Widescreen Fix"
+
+                                ' Log Stretch Success
+                                TrueLog("Info", "Successfully enabled Widescreen Fix - Stretching Complete!")
+                            Else
+                                Label3.Text = "Successfully enabled True Stretched Res"
+
+                                ' Log Stretch Success
+                                TrueLog("Info", "Successfully enabled True Stretched Res - Stretching Complete!")
+                            End If
+
+                            If WidescreenFixCheckBox.Checked = True Then
+                                'If Widescreen Fix is enabled only close after Enabling Widescreen fix (Auto Minimize makes no sense for Widescreen Fix)
+                                AutoCloseTimer.Start()
+                            Else
+                                If My.Settings.AutoClose = True Then
+                                    AutoCloseTimer.Start()
+                                ElseIf My.Settings.AutoMinimize = True Then
+                                    AutoMinimizeTimer.Start()
+                                End If
+                            End If
+
+                        End If
+                    Else
+                        ' Log Failed to Start Valorant to File
+                        TrueLog("Error", "Valorant Failed to Start")
                     End If
+
+
                 Else
                     ' Ask User to close Valorant
                     MessageBox.Show("Please close Valorant before running True Stretched!")
+
+                    ' Log Error to File
+                    TrueLog("Error", "Valorant already running, canceling.")
                 End If
 
 
             Else 'Disable True Stretched
                 Button1.Text = "Enable True Stretched"
+
+                ' Log Disabling Valorant Stretched to File
+                TrueLog("Info", "Disabling Valorant True Stretched Res...")
+
                 If My.Settings.RevertDisplayResolution = True Then
                     SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
+
+                    ' Log Reverting Monitor Resolution to File
+                    TrueLog("Info", "Reverting Monitor Resolution Completed")
                 End If
+
+                ' Log Updating Config File to File
+                TrueLog("Info", "Updating Valorant Config File...")
                 ValorantConfigFileSwitch()
+                TrueLog("Info", "Completed Updating Valorant Config File!")
                 Label3.ForeColor = Color.Green
                 Label3.Text = "Successfully disabled True Stretched Res"
                 StretchedEnabled = False
+
+                ' Log Completed Disabling Valorant Stretched to File
+                TrueLog("Info", "Completed Disabling Valorant True Stretched Res!")
             End If
         End If
         '---Valorant Mode Code Ends---
@@ -1168,6 +1175,8 @@ Public Class Form1
                 Next
 
                 File.WriteAllLines(filePath, lines.ToArray())
+                ' Log Valorant Config Update Success to File
+                TrueLog("Info", "Valorant Config Update File Successfully!")
             End If
         End If
 
@@ -1642,13 +1651,6 @@ Public Class Form1
             My.Settings.GameLabelLocation = Label4.Location
             My.Settings.Save()
 
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
-
         Else
         End If
 
@@ -1670,13 +1672,6 @@ Public Class Form1
             My.Settings.SelectedGame = Game
             My.Settings.GameLabelLocation = Label4.Location
             My.Settings.Save()
-
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
 
         Else
         End If
@@ -1700,13 +1695,6 @@ Public Class Form1
             My.Settings.GameLabelLocation = Label4.Location
             My.Settings.Save()
 
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
-
         Else
         End If
 
@@ -1727,18 +1715,12 @@ Public Class Form1
             My.Settings.GameLabelLocation = Label4.Location
             My.Settings.Save()
 
-            If GPU = "Amd GPU" Then
-                GroupBox2.Visible = False
-            ElseIf GPU = "Nvidia GPU" Then
-                GroupBox2.Visible = True
-                Label6.Text = "One Time Only: Open the Nvidia" & vbCrLf & "Control Panel and set the scaling mode" & vbCrLf & "to ""Full-screen"" on the monitor you are" & vbCrLf & "using for the game"
-            End If
-
         Else
         End If
 
         '-Valorant Widescreen Fix
         GroupBox3.Visible = True
+
 
         If My.Settings.ValorantWidescreenFix = True Then
             WidescreenFixCheckBox.Checked = True
@@ -1752,6 +1734,22 @@ Public Class Form1
 
         '-Valorant Widescreen Fix Checkbox
         My.Settings.ValorantWidescreenFix = WidescreenFixCheckBox.Checked
+        My.Settings.Save()
+
+        If My.Settings.ValorantWidescreenFix = True Then
+            WidescreenFixCheckBox.Checked = True
+            Button1.Text = "Enable Widescreen Fix"
+        Else
+            WidescreenFixCheckBox.Checked = False
+            Button1.Text = "Enable True Stretched"
+        End If
+
+    End Sub
+
+    Private Sub DelayValSwapCheckBox_CheckedChanged(sender As Object, e As EventArgs) Handles DelayValSwapCheckBox.CheckedChanged
+
+        '-Valorant Delayed Stretching Fix Checkbox
+        My.Settings.ValorantDelayStretchFix = DelayValSwapCheckBox.Checked
         My.Settings.Save()
 
     End Sub

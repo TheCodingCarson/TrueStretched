@@ -43,10 +43,10 @@ Partial Class Form1
         GroupBox1 = New GroupBox()
         LinkLabel1 = New LinkLabel()
         Label5 = New Label()
-        GroupBox2 = New GroupBox()
-        Label6 = New Label()
         Farlight84PictureBox = New PictureBox()
         GroupBox3 = New GroupBox()
+        Label6 = New Label()
+        DelayValSwapCheckBox = New CheckBox()
         WidescreenFixCheckBox = New CheckBox()
         Label7 = New Label()
         CType(PictureBox2, ISupportInitialize).BeginInit()
@@ -56,7 +56,6 @@ Partial Class Form1
         CType(ValorantPictureBox, ISupportInitialize).BeginInit()
         CType(ApexPictureBox, ISupportInitialize).BeginInit()
         GroupBox1.SuspendLayout()
-        GroupBox2.SuspendLayout()
         CType(Farlight84PictureBox, ISupportInitialize).BeginInit()
         GroupBox3.SuspendLayout()
         SuspendLayout()
@@ -85,7 +84,7 @@ Partial Class Form1
         ' 
         Label1.AutoSize = True
         Label1.BackColor = Color.FromArgb(CByte(29), CByte(29), CByte(29))
-        Label1.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point)
+        Label1.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold)
         Label1.ForeColor = Color.White
         Label1.Location = New Point(12, 511)
         Label1.Name = "Label1"
@@ -167,7 +166,7 @@ Partial Class Form1
         ' 
         Label4.AutoSize = True
         Label4.BackColor = Color.Transparent
-        Label4.Font = New Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point)
+        Label4.Font = New Font("Segoe UI", 18F, FontStyle.Bold)
         Label4.ForeColor = Color.White
         Label4.Location = New Point(75, 11)
         Label4.Name = "Label4"
@@ -193,7 +192,7 @@ Partial Class Form1
         GroupBox1.Controls.Add(LinkLabel1)
         GroupBox1.Controls.Add(Label5)
         GroupBox1.ForeColor = Color.White
-        GroupBox1.Location = New Point(14, 256)
+        GroupBox1.Location = New Point(14, 371)
         GroupBox1.Name = "GroupBox1"
         GroupBox1.Size = New Size(221, 92)
         GroupBox1.TabIndex = 21
@@ -220,27 +219,6 @@ Partial Class Form1
         Label5.TabIndex = 0
         Label5.Text = "Before Enabling: Check out the guide" & vbCrLf & "on TrueStretched.com"
         ' 
-        ' GroupBox2
-        ' 
-        GroupBox2.BackColor = Color.Transparent
-        GroupBox2.Controls.Add(Label6)
-        GroupBox2.ForeColor = Color.White
-        GroupBox2.Location = New Point(14, 361)
-        GroupBox2.Name = "GroupBox2"
-        GroupBox2.Size = New Size(221, 100)
-        GroupBox2.TabIndex = 22
-        GroupBox2.TabStop = False
-        GroupBox2.Text = "GPU Guide"
-        ' 
-        ' Label6
-        ' 
-        Label6.AutoSize = True
-        Label6.Location = New Point(6, 19)
-        Label6.Name = "Label6"
-        Label6.Size = New Size(88, 15)
-        Label6.TabIndex = 0
-        Label6.Text = "GPU Guide Text"
-        ' 
         ' Farlight84PictureBox
         ' 
         Farlight84PictureBox.Image = My.Resources.Resources.Farlight84_Logo
@@ -254,16 +232,37 @@ Partial Class Form1
         ' GroupBox3
         ' 
         GroupBox3.BackColor = Color.Transparent
+        GroupBox3.Controls.Add(Label6)
+        GroupBox3.Controls.Add(DelayValSwapCheckBox)
         GroupBox3.Controls.Add(WidescreenFixCheckBox)
         GroupBox3.Controls.Add(Label7)
         GroupBox3.ForeColor = Color.White
-        GroupBox3.Location = New Point(14, 179)
+        GroupBox3.Location = New Point(14, 203)
         GroupBox3.Name = "GroupBox3"
-        GroupBox3.Size = New Size(221, 71)
+        GroupBox3.Size = New Size(221, 162)
         GroupBox3.TabIndex = 24
         GroupBox3.TabStop = False
         GroupBox3.Text = "Valorant Extras"
         GroupBox3.Visible = False
+        ' 
+        ' Label6
+        ' 
+        Label6.AutoSize = True
+        Label6.Location = New Point(6, 105)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(198, 15)
+        Label6.TabIndex = 4
+        Label6.Text = "Fixes Stretching Before Game Opens"
+        ' 
+        ' DelayValSwapCheckBox
+        ' 
+        DelayValSwapCheckBox.AutoSize = True
+        DelayValSwapCheckBox.Location = New Point(6, 83)
+        DelayValSwapCheckBox.Name = "DelayValSwapCheckBox"
+        DelayValSwapCheckBox.Size = New Size(112, 19)
+        DelayValSwapCheckBox.TabIndex = 3
+        DelayValSwapCheckBox.Text = "Delay Stretching"
+        DelayValSwapCheckBox.UseVisualStyleBackColor = True
         ' 
         ' WidescreenFixCheckBox
         ' 
@@ -293,7 +292,6 @@ Partial Class Form1
         ClientSize = New Size(300, 533)
         Controls.Add(GroupBox3)
         Controls.Add(Farlight84PictureBox)
-        Controls.Add(GroupBox2)
         Controls.Add(GroupBox1)
         Controls.Add(Label4)
         Controls.Add(ApexPictureBox)
@@ -319,8 +317,6 @@ Partial Class Form1
         CType(ApexPictureBox, ISupportInitialize).EndInit()
         GroupBox1.ResumeLayout(False)
         GroupBox1.PerformLayout()
-        GroupBox2.ResumeLayout(False)
-        GroupBox2.PerformLayout()
         CType(Farlight84PictureBox, ISupportInitialize).EndInit()
         GroupBox3.ResumeLayout(False)
         GroupBox3.PerformLayout()
@@ -344,10 +340,10 @@ Partial Class Form1
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents Label5 As Label
     Friend WithEvents LinkLabel1 As LinkLabel
-    Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents Label6 As Label
     Friend WithEvents Farlight84PictureBox As PictureBox
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents Label7 As Label
     Friend WithEvents WidescreenFixCheckBox As CheckBox
+    Friend WithEvents DelayValSwapCheckBox As CheckBox
+    Friend WithEvents Label6 As Label
 End Class
