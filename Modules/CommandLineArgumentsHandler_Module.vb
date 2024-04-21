@@ -33,6 +33,10 @@
             End If
             #End If
 
+            'Start TrueLog
+            Dim TrueLogStartArgsList As String = String.Join(" ", debugoutputargs)
+            TrueLog("Start", TrueLogStartArgsList)
+
         End Sub
 
     End Class

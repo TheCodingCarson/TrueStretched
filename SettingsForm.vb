@@ -16,6 +16,9 @@ Public Class SettingsForm
             Me.StartPosition = FormStartPosition.WindowsDefaultLocation
         End If
 
+        ' Log Gettings All Settings
+        TrueLog("Info", "Loading all settings for Settings Page...")
+
         ' Disable Switching Game Monitor Selection till Combobox3 vales are fully loaded
         ComboBox3.Enabled = False
 
@@ -77,6 +80,8 @@ Public Class SettingsForm
 
         End If
 
+        ' Log Completed Gettings All Settings
+        TrueLog("Info", "Completed Loading all settings for Settings Page")
 
         ' Add event handlers
         AddHandler ComboBox2.Leave, AddressOf ComboBox2_Leave
@@ -88,6 +93,9 @@ Public Class SettingsForm
 
     Private Sub SettingsForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
 
+        ' Log Completed Saving All Settings - Closing Settings Page
+        TrueLog("Info", "Saving all settings...")
+
         ' Save the user settigs
         My.Settings.AutoClose = CheckBox1.Checked
         My.Settings.AutoMinimize = CheckBox2.Checked
@@ -98,6 +106,9 @@ Public Class SettingsForm
         My.Settings.GameMonitor = GetSavedMonitor(ComboBox3.SelectedValue)
         My.Settings.MainGPU = ComboBox4.Text
         My.Settings.Save()
+
+        ' Log Completed Saving All Settings - Closing Settings Page
+        TrueLog("Info", "Completed Saving all settings, Closing Settings Page")
 
     End Sub
 

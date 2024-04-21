@@ -139,6 +139,8 @@ Public Module MonitorManagement_Module
 
         ' Ensure the key starts with a valid registry hive
         If Not deviceKey.StartsWith("\Registry\Machine\") Then
+            TrueLog("Error", "Can't get Hardware ID Invalid device key format")
+
             Return "Invalid device key format."
         End If
 
@@ -155,6 +157,8 @@ Public Module MonitorManagement_Module
             End Using
         Catch ex As Exception
             ' Handle exceptions, such as security issues or missing keys
+            TrueLog("Error", $"Can't get Hardware ID Error accessing registry: {ex.Message}")
+
             Return $"Error accessing registry: {ex.Message}"
         End Try
 
@@ -175,6 +179,9 @@ Public Module MonitorManagement_Module
             Dim heightValue As String = match.Groups(2).Value
             Return $"{widthValue}x{heightValue}"
         Else
+            ' Log Error
+            TrueLog("Error", "Width,Height values not found to make formated resolution")
+
             Return "Width,Height values not found"
         End If
 
@@ -185,6 +192,8 @@ Public Module MonitorManagement_Module
 
         ' Ensure the key starts with a valid registry hive
         If Not deviceKey.StartsWith("\Registry\Machine\") Then
+            TrueLog("Error", $"Getting Max Resolution Invalid device key format")
+
             Return "Invalid device key format."
         End If
 
@@ -201,6 +210,8 @@ Public Module MonitorManagement_Module
             End Using
         Catch ex As Exception
             ' Handle exceptions, such as security issues or missing keys
+            TrueLog("Error", $"Getting Max Resolution Error accessing registry: {ex.Message}")
+
             Return $"Error accessing registry: {ex.Message}"
         End Try
 
@@ -223,6 +234,9 @@ Public Module MonitorManagement_Module
             Dim yValue As String = match.Groups(2).Value
             Return $"{xValue},{yValue}"
         Else
+            ' Log Error
+            TrueLog("Error", "X,Y values not found")
+
             Return "X,Y values not found"
         End If
 
@@ -246,6 +260,9 @@ Public Module MonitorManagement_Module
                 Return "Landscape (Flipped)"
             Case 3 'Portrait (Flipped)
             Case Else
+                ' Log Error
+                TrueLog("Error", "Monitor Orientation Value Unknown")
+
                 Return "Monitor Orientation Value Unknown."
         End Select
 
@@ -287,6 +304,9 @@ Public Module MonitorManagement_Module
                        $"HardwareID: {primaryMonitor.HardwareID}; Location: {primaryMonitor.Location}; Orientation: {primaryMonitor.Orientation}; " &
                        $"Resolution: {primaryMonitor.Resolution}; MaxResolution: {primaryMonitor.MaxResolution}; IsPrimary: {primaryMonitor.IsPrimary}"
             Case Else
+                ' Log Error
+                TrueLog("Error", $"Primary Monitor unknown attribute {attribute}")
+
                 Return $"Unknown attribute: {attribute}."
         End Select
     End Function
@@ -319,6 +339,9 @@ Public Module MonitorManagement_Module
                              $"HardwareID: {monitor.HardwareID}; Location: {monitor.Location}; Orientation: {monitor.Orientation}; " &
                              $"Resolution: {monitor.Resolution}; MaxResolution: {monitor.MaxResolution}; IsPrimary: {monitor.IsPrimary}")
                 Case Else
+                    ' Log Error
+                    TrueLog("Error", $"Unknown attribute: {attribute} for monitor {monitor.DeviceName}")
+
                     monitorDetails.Add($"Unknown attribute: {attribute} for monitor {monitor.DeviceName}.")
             End Select
         Next
@@ -364,6 +387,9 @@ Public Module MonitorManagement_Module
                        $"HardwareID: {targetMonitor.HardwareID}; Location: {targetMonitor.Location}; Orientation: {targetMonitor.Orientation}; " &
                        $"Resolution: {targetMonitor.Resolution}; MaxResolution: {targetMonitor.MaxResolution}; IsPrimary: {targetMonitor.IsPrimary}"
             Case Else
+                ' Log Error
+                TrueLog("Error", $"Geting Monitor Unknown attribute {attribute}")
+
                 Return $"Unknown attribute: {attribute}."
         End Select
     End Function
@@ -400,6 +426,9 @@ Public Module MonitorManagement_Module
                        $"HardwareID: {currentMonitor.HardwareID}; Location: {currentMonitor.Location}; Orientation: {currentMonitor.Orientation}; " &
                        $"Resolution: {currentMonitor.Resolution}; MaxResolution: {currentMonitor.MaxResolution}; IsPrimary: {currentMonitor.IsPrimary}"
             Case Else
+                ' Log Error
+                TrueLog("Error", $"Current Monitor Unknown attribute {attribute}")
+
                 Return $"Unknown attribute: {attribute}."
         End Select
     End Function
@@ -417,6 +446,9 @@ Public Module MonitorManagement_Module
         Dim gameMonitorDetails As String = My.Settings.GameMonitor
 
         If String.IsNullOrEmpty(gameMonitorDetails) Then
+            ' Log Error
+            TrueLog("Error", "Can't get Game Monitor no monitor set")
+
             Return "Game monitor not set."
         End If
 
@@ -438,6 +470,9 @@ Public Module MonitorManagement_Module
             Case ""
                 Return gameMonitorDetails ' Return all details if no specific attribute is requested
             Case Else
+                ' Log Error
+                TrueLog("Error", $"Game Monitor Unknown attribute {attribute}")
+
                 Return "Unknown attribute."
         End Select
     End Function
@@ -467,6 +502,9 @@ Public Module MonitorManagement_Module
         End If
 
         If targetMonitor Is Nothing Then
+            ' Log Error
+            TrueLog("Error", "Monitor not found can't get Resolution")
+
             Return "Monitor not found."
         End If
 
@@ -531,6 +569,9 @@ Public Module MonitorManagement_Module
 
                     Case Else
                         result.Add($"Unknown attribute: {attribute}")
+
+                        ' Log Error
+                        TrueLog("Error", $"Unknown Saved Monitor attribute: {attribute}")
                 End Select
             Else
                 ' If no specific attribute is requested, return all details for the monitor
@@ -557,6 +598,8 @@ Public Module MonitorManagement_Module
     Public Function GetSavedMonitor(Optional ByVal identifierAttribute As String = "Primary", Optional ByVal detailAttribute As String = "") As String
         Dim savedInfo As String = If(identifierAttribute.Equals("Gaming", StringComparison.OrdinalIgnoreCase), My.Settings.GameMonitor, My.Settings.Monitors)
         If String.IsNullOrEmpty(savedInfo) Then
+            ' Log Error
+            TrueLog("Error", "Game Monitor information not found to save")
             Return "Monitor information not found."
         End If
 
@@ -626,7 +669,10 @@ Public Module MonitorManagement_Module
 
         ' Fetch the current settings before modifying
         If EnumDisplaySettings(deviceNameAdjusted, ENUM_CURRENT_SETTINGS, devMode) = False Then
-            MessageBox.Show("Failed to retrieve current display settings.")
+            Console.WriteLine("Failed to retrieve current display settings.")
+
+            ' Log Error
+            TrueLog("Error", "Failed to retrieve current display settings.")
             Return
         End If
 
@@ -639,7 +685,10 @@ Public Module MonitorManagement_Module
         If result = DISP_CHANGE_SUCCESSFUL Then
 
         Else
-            MessageBox.Show($"Failed to change resolution for monitor: {monitorIdentifier}. Error code: {result}")
+            Console.WriteLine($"Failed to change resolution for monitor: {monitorIdentifier}. Error code: {result}")
+
+            ' Log Error
+            TrueLog("Error", $"Failed to change resolution for monitor: {monitorIdentifier}. Error code: {result}")
         End If
     End Sub
 
@@ -663,7 +712,10 @@ Public Module MonitorManagement_Module
         ' Get Targeted Monitor Info
         Dim targetScreen As String = GetSavedMonitor(monitorIdentifier, "FriendlyName")
         If targetScreen Is Nothing Then
-            MessageBox.Show("Specified monitor not found.")
+            Console.WriteLine("Specified monitor not found for Highlight.")
+
+            ' Log Error
+            TrueLog("Error", "Specified monitor not found for Highlight")
             Return
         End If
 
@@ -746,7 +798,10 @@ Public Module MonitorManagement_Module
             End If
 
             If targetMonitor Is Nothing Then
-                MessageBox.Show("Specified monitor not found.")
+                Console.WriteLine("Specified monitor not found.")
+
+                ' Log Error
+                TrueLog("Error", "Specified monitor not found")
                 Return
             End If
 
@@ -762,7 +817,10 @@ Public Module MonitorManagement_Module
                              $"HardwareID: {targetMonitor.HardwareID}; Location: {targetMonitor.Location}; Orientation: {targetMonitor.Orientation}; " &
                              $"Resolution: {targetMonitor.Resolution}; MaxResolution: {targetMonitor.MaxResolution}; IsPrimary: {targetMonitor.IsPrimary}"
                 Case Else
-                    MessageBox.Show($"Unknown attribute: {attribute}.")
+                    Console.WriteLine($"Unknown attribute: {attribute}.")
+
+                    ' Log Error
+                    TrueLog("Error", $"Unknown attribute: {attribute}")
                     Return
             End Select
         End If
@@ -770,7 +828,10 @@ Public Module MonitorManagement_Module
         ' Assuming My.Settings.Monitors is the setting created to store the monitor information
         My.Settings.Monitors = infoToSave
         My.Settings.Save() ' Persist the change
-        MessageBox.Show("Monitor information saved successfully.")
+        Console.WriteLine("Monitor information saved successfully.")
+
+        ' Log Successful Monitor Info Save
+        TrueLog("Info", "Monitor information saved successfully")
     End Sub
 
     ' -SaveGameMonitor Function-
@@ -787,7 +848,10 @@ Public Module MonitorManagement_Module
                                                                   m.HardwareID.Equals(monitorIdentifier, StringComparison.OrdinalIgnoreCase))
 
         If targetMonitor Is Nothing Then
-            MessageBox.Show("Specified monitor not found.")
+            Console.WriteLine("Specified monitor not found.")
+
+            ' Log Error
+            TrueLog("Error", "Specified monitor not found")
             Return
         End If
 
@@ -797,7 +861,10 @@ Public Module MonitorManagement_Module
         ' Assuming My.Settings.GameMonitor is the setting created to store the game monitor information
         My.Settings.GameMonitor = infoToSave
         My.Settings.Save() ' Persist the change
-        MessageBox.Show($"Game monitor set to: {infoToSave}")
+        Console.WriteLine($"Game monitor set to: {infoToSave}")
+
+        ' Log Successful Monitor Info Save
+        TrueLog("Info", $"Game monitor Successfully set to: {infoToSave}")
     End Sub
 
     ' -ParseResolution Function-

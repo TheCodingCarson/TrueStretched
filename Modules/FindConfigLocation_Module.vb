@@ -73,9 +73,14 @@ Module FindConfigLocation_Module
             Next
         Else
             ValorantConfigReturn = "'Valorant Last Riot User ID' not found in 'RiotLocalMachine.ini'"
+            ' Log Error to File
+            TrueLog("Error", ValorantConfigReturn)
         End If
 
         If Not (String.IsNullOrEmpty(LastKnownValorantUser)) Then
+            ' Log Valorant Last User Riot ID to File
+            TrueLog("Info", $"Valorant Last Riot User ID = {LastKnownValorantUser}")
+
             Dim valorantmainfolderPath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/VALORANT/Saved/Config"
 
             ' Get all subdirectories in the folder
@@ -93,8 +98,14 @@ Module FindConfigLocation_Module
                 Dim fullvalorantUserConfigFolderPath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + $"/VALORANT/Saved/Config/{valorantUserConfigFolderPath}/Windows/GameUserSettings.ini"
                 ' Return full last riot user config path with region code added (and standardized)
                 ValorantConfigReturn = StandardizePath(fullvalorantUserConfigFolderPath)
+
+                ' Log Valorant Last User Riot ID to File
+                TrueLog("Info", $"Valorant Riot ID Config File Location = {ValorantConfigReturn}")
             Else
                 ValorantConfigReturn = "'Valorant Last Riot User ID' configuration folder not found."
+
+                ' Log Error to File
+                TrueLog("Error", ValorantConfigReturn)
             End If
         Else
             ' The error value from the If File.Exists
