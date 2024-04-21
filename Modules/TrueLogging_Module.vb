@@ -16,7 +16,8 @@ Module TrueLogging_Module
     '
     ' {-Summary-}
 
-    Private ReadOnly LogFilePath As String = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TrueStretched-Log.log")
+    Private ReadOnly appDataTrueStretchedPath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "True Stretched")
+    Private LogFilePath As String = ""
     Private Const MaxLogSize As Long = 350 * 1024 * 1024 ' 350 MB in bytes
     Private StartArgs As String = ""
 
@@ -45,6 +46,16 @@ Module TrueLogging_Module
 
     ' Initialize and manage the log file
     Private Sub InitializeTrueLog()
+
+        ' Check for or Create log Directory in "AppData\Local"
+        If Not Directory.Exists(appDataTrueStretchedPath) Then
+            Directory.CreateDirectory(appDataTrueStretchedPath)
+        End If
+
+        ' Set the Log File Full Path
+        LogFilePath = Path.Combine(appDataTrueStretchedPath, "TrueStretched-Log.log")
+
+        ' Check For or Create log File
         If Not File.Exists(LogFilePath) Then
             File.Create(LogFilePath).Dispose()
             LogStartMessages(True)
