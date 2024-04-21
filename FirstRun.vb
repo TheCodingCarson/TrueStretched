@@ -16,37 +16,13 @@ Public Class FirstRun
             Me.StartPosition = FormStartPosition.WindowsDefaultLocation
         End If
 
-        ' Get the native resolution of the main screen
-        Dim mainScreen As Screen = Screen.PrimaryScreen
-        Dim nativeResolution As Size = mainScreen.Bounds.Size
+        ' Log First Run Wizard Started
+        TrueLog("Info", "First Run Wizard Started")
 
         ' Save monitor settings to desired settings values
         SaveMonitorInfo()
         My.Settings.GameMonitor = GetPrimaryMonitor()
         My.Settings.Save()
-
-        ' Get monitors in friendly name format
-        Dim monitorNames As New List(Of String)()
-
-        Dim query As New ObjectQuery("SELECT * FROM Win32_PnPEntity WHERE PNPClass = 'Monitor'")
-        Dim searcher As New ManagementObjectSearcher(query)
-
-        For Each monitor As ManagementObject In searcher.Get()
-            Dim monitorName As String = monitor("Caption")?.ToString()
-
-            If Not String.IsNullOrEmpty(monitorName) Then
-                ' Check if the monitor name matches the format "Generic Monitor (XXX)"
-                If monitorName.StartsWith("Generic Monitor (") AndAlso monitorName.EndsWith(")") Then
-                    ' Remove the "Generic Monitor" prefix and brackets
-                    monitorName = monitorName.Substring(17, monitorName.Length - 18)
-                End If
-
-                monitorNames.Add(monitorName)
-            End If
-        Next
-
-        ' Save monitor names to My.Settings.Monitors
-        My.Settings.Monitors = String.Join(",", monitorNames)
 
         ' Save main system gpu to My.Settings.MainGPU
         Dim query2 As New SelectQuery("Win32_VideoController")
@@ -73,12 +49,11 @@ Public Class FirstRun
             My.Settings.Save()
         End If
 
-        'TEMPORARY SOLUTION PLEASE UPDATE (SETS THE PRIMARY MONITOR)
-        My.Settings.GameMonitor = monitorNames(0)
-        My.Settings.Save()
-
         ' Save the settings
         My.Settings.Save()
+
+        ' Log First Run Wizard Saved Computer Info
+        TrueLog("Info", "First run wizard saved system information")
 
     End Sub
 
@@ -86,6 +61,10 @@ Public Class FirstRun
         Form1.Enabled = True
         My.Settings.FirstRun = "False"
         My.Settings.Save()
+
+        ' Log First Run Wizard Completed
+        TrueLog("Info", "First Run Wizard Completed")
+
         Me.Close()
     End Sub
 
@@ -94,6 +73,10 @@ Public Class FirstRun
         SettingsForm.Show()
         My.Settings.FirstRun = "False"
         My.Settings.Save()
+
+        ' Log First Run Wizard Completed
+        TrueLog("Info", "First Run Wizard Completed")
+
         Me.Close()
     End Sub
 End Class
