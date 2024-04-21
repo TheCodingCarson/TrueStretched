@@ -1,7 +1,4 @@
-﻿Imports System.Globalization
-Imports System.IO
-Imports System.Windows.Forms
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+﻿Imports System.Windows.Forms
 
 Public Class DevMenu
     Private Sub DevMenu_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -24,23 +21,6 @@ Public Class DevMenu
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         ' Run FirstRun Button In Dev Menu
         FirstRun.Show()
-    End Sub
-
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        ' Set settings to default release build settings (Will NOT change build related settings)
-        My.Settings.LastLocation = New Point(0, 0)
-        My.Settings.AutoClose = "False"
-        My.Settings.AutoMinimize = "True"
-        My.Settings.StretchedResolution = "1024x768"
-        My.Settings.FirstRun = "True"
-        My.Settings.SetDisplayResolution = "True"
-        My.Settings.RevertDisplayResolution = "True"
-        My.Settings.Monitors = ""
-        My.Settings.SelectedGame = "Valorant"
-        My.Settings.GameLabelLocation = New Point(75, 11)
-        My.Settings.GameMonitor = ""
-        My.Settings.MainGPU = ""
-        My.Settings.Save()
     End Sub
 
     Private Sub TestButton1_Click(sender As Object, e As EventArgs) Handles TestButton1.Click

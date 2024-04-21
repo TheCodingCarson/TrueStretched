@@ -26,7 +26,6 @@ Partial Class DevMenu
         Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(DevMenu))
         WindowLocationTimer = New System.Windows.Forms.Timer(components)
         Button1 = New System.Windows.Forms.Button()
-        Button2 = New System.Windows.Forms.Button()
         TestButton1 = New System.Windows.Forms.Button()
         TestButton2 = New System.Windows.Forms.Button()
         TestButtonUpdateAvailable = New System.Windows.Forms.Button()
@@ -45,15 +44,6 @@ Partial Class DevMenu
         Button1.TabIndex = 0
         Button1.Text = "Show FirstRun"
         Button1.UseVisualStyleBackColor = True
-        ' 
-        ' Button2
-        ' 
-        Button2.Location = New Point(12, 41)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(136, 23)
-        Button2.TabIndex = 1
-        Button2.Text = "Set Settings To Default"
-        Button2.UseVisualStyleBackColor = True
         ' 
         ' TestButton1
         ' 
@@ -101,7 +91,6 @@ Partial Class DevMenu
         Controls.Add(TestButtonUpdateAvailable)
         Controls.Add(TestButton2)
         Controls.Add(TestButton1)
-        Controls.Add(Button2)
         Controls.Add(Button1)
         FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
