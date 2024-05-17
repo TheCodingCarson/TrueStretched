@@ -122,7 +122,7 @@ Public Module MonitorManagement_Module
             .HardwareID = GetHardwareIDFromRegistry(display.DeviceKey),
             .FriendlyName = display.DeviceName,
             .Resolution = ResolutionFormatted(display),
-            .MaxResolution = GetMonitorMaxResolutionFromRegistry(display.DeviceKey),
+            .MaxResolution = GetMonitorMaxResolution(display),
             .Location = GetMonitorLocation(display),
             .Orientation = GetMonitorOrientationAsString(display),
             .IsPrimary = display.IsGDIPrimary
@@ -187,38 +187,42 @@ Public Module MonitorManagement_Module
 
     End Function
 
-    Private Function GetMonitorMaxResolutionFromRegistry(deviceKey As String) As String
-        Dim MaxResolution As String = String.Empty
+    Public Function GetMonitorMaxResolution(display As Display) As String
+        Dim scope As New ManagementScope()
+        Dim query As New ObjectQuery("SELECT * FROM CIM_VideoControllerResolution")
 
-        ' Ensure the key starts with a valid registry hive
-        If Not deviceKey.StartsWith("\Registry\Machine\") Then
-            TrueLog("Error", $"Getting Max Resolution Invalid device key format")
+        ' Use a ManagementObjectSearcher to execute the WMI query
+        Using searcher As New ManagementObjectSearcher(scope, query)
+            Dim results As ManagementObjectCollection = searcher.Get()
+            Dim maxHResolution As UInt32 = 0
+            Dim maxVResolution As UInt32 = 0
 
-            Return "Invalid device key format."
-        End If
+            ' Iterate through each result item
+            For Each item As ManagementObject In results
+                ' Get the horizontal and vertical resolutions from the current item
+                Dim horizontalResolution As UInt32 = CType(item("HorizontalResolution"), UInt32)
+                Dim verticalResolution As UInt32 = CType(item("VerticalResolution"), UInt32)
 
-        ' Trim the leading part to get the relative path from the HKEY_LOCAL_MACHINE hive
-        Dim relativePath = deviceKey.Substring("\Registry\Machine\".Length)
-
-        Try
-            ' Open the registry key
-            Using key = Registry.LocalMachine.OpenSubKey(relativePath)
-                If key IsNot Nothing Then
-                    ' Attempt to read the "MaxResolution" value
-                    MaxResolution = key.GetValue("MaxResolution", String.Empty).ToString()
+                ' Update the maximum horizontal resolution if the current one is greater
+                If horizontalResolution > maxHResolution Then
+                    maxHResolution = horizontalResolution
                 End If
-            End Using
-        Catch ex As Exception
-            ' Handle exceptions, such as security issues or missing keys
-            TrueLog("Error", $"Getting Max Resolution Error accessing registry: {ex.Message}")
 
-            Return $"Error accessing registry: {ex.Message}"
-        End Try
+                ' Update the maximum vertical resolution if the current one is greater
+                If verticalResolution > maxVResolution Then
+                    maxVResolution = verticalResolution
+                End If
+            Next
 
-        ' Standardize Resolution Value
-        Dim StandardizedResolution As String = MaxResolution.Replace(",", "x")
-
-        Return StandardizedResolution
+            ' Return the maximum resolution as a string in the format "WidthxHeight"
+            If maxHResolution > 0 AndAlso maxVResolution > 0 Then
+                Return $"{maxHResolution}x{maxVResolution}"
+            Else
+                ' Log Error if no valid resolution was found
+                TrueLog("Error", $"Unable to retrieve display {display.DeviceName} max resolution")
+                Return "0x0"
+            End If
+        End Using
     End Function
 
     Private Function GetMonitorLocation(CurrentDisplay As Display)
@@ -723,11 +727,6 @@ Public Module MonitorManagement_Module
         Dim monitorLocation As Point = GetMonitorLocationPointFromString(GetSavedMonitor(monitorIdentifier, "Location"))
         Dim monitorOrientation As String = GetSavedMonitor(monitorIdentifier, "Orientation")
         Dim monitorSize As Size = GetMonitorSizeFromString(GetSavedMonitor(monitorIdentifier, "Resolution"))
-
-        ' If Monitor Orentation is set to "Portrait" or "Portait (Flipped)" swap Width and Height
-        If monitorOrientation = "Portrait" OrElse monitorOrientation = "Portrait (Flipped)" Then
-            monitorSize = New Size(monitorSize.Height, monitorSize.Width)
-        End If
 
         ' Position and size the Highlight_Overlay to match the target monitor
         Highlight_Overlay.SetBounds(monitorLocation.X, monitorLocation.Y, monitorSize.Width, monitorSize.Height)
