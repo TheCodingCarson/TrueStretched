@@ -20,6 +20,8 @@ Public Module MonitorManagement_Module
     '                                      '
     ' ------------------------------------ '
 
+    Private currentHighlightedMonitor As String = String.Empty ' Variable Declare For Highlight Monitor
+
     <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
     Private Function EnumDisplayDevices(lpDevice As String, iDevNum As UInteger, ByRef lpDisplayDevice As DISPLAY_DEVICE, dwFlags As UInteger) As Boolean
     End Function
@@ -263,6 +265,7 @@ Public Module MonitorManagement_Module
             Case 2 'Landscape (Flipped)
                 Return "Landscape (Flipped)"
             Case 3 'Portrait (Flipped)
+                Return "Portrait (Flipped)"
             Case Else
                 ' Log Error
                 TrueLog("Error", "Monitor Orientation Value Unknown")
@@ -708,8 +711,17 @@ Public Module MonitorManagement_Module
     ' <param name="monitorIdentifier">Optional. The unique identifier of the monitor to highlight. If not specified and enable is True, highlights the primary monitor.</param>
     Public Sub HighlightMonitor(enable As Boolean, Optional ByVal monitorIdentifier As String = "")
 
+        ' Disable Monitor Highlighting when called
         If Not enable Then
             Highlight_Overlay.Close()
+            Highlight_Overlay.Dispose()
+            currentHighlightedMonitor = String.Empty
+            Return
+        End If
+
+        ' Check if the same monitor is already highlighted
+        If Highlight_Overlay.Visible AndAlso currentHighlightedMonitor = monitorIdentifier Then
+            ' The same monitor is already highlighted, so ignore the call
             Return
         End If
 
@@ -728,12 +740,20 @@ Public Module MonitorManagement_Module
         Dim monitorOrientation As String = GetSavedMonitor(monitorIdentifier, "Orientation")
         Dim monitorSize As Size = GetMonitorSizeFromString(GetSavedMonitor(monitorIdentifier, "Resolution"))
 
-        ' Position and size the Highlight_Overlay to match the target monitor
-        Highlight_Overlay.SetBounds(monitorLocation.X, monitorLocation.Y, monitorSize.Width, monitorSize.Height)
+        ' Check if the Highlight_Overlay is already shown
+        If Highlight_Overlay.Visible Then
+            ' Hide, Move and resize then show the Highlight_Overlay to match the target monitor
+            Highlight_Overlay.Hide()
+            Highlight_Overlay.SetBounds(monitorLocation.X, monitorLocation.Y, monitorSize.Width, monitorSize.Height)
+            Highlight_Overlay.Show()
+        Else
+            ' Position and size the Highlight_Overlay to match the target monitor
+            Highlight_Overlay.SetBounds(monitorLocation.X, monitorLocation.Y, monitorSize.Width, monitorSize.Height)
 
-        ' Display the Highlight_Overlay
-        Highlight_Overlay.Show()
-        Highlight_Overlay.BringToFront()
+            ' Display the Highlight_Overlay
+            Highlight_Overlay.Show()
+            Highlight_Overlay.BringToFront()
+        End If
     End Sub
 
     ' Helper Function for HighlightMonitor
