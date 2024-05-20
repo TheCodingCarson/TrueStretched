@@ -24,6 +24,7 @@ Partial Class SettingsForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        components = New Container()
         Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(SettingsForm))
         GroupBox1 = New GroupBox()
         CheckBox5 = New CheckBox()
@@ -50,6 +51,7 @@ Partial Class SettingsForm
         ComboBox4 = New ComboBox()
         Label8 = New Label()
         Label9 = New Label()
+        HighlightCheckTimer = New Timer(components)
         GroupBox1.SuspendLayout()
         GroupBox2.SuspendLayout()
         GroupBox3.SuspendLayout()
@@ -309,6 +311,9 @@ Partial Class SettingsForm
         Label9.TabIndex = 6
         Label9.Text = "Open Log Folder"
         ' 
+        ' HighlightCheckTimer
+        ' 
+        ' 
         ' SettingsForm
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -366,4 +371,5 @@ Partial Class SettingsForm
     Friend WithEvents CheckBox5 As CheckBox
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents Label9 As Label
+    Friend WithEvents HighlightCheckTimer As Timer
 End Class

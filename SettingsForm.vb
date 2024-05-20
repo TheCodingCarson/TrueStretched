@@ -1,9 +1,12 @@
 ﻿Imports System.IO
 Imports System.Reflection
 Imports System.Windows.Forms
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Header
 
 Public Class SettingsForm
     Dim FormLoading As Boolean = True
+    'Initilize Variable For ComboBox3
+    Private lastSelectedIndex As Integer = -999
 
     Private Sub SettingsForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -44,7 +47,6 @@ Public Class SettingsForm
             ComboBox2.Text = "1440x1080"
             My.Settings.StretchedResolution = "1440x1080"
             My.Settings.Save()
-        Else
         End If
 
         ' Add monitors to ComboBox3
@@ -85,9 +87,8 @@ Public Class SettingsForm
 
         ' Add event handlers
         AddHandler ComboBox2.Leave, AddressOf ComboBox2_Leave
-        AddHandler ComboBox3.Enter, AddressOf ComboBox3_Enter
-        AddHandler ComboBox3.MouseLeave, AddressOf ComboBox3_MouseLeave
-        AddHandler ComboBox3.DropDownClosed, AddressOf ComboBox3_MouseLeave
+        AddHandler ComboBox3.DropDown, AddressOf ComboBox3_DropDown
+        AddHandler ComboBox3.DropDownClosed, AddressOf ComboBox3_DropDownClosed
 
     End Sub
 
@@ -109,6 +110,9 @@ Public Class SettingsForm
 
         ' Log Completed Saving All Settings - Closing Settings Page
         TrueLog("Info", "Completed Saving all settings, Closing Settings Page")
+
+        ' Refocus Form1 on close
+        Form1.Activate()
 
     End Sub
 
@@ -351,39 +355,50 @@ Public Class SettingsForm
             ' Update Native Display Resolution Textbox
             TextBox1.Text = GetGameMonitor("MaxResolution")
 
-            ' Restarts Monitor Highlight Overlay (Otherwise it gets stuck)
-            HighlightMonitor(False)
-
-            ' Unfocus the ComboBox3 to ensure Highligh Overlay doesn't stick
-            Me.ActiveControl = Nothing
-
         End If
 
     End Sub
 
     ' - Helpers For Ensuring Proper Function of HighLightMonitor Function -
-    Private Sub ComboBox3_Enter(sender As Object, e As EventArgs)
 
+    Private Sub ComboBox3_DropDown(sender As Object, e As EventArgs) Handles ComboBox3.DropDown
         ' Highlight Selected Monitor
         If ComboBox3.SelectedValue IsNot Nothing Then
             Dim monitorIdentifier As String = ComboBox3.SelectedValue
+            lastSelectedIndex = ComboBox3.SelectedIndex
             HighlightMonitor(True, monitorIdentifier)
+
+            ' Start HighlightCheckTimer to update highlighed monitor on mouse hover
+            HighlightCheckTimer.Start()
+        End If
+    End Sub
+
+    Private Sub HighlightCheckTimer_Tick(sender As Object, e As EventArgs) Handles HighlightCheckTimer.Tick
+
+        If ComboBox3.DroppedDown Then
+
+            ' Check if the index is valid and different from the currently hovered index
+            If Not ComboBox3.SelectedIndex = lastSelectedIndex Then
+
+                Dim monitorIdentifier As String = ComboBox3.SelectedValue
+                HighlightMonitor(True, monitorIdentifier)
+
+                lastSelectedIndex = ComboBox3.SelectedIndex
+            End If
+        Else
+            ' Ensure Timer Stops & Highlight is Disabled if DropDown closes
+            HighlightMonitor(False)
+            lastSelectedIndex = -999
+            HighlightCheckTimer.Stop()
         End If
 
     End Sub
 
-    Private Sub ComboBox3_MouseLeave(sender As Object, e As EventArgs)
-
-        ' Clear any Existing Highlights
+    Private Sub ComboBox3_DropDownClosed(sender As Object, e As EventArgs) Handles ComboBox3.DropDownClosed
+        ' Clear any existing highlights when the dropdown is closed
         HighlightMonitor(False)
-
-    End Sub
-
-    Private Sub ComboBox3_DropDownClosed(sender As Object, e As EventArgs)
-
-        ' Clear any Existing Highlights
-        HighlightMonitor(False)
-
+        HighlightCheckTimer.Stop()
+        lastSelectedIndex = -999
     End Sub
     ' - End of Helpers For Ensuring Proper Function of HighLightMonitor Function -
 
@@ -422,4 +437,5 @@ Public Class SettingsForm
         End Try
 
     End Sub
+
 End Class
