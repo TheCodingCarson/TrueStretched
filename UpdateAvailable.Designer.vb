@@ -34,7 +34,7 @@ Partial Class UpdateAvailable
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
+        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         Label1.Location = New Point(12, 9)
         Label1.Name = "Label1"
         Label1.Size = New Size(133, 15)
@@ -62,7 +62,6 @@ Partial Class UpdateAvailable
         ' 
         ' Button1
         ' 
-        Button1.Enabled = False
         Button1.Location = New Point(12, 163)
         Button1.Name = "Button1"
         Button1.Size = New Size(111, 23)
@@ -102,7 +101,7 @@ Partial Class UpdateAvailable
         MaximizeBox = False
         MinimizeBox = False
         Name = "UpdateAvailable"
-        Text = "True Stretched Update Available"
+        Text = "True Stretched - Update Available"
         ResumeLayout(False)
         PerformLayout()
     End Sub

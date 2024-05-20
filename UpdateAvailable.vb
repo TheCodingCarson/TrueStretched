@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Net.Http
+Imports System.Reflection
 Imports System.Windows.Forms
 Imports Newtonsoft.Json.Linq
 
@@ -51,7 +52,7 @@ Public Class UpdateAvailable
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        DownloadUpdate("https://download.truestretched.com/latestversion.json")
+        DownloadUpdate()
     End Sub
 
     Private Async Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -71,24 +72,38 @@ Public Class UpdateAvailable
     End Sub
 
     Private Async Function CheckForUpdates() As Task
-        Dim currentVersion As String = Application.ProductVersion
-        Dim currentBetaLetter As Char = My.Settings.BetaLetter
+        Dim currentVersionLong As Version = Assembly.GetExecutingAssembly().GetName().Version
+        Dim currentVersion As String = String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build)
         Dim betaSetting As Boolean = My.Settings.BetaBuild
+        Dim currentBetaLetter As Char
         Dim json As String = String.Empty
+
+        If betaSetting Then
+            currentBetaLetter = My.Settings.BetaLetter
+        End If
 
         Try
             ' Await the async call properly
             json = Await GetLatestVersionJson()
 
+            ' Validate JSON before parsing
+            If String.IsNullOrWhiteSpace(json) Then
+                Throw New Exception("Received empty JSON response.")
+            End If
+
             ' Parse JSON and update UI elements in a thread-safe manner
             Dim jsonObject As JObject = JObject.Parse(json)
             Dim newVersion As String = jsonObject("Version").ToString()
             Dim isBeta As Boolean = Boolean.Parse(jsonObject("Beta").ToString())
-            Dim newBetaLetter As Char = jsonObject("BetaLetter").ToString().ToCharArray()(0)
+            Dim newBetaLetter As Char
+
+            If isBeta Then
+                newBetaLetter = jsonObject("BetaLetter").ToString().ToCharArray()(0)
+            End If
 
             ' Safely update Label2.Text on the UI thread
             Me.Invoke(Sub()
-                          Label2.Text = newVersion
+                          Label2.Text = "v" & newVersion
                           If betaSetting Then
                               Label2.Text &= newBetaLetter
                           End If
@@ -110,11 +125,20 @@ Public Class UpdateAvailable
             ' Check if an update is available and safely update Button1.Enabled on the UI thread
             Dim updateAvailable As Boolean = (newVersion > currentVersion) AndAlso (isBeta = False OrElse (isBeta = True AndAlso betaSetting = True)) OrElse (newVersion = currentVersion AndAlso isBeta = True AndAlso betaSetting = True AndAlso newBetaLetter > currentBetaLetter)
 
-            Me.Invoke(Sub() Button1.Enabled = updateAvailable)
+            If Not updateAvailable Then
+                Me.Invoke(Sub() Text = "True Stretched - No Updates Available")
+                Me.Invoke(Sub() Label1.Text = "Current Version Up to Date:")
+                Me.Invoke(Sub() Label2.Location = New Point(179, 9))
+
+                Me.Invoke(Sub() Button1.Enabled = False)
+                Me.Invoke(Sub() Button2.Enabled = False)
+            End If
+
+
 
         Catch ex As Exception
             ' Handle exceptions
-            Me.Invoke(Sub() MessageBox.Show("An error occurred while checking for updates."))
+            Me.Invoke(Sub() MessageBox.Show("An error occurred while checking for updates: " & ex.Message))
         End Try
     End Function
 
@@ -126,8 +150,9 @@ Public Class UpdateAvailable
     Private downloadPath As String
 
     ' Ensure method is marked as Async and returns a Task
-    Async Sub DownloadUpdate(jsonUrl As String)
+    Async Sub DownloadUpdate()
         Try
+            Dim jsonUrl As String = "https://download.truestretched.com/latestversion.json"
             Dim httpClient As New HttpClient()
 
             ' Use HttpClient to get the JSON string
@@ -178,7 +203,7 @@ Public Class UpdateAvailable
 
     Private Sub WebClient_DownloadFileCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.AsyncCompletedEventArgs)
         If Not e.Cancelled AndAlso e.Error Is Nothing Then
-            Me.Invoke(New MethodInvoker(Sub() ProgressBar1.Value = 100))
+            Me.Invoke(New System.Windows.Forms.MethodInvoker(Sub() ProgressBar1.Value = 100))
             Process.Start(downloadPath)
             Application.Exit()
         End If
