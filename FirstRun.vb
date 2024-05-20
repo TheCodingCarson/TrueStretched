@@ -55,20 +55,12 @@ Public Class FirstRun
         ' Log First Run Wizard Saved Computer Info
         TrueLog("Info", "First run wizard saved system information")
 
+        ' Take Focus of First Run Form
+        Me.Activate()
+
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Form1.Enabled = True
-        My.Settings.FirstRun = "False"
-        My.Settings.Save()
-
-        ' Log First Run Wizard Completed
-        TrueLog("Info", "First Run Wizard Completed")
-
-        Me.Close()
-    End Sub
-
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Form1.Enabled = True
         SettingsForm.Show()
         My.Settings.FirstRun = "False"

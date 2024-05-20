@@ -28,13 +28,12 @@ Partial Class FirstRun
         Label1 = New Label()
         Label2 = New Label()
         Button1 = New Button()
-        Button2 = New Button()
         SuspendLayout()
         ' 
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
+        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         Label1.Location = New Point(69, 9)
         Label1.Name = "Label1"
         Label1.Size = New Size(162, 15)
@@ -54,19 +53,10 @@ Partial Class FirstRun
         ' 
         Button1.Location = New Point(4, 95)
         Button1.Name = "Button1"
-        Button1.Size = New Size(139, 23)
-        Button1.TabIndex = 2
-        Button1.Text = "Skip"
+        Button1.Size = New Size(290, 23)
+        Button1.TabIndex = 3
+        Button1.Text = "Open Settings"
         Button1.UseVisualStyleBackColor = True
-        ' 
-        ' Button2
-        ' 
-        Button2.Location = New Point(149, 95)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(145, 23)
-        Button2.TabIndex = 3
-        Button2.Text = "Open Settings"
-        Button2.UseVisualStyleBackColor = True
         ' 
         ' FirstRun
         ' 
@@ -74,7 +64,6 @@ Partial Class FirstRun
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(300, 126)
         ControlBox = False
-        Controls.Add(Button2)
         Controls.Add(Button1)
         Controls.Add(Label2)
         Controls.Add(Label1)
@@ -82,7 +71,7 @@ Partial Class FirstRun
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "FirstRun"
         ShowInTaskbar = False
-        Text = "True Stretched"
+        Text = "True Stretched - First Run"
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -90,5 +79,4 @@ Partial Class FirstRun
     Friend WithEvents Label1 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Button1 As Button
-    Friend WithEvents Button2 As Button
 End Class
