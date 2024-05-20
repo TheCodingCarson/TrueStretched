@@ -42,9 +42,7 @@
                                         If updateUI Then
                                             Try
                                                 ' Invoke on the UI thread
-                                                Form1.Invoke(Sub()
-                                                                 Form1.Label3.Text = $"{countdownSeconds} seconds remaining"
-                                                             End Sub)
+                                                Form1.Invoke(Sub() Form1.Label3.Text = $"{countdownSeconds} seconds remaining")
                                             Catch ex As Exception
                                                 ' Handle exceptions
                                             End Try
