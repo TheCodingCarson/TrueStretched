@@ -1,6 +1,9 @@
 {
   "profiles": {
     "True Stretched": {
+      "commandName": "Project"
+    },
+    "True Stretched (Dev Mode)": {
       "commandName": "Project",
       "commandLineArgs": "--Dev"
     }
