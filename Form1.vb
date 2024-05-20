@@ -35,6 +35,8 @@ Public Class Form1
     Private Const SWP_NOZORDER As UInteger = &H4
     Private Const SWP_NOSIZE As UInteger = &H1
     Private Const SW_MAXIMIZE As Integer = 3
+    Private Const SW_MINIMIZE As Integer = 6
+    Private Const SW_SHOWMINNOACTIVE As Integer = 7
 
     Dim Game As String = My.Settings.SelectedGame
     Dim GPU As String = My.Settings.MainGPU
@@ -73,11 +75,6 @@ Public Class Form1
         Else
             ' Set a default location for the form
             Me.StartPosition = FormStartPosition.WindowsDefaultLocation
-        End If
-
-        ' Check For First Run
-        If My.Settings.FirstRun = True Then
-            FirstRun.Show()
         End If
 
         'Check If It's A Dev Build
@@ -175,6 +172,36 @@ Public Class Form1
 
     End Sub
 
+    Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles Me.Shown ' Code to run after Form1 has loaded fully
+
+        ' Check For First Run
+        If My.Settings.FirstRun = True Then
+
+            ' Save Form1 Location Before Showing First Run
+            My.Settings.LastLocation = Me.Location
+            My.Settings.Save()
+
+            ' Show First Run Dialog
+            FirstRun.Show()
+        End If
+
+        ' Auto Disable True Stretched if command line argument exists
+        If AutoDisable = True AndAlso StretchedEnabled = True Then
+            Button1.PerformClick()
+        End If
+
+    End Sub
+
+    Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles MyBase.Resize
+
+        ' Check if the form is being minimized
+        If Me.WindowState = FormWindowState.Minimized Then
+            ' Use ShowWindow to minimize without focus
+            ShowWindow(Me.Handle, SW_SHOWMINNOACTIVE)
+        End If
+
+    End Sub
+
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
 
         ' Check if the Form1 Location is fully visible on any screen
@@ -198,21 +225,10 @@ Public Class Form1
         If isFormFullyVisible Then
             My.Settings.LastLocation = Me.Location
             My.Settings.Save()
-        Else
-            'If Form1 isn't fully visible don't save location
         End If
 
         ' Send Closing Log Message
         TrueLog("Close", "--True Stretched Closing--")
-
-    End Sub
-
-    Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles Me.Shown ' Code to run after Form1 has loaded fully
-
-        ' Auto Disable True Stretched if command line argument exists
-        If AutoDisable = True AndAlso StretchedEnabled = True Then
-            Button1.PerformClick()
-        End If
 
     End Sub
 
@@ -1142,10 +1158,12 @@ Public Class Form1
         Else
             ' Valorant Last User Riot ID Config File Found
             ' Set the desired screen resolution
-            Dim width As Integer = 1920
-            Dim height As Integer = 1080
+            Dim width As String = "1920"
+            Dim height As String = "1080"
             Dim UseLetterbox As String = "False"
-            Dim FullscreenMode As Integer = 2
+            Dim FullscreenMode As String = "2"
+            Dim LastRecommendedScreenWidthHeight As String = "-1.000000"
+            Dim UseDesiredScreenHeight As String = "False"
 
             If File.Exists(filePath) Then
                 ' Create a FileInfo object
@@ -1153,12 +1171,18 @@ Public Class Form1
 
                 Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
 
+                ' Track if fullscreen line exists
+                Dim fullscreenModeExists As Boolean = False
+
                 For i As Integer = 0 To lines.Count - 1
 
                     If lines(i).StartsWith("FullscreenMode=") Then
                         lines(i) = "FullscreenMode=" & FullscreenMode
+                        fullscreenModeExists = True
                     ElseIf lines(i).StartsWith("LastConfirmedFullscreenMode=") Then
                         lines(i) = "LastConfirmedFullscreenMode=" & FullscreenMode
+                    ElseIf lines(i).StartsWith("PreferredFullscreenMode=") Then
+                        lines(i) = "PreferredFullscreenMode=" & FullscreenMode
                     ElseIf lines(i).StartsWith("bShouldLetterbox=") Then
                         lines(i) = "bShouldLetterbox=" & UseLetterbox
                     ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox=") Then
@@ -1171,8 +1195,27 @@ Public Class Form1
                         lines(i) = "LastUserConfirmedResolutionSizeX=" & width
                     ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeY=") Then
                         lines(i) = "LastUserConfirmedResolutionSizeY=" & height
+                    ElseIf lines(i).StartsWith("DesiredScreenWidth=") Then
+                        lines(i) = "DesiredScreenWidth=" & width
+                    ElseIf lines(i).StartsWith("DesiredScreenHeight=") Then
+                        lines(i) = "DesiredScreenHeight=" & height
+                    ElseIf lines(i).StartsWith("LastUserConfirmedDesiredScreenWidth=") Then
+                        lines(i) = "LastUserConfirmedDesiredScreenWidth=" & width
+                    ElseIf lines(i).StartsWith("LastUserConfirmedDesiredScreenHeight=") Then
+                        lines(i) = "LastUserConfirmedDesiredScreenHeight=" & height
+                    ElseIf lines(i).StartsWith("LastRecommendedScreenWidth=") Then
+                        lines(i) = "LastRecommendedScreenWidth=" & LastRecommendedScreenWidthHeight
+                    ElseIf lines(i).StartsWith("LastRecommendedScreenHeight=") Then
+                        lines(i) = "LastRecommendedScreenHeight=" & LastRecommendedScreenWidthHeight
+                    ElseIf lines(i).StartsWith("bUseDesiredScreenHeight=") Then
+                        lines(i) = "bUseDesiredScreenHeight=" & UseDesiredScreenHeight
                     End If
                 Next
+
+                ' If "FullscreenMode=" line does not exist, insert it at the 6th position
+                If Not fullscreenModeExists Then
+                    lines.Insert(5, "FullscreenMode=" & FullscreenMode)
+                End If
 
                 File.WriteAllLines(filePath, lines.ToArray())
                 ' Log Valorant Config Update Success to File
