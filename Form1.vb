@@ -1158,8 +1158,10 @@ Public Class Form1
         Else
             ' Valorant Last User Riot ID Config File Found
             ' Set the desired screen resolution
-            Dim width As String = "1920"
-            Dim height As String = "1080"
+            Dim gameMonitorString As String = GetGameMonitor("Resolution")
+            Dim gameMonitor As Size = GetMonitorSizeFromString(gameMonitorString)
+            Dim width As String = gameMonitor.Width
+            Dim height As String = gameMonitor.Height
             Dim UseLetterbox As String = "False"
             Dim FullscreenMode As String = "2"
             Dim LastRecommendedScreenWidthHeight As String = "-1.000000"
