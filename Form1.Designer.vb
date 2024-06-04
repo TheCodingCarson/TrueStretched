@@ -49,6 +49,7 @@ Partial Class Form1
         DelayValSwapCheckBox = New CheckBox()
         WidescreenFixCheckBox = New CheckBox()
         Label7 = New Label()
+        XDefiantPictureBox = New PictureBox()
         CType(PictureBox2, ISupportInitialize).BeginInit()
         CType(PictureBox1, ISupportInitialize).BeginInit()
         CType(PictureBox3, ISupportInitialize).BeginInit()
@@ -58,6 +59,7 @@ Partial Class Form1
         GroupBox1.SuspendLayout()
         CType(Farlight84PictureBox, ISupportInitialize).BeginInit()
         GroupBox3.SuspendLayout()
+        CType(XDefiantPictureBox, ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' Button1
@@ -283,6 +285,16 @@ Partial Class Form1
         Label7.TabIndex = 1
         Label7.Text = "Fixes widescreen monitor black bars"
         ' 
+        ' XDefiantPictureBox
+        ' 
+        XDefiantPictureBox.Image = My.Resources.Resources.XDefiant_Logo
+        XDefiantPictureBox.Location = New Point(253, 207)
+        XDefiantPictureBox.Name = "XDefiantPictureBox"
+        XDefiantPictureBox.Size = New Size(43, 43)
+        XDefiantPictureBox.SizeMode = PictureBoxSizeMode.StretchImage
+        XDefiantPictureBox.TabIndex = 25
+        XDefiantPictureBox.TabStop = False
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -290,6 +302,7 @@ Partial Class Form1
         BackColor = Color.FromArgb(CByte(41), CByte(55), CByte(66))
         BackgroundImageLayout = ImageLayout.Zoom
         ClientSize = New Size(300, 533)
+        Controls.Add(XDefiantPictureBox)
         Controls.Add(GroupBox3)
         Controls.Add(Farlight84PictureBox)
         Controls.Add(GroupBox1)
@@ -320,6 +333,7 @@ Partial Class Form1
         CType(Farlight84PictureBox, ISupportInitialize).EndInit()
         GroupBox3.ResumeLayout(False)
         GroupBox3.PerformLayout()
+        CType(XDefiantPictureBox, ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -346,4 +360,5 @@ Partial Class Form1
     Friend WithEvents WidescreenFixCheckBox As CheckBox
     Friend WithEvents DelayValSwapCheckBox As CheckBox
     Friend WithEvents Label6 As Label
+    Friend WithEvents XDefiantPictureBox As PictureBox
 End Class

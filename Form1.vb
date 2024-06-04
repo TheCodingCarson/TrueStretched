@@ -132,6 +132,12 @@ Public Class Form1
             End If
             '-End of Valorant Widescreen Fix
 
+        ElseIf Game = "XDefiant" Then 'Settings For XDefiant
+            Me.BackgroundImage = My.Resources.XDefiant_Background
+            GroupBox1.Text = "XDefiant Guide"
+            LinkLabel1.Location = New Point(6, 65)
+            LinkLabel1.Text = "https://TrueStretched.com/XDefiant"
+
         End If
 
         ' Set the groupbox backgrounds color to black with translucency
@@ -160,6 +166,7 @@ Public Class Form1
         toolTip1.SetToolTip(Me.Farlight84PictureBox, "Farlight 84")
         toolTip1.SetToolTip(Me.FortnitePictureBox, "Fortnite")
         toolTip1.SetToolTip(Me.ValorantPictureBox, "Valorant")
+        toolTip1.SetToolTip(Me.XDefiantPictureBox, "XDefiant")
 
         'Check for Updates on Startup (Make Sure Application Has Network Access)
         If My.Settings.CheckForUpdateOnStart = True Then
@@ -466,11 +473,11 @@ Public Class Form1
 
                         If DelayValSwapCheckBox.Checked Then
                             ' 40 Second Countdown Before Continuing
-                            TrueLog("Info", "Valorant Delayed Stretching Enabled")
+                            TrueLog("Info", "Valorant Delayed Stretching Enabled - Waiting 40 Seconds")
                             Await CountdownTimer(40, True, True)
                         Else
                             ' 15 Second Countdown Before Continuing
-                            TrueLog("Info", "Valorant Delayed Stretching Disabled")
+                            TrueLog("Info", "Valorant Delayed Stretching Disabled - Waiting 15 Seconds")
                             Await CountdownTimer(15, True, True)
                         End If
 
@@ -490,8 +497,10 @@ Public Class Form1
 
                                 ' Log to File
                                 TrueLog("Info", "Changing Monitor Resolution...")
+
                                 SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
                                 StretchedEnabled = True
+
                                 TrueLog("Info", "Changing Monitor Completed")
                             End If
                         End If
@@ -512,11 +521,13 @@ Public Class Form1
                                 Label3.Text = "Successfully enabled Widescreen Fix"
 
                                 ' Log Stretch Success
+                                TrueLog("Info", "Valorant Widescreen Fix Mode Enabled")
                                 TrueLog("Info", "Successfully enabled Widescreen Fix - Stretching Complete!")
                             Else
                                 Label3.Text = "Successfully enabled True Stretched Res"
 
                                 ' Log Stretch Success
+                                TrueLog("Info", "Valorant Widescreen Fix Mode Disabled")
                                 TrueLog("Info", "Successfully enabled True Stretched Res - Stretching Complete!")
                             End If
 
@@ -571,8 +582,84 @@ Public Class Form1
                 ' Log Completed Disabling Valorant Stretched to File
                 TrueLog("Info", "Completed Disabling Valorant True Stretched Res!")
             End If
+            '---Valorant Mode Code Ends---
+
+            '---XDefiant Mode Code Starts---
+        ElseIf Game = "XDefiant" Then
+
+            If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
+
+                ' Log XDefiant Start of Enabling Stretched to File
+                TrueLog("Info", "Enabling XDefiant Stretched...")
+
+                CheckForWindow("XDefiant")
+                If IsWindowFound = False Then
+                    Dim url As String = "uplay://launch/15657/0"
+                    Dim psi As New ProcessStartInfo(url) With {
+                        .UseShellExecute = True
+                    }
+
+                    If My.Settings.SetDisplayResolution = True Then
+                        ' Change the resolution of the screen
+                        Label3.Text = "Changing Screen Resolution"
+
+                        ' Log Screen Res Changing
+                        TrueLog("Info", "Changing Monitor Resolution...")
+
+                        ' Change Screen res
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
+                    End If
+                    StretchedEnabled = True
+                    Process.Start(psi)
+                    Await CountdownTimer(30, True, True)
+
+                    If Label3.Text = "Game is not running!" Then
+                        SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
+                        Label3.ForeColor = Color.Red
+                        Label3.Text = "Game is not running!"
+
+                        ' Log Error
+                        TrueLog("Error", "Stretching XDefiant Failed - Game is not running!")
+                    Else
+                        Label3.ForeColor = Color.Green
+                        Label3.Text = "Successfully enabled True Stretched Res"
+
+                        ' Log Stretch Success
+                        TrueLog("Info", "Successfully enabled True Stretched Res - Stretching Complete!")
+
+                        If My.Settings.AutoClose = True Then
+                            AutoCloseTimer.Start()
+                        ElseIf My.Settings.AutoMinimize = True Then
+                            AutoMinimizeTimer.Start()
+                        End If
+                    End If
+                Else
+                    MessageBox.Show("Please Close XDefiant Before Enabling", "True Stretched - Error")
+                End If
+
+            Else 'Disable True Stretched
+
+                ' Log Disabling XDefiant Stretched to File
+                TrueLog("Info", "Disabling XDefiant True Stretched Res...")
+
+                Button1.Text = "Enable True Stretched"
+                If My.Settings.RevertDisplayResolution = True Then
+                    SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
+
+                    ' Log Reverting Monitor Resolution to File
+                    TrueLog("Info", "Reverting Monitor Resolution Completed")
+                End If
+                Label3.ForeColor = Color.Green
+                Label3.Text = "Successfully disabled True Stretched Res"
+                StretchedEnabled = False
+
+                ' Log Disable Success
+                TrueLog("Info", "Successfully Disabled XDefiant True Stretched Res!")
+            End If
+            '---XDefiant Mode Code Ends---
+
         End If
-        '---Valorant Mode Code Ends---
+
 
     End Sub
 
@@ -1675,13 +1762,19 @@ Public Class Form1
                 .UseShellExecute = True
             }
             Process.Start(psi)
+        ElseIf Game = "XDefiant" Then
+            Dim url As String = "https://truestretched.com/XDefiant"
+            Dim psi As New ProcessStartInfo(url) With {
+                .UseShellExecute = True
+            }
+            Process.Start(psi)
         End If
 
     End Sub
 
     Private Sub ApexPictureBox_Click(sender As Object, e As EventArgs) Handles ApexPictureBox.Click
 
-        GroupBox3.Visible = False
+        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
         If StretchedEnabled = False Then
             Game = "Apex Legends"
@@ -1703,7 +1796,7 @@ Public Class Form1
 
     Private Sub Farlight84PictureBox_Click(sender As Object, e As EventArgs) Handles Farlight84PictureBox.Click
 
-        GroupBox3.Visible = False
+        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
         If StretchedEnabled = False Then
             Game = "Farlight 84"
@@ -1725,7 +1818,7 @@ Public Class Form1
 
     Private Sub FortnitePictureBox_Click(sender As Object, e As EventArgs) Handles FortnitePictureBox.Click
 
-        GroupBox3.Visible = False
+        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
         If StretchedEnabled = False Then
             Game = "Fortnite"
@@ -1755,7 +1848,7 @@ Public Class Form1
             GroupBox1.Text = "Valorant Guide"
             LinkLabel1.Location = New Point(6, 65)
             LinkLabel1.Text = "https://TrueStretched.com/Valorant"
-            Me.BackgroundImage = My.Resources.Valorant_Background
+            BackgroundImage = My.Resources.Valorant_Background
             My.Settings.SelectedGame = Game
             My.Settings.GameLabelLocation = Label4.Location
             My.Settings.Save()
@@ -1796,6 +1889,28 @@ Public Class Form1
         '-Valorant Delayed Stretching Fix Checkbox
         My.Settings.ValorantDelayStretchFix = DelayValSwapCheckBox.Checked
         My.Settings.Save()
+
+    End Sub
+
+    Private Sub XDefiantPictureBox_Click(sender As Object, e As EventArgs) Handles XDefiantPictureBox.Click
+
+        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
+
+        If StretchedEnabled = False Then
+            Game = "XDefiant"
+            Button1.Text = "Enable True Stretched"
+            Label4.Location = New Point(75, 11)
+            Label4.Text = Game
+            GroupBox1.Text = "XDefiant Guide"
+            LinkLabel1.Location = New Point(6, 65)
+            LinkLabel1.Text = "https://TrueStretched.com/XDefiant"
+            Me.BackgroundImage = My.Resources.XDefiant_Background
+            My.Settings.SelectedGame = Game
+            My.Settings.GameLabelLocation = Label4.Location
+            My.Settings.Save()
+
+        Else
+        End If
 
     End Sub
 End Class

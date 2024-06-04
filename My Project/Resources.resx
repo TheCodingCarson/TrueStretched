@@ -121,11 +121,23 @@
   <data name="Valorant Background" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Valorant Background.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Farlight84 Background" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Farlight84 Background.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Apex Continue Screen Button Template 1280x1024" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Apex Continue Screen Button Template 1280x1024.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Apex Continue Screen Button Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Apex Continue Screen Button Template.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Apex Continue Screen Button Template 1440x1080" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Apex Continue Screen Button Template 1440x1080.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Farlight84 Background" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Farlight84 Background.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Apex Continue Screen Button Template 800x600" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Apex Continue Screen Button Template 800x600.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Apex Continue Screen Button Template 1280x960" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Apex Continue Screen Button Template 1280x960.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Apex Background" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Apex Background.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -139,16 +151,10 @@
   <data name="Apex Continue Screen Button Template 1024x768" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Apex Continue Screen Button Template 1024x768.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Apex Continue Screen Button Template 1280x1024" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Apex Continue Screen Button Template 1280x1024.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="XDefiant Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\XDefiant Logo.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Apex Continue Screen Button Template 1280x960" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Apex Continue Screen Button Template 1280x960.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Apex Continue Screen Button Template 1440x1080" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Apex Continue Screen Button Template 1440x1080.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Apex Continue Screen Button Template 800x600" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Apex Continue Screen Button Template 800x600.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="XDefiant Background" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\XDefiant Background.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
