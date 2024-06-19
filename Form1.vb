@@ -450,6 +450,10 @@ Public Class Form1
                     ' Valorant Launch Parameters
                     Dim valstartInfo As New ProcessStartInfo()
                     Dim valinstallLocation As String = FindInstallLocation("Valorant")
+
+                    ' If Riot Client Path isn't found show Form to manually set it
+
+
                     Dim valexeLocation As String = valinstallLocation + "\RiotClientServices.exe"
                     valstartInfo.FileName = valexeLocation
                     valstartInfo.WorkingDirectory = valinstallLocation
