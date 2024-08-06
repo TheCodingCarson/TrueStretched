@@ -75,12 +75,15 @@ Public Class SettingsForm
             .ShowAlways = True
         }
 
+        ' Valorant Specific Tooltips
         If My.Settings.SelectedGame = "Valorant" Then
             toolTip1.SetToolTip(Me.CheckBox1, "Will Always Be Applied If Widescreen Fix Is Enabled")
             toolTip1.SetToolTip(Me.CheckBox2, "Will Not Be Applied If Widescreen Fix Is Enabled")
         Else
-
         End If
+
+        ' General Tooltips
+        toolTip1.SetToolTip(Me.ComboBox2, "Any Resolution Can Be Entered As WIDTHxHEIGHT")
 
         ' Log Completed Gettings All Settings
         TrueLog("Info", "Completed Loading all settings for Settings Page")
