@@ -45,6 +45,8 @@ Partial Class Form1
         Label5 = New Label()
         Farlight84PictureBox = New PictureBox()
         GroupBox3 = New GroupBox()
+        Label8 = New Label()
+        NumericUpDown1 = New NumericUpDown()
         Label6 = New Label()
         DelayValSwapCheckBox = New CheckBox()
         WidescreenFixCheckBox = New CheckBox()
@@ -59,6 +61,7 @@ Partial Class Form1
         GroupBox1.SuspendLayout()
         CType(Farlight84PictureBox, ISupportInitialize).BeginInit()
         GroupBox3.SuspendLayout()
+        CType(NumericUpDown1, ISupportInitialize).BeginInit()
         CType(XDefiantPictureBox, ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -207,7 +210,7 @@ Partial Class Form1
         LinkLabel1.LinkColor = Color.White
         LinkLabel1.Location = New Point(6, 65)
         LinkLabel1.Name = "LinkLabel1"
-        LinkLabel1.Size = New Size(192, 15)
+        LinkLabel1.Size = New Size(193, 15)
         LinkLabel1.TabIndex = 1
         LinkLabel1.TabStop = True
         LinkLabel1.Text = "https://TrueStretched.com/*Game*"
@@ -234,6 +237,8 @@ Partial Class Form1
         ' GroupBox3
         ' 
         GroupBox3.BackColor = Color.Transparent
+        GroupBox3.Controls.Add(Label8)
+        GroupBox3.Controls.Add(NumericUpDown1)
         GroupBox3.Controls.Add(Label6)
         GroupBox3.Controls.Add(DelayValSwapCheckBox)
         GroupBox3.Controls.Add(WidescreenFixCheckBox)
@@ -247,12 +252,28 @@ Partial Class Form1
         GroupBox3.Text = "Valorant Extras"
         GroupBox3.Visible = False
         ' 
+        ' Label8
+        ' 
+        Label8.AutoSize = True
+        Label8.Location = New Point(59, 133)
+        Label8.Name = "Label8"
+        Label8.Size = New Size(138, 15)
+        Label8.TabIndex = 6
+        Label8.Text = "Time to delay in seconds"
+        ' 
+        ' NumericUpDown1
+        ' 
+        NumericUpDown1.Location = New Point(6, 128)
+        NumericUpDown1.Name = "NumericUpDown1"
+        NumericUpDown1.Size = New Size(47, 23)
+        NumericUpDown1.TabIndex = 5
+        ' 
         ' Label6
         ' 
         Label6.AutoSize = True
         Label6.Location = New Point(6, 105)
         Label6.Name = "Label6"
-        Label6.Size = New Size(198, 15)
+        Label6.Size = New Size(197, 15)
         Label6.TabIndex = 4
         Label6.Text = "Fixes Stretching Before Game Opens"
         ' 
@@ -271,7 +292,7 @@ Partial Class Form1
         WidescreenFixCheckBox.AutoSize = True
         WidescreenFixCheckBox.Location = New Point(6, 22)
         WidescreenFixCheckBox.Name = "WidescreenFixCheckBox"
-        WidescreenFixCheckBox.Size = New Size(151, 19)
+        WidescreenFixCheckBox.Size = New Size(150, 19)
         WidescreenFixCheckBox.TabIndex = 2
         WidescreenFixCheckBox.Text = "Widescreen Monitor Fix"
         WidescreenFixCheckBox.UseVisualStyleBackColor = True
@@ -281,7 +302,7 @@ Partial Class Form1
         Label7.AutoSize = True
         Label7.Location = New Point(6, 44)
         Label7.Name = "Label7"
-        Label7.Size = New Size(197, 15)
+        Label7.Size = New Size(196, 15)
         Label7.TabIndex = 1
         Label7.Text = "Fixes widescreen monitor black bars"
         ' 
@@ -333,6 +354,7 @@ Partial Class Form1
         CType(Farlight84PictureBox, ISupportInitialize).EndInit()
         GroupBox3.ResumeLayout(False)
         GroupBox3.PerformLayout()
+        CType(NumericUpDown1, ISupportInitialize).EndInit()
         CType(XDefiantPictureBox, ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
@@ -361,4 +383,6 @@ Partial Class Form1
     Friend WithEvents DelayValSwapCheckBox As CheckBox
     Friend WithEvents Label6 As Label
     Friend WithEvents XDefiantPictureBox As PictureBox
+    Friend WithEvents Label8 As Label
+    Friend WithEvents NumericUpDown1 As NumericUpDown
 End Class

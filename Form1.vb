@@ -154,6 +154,17 @@ Public Class Form1
         DelayValSwapCheckBox.BackColor = Color.Transparent
         Label6.BackColor = Color.Transparent
 
+        ' -Valorant Delayed Stretchin Time Settings
+        If My.Settings.ValorantDelayStretchFix Then
+            NumericUpDown1.Visible = True
+            Label8.Visible = True
+        ElseIf My.Settings.ValorantDelayStretchFix = False Then
+            NumericUpDown1.Visible = False
+            Label8.Visible = False
+        End If
+        NumericUpDown1.Value = My.Settings.ValorantDelayStretchedTime
+        Label8.BackColor = Color.Transparent
+
         'Tooltips for Game Icons
         Dim toolTip1 As New System.Windows.Forms.ToolTip With {
             .AutoPopDelay = 5000,
@@ -450,10 +461,6 @@ Public Class Form1
                     ' Valorant Launch Parameters
                     Dim valstartInfo As New ProcessStartInfo()
                     Dim valinstallLocation As String = FindInstallLocation("Valorant")
-
-                    ' If Riot Client Path isn't found show Form to manually set it
-
-
                     Dim valexeLocation As String = valinstallLocation + "\RiotClientServices.exe"
                     valstartInfo.FileName = valexeLocation
                     valstartInfo.WorkingDirectory = valinstallLocation
@@ -476,9 +483,9 @@ Public Class Form1
                         Button1.Enabled = False
 
                         If DelayValSwapCheckBox.Checked Then
-                            ' 40 Second Countdown Before Continuing
-                            TrueLog("Info", "Valorant Delayed Stretching Enabled - Waiting 40 Seconds")
-                            Await CountdownTimer(40, True, True)
+                            ' Wait Users Set Seconds Before Continuing
+                            TrueLog("Info", "Valorant Delayed Stretching Enabled - Waiting User Set Seconds")
+                            Await CountdownTimer(My.Settings.ValorantDelayStretchedTime, True, True)
                         Else
                             ' 15 Second Countdown Before Continuing
                             TrueLog("Info", "Valorant Delayed Stretching Disabled - Waiting 15 Seconds")
@@ -1863,11 +1870,21 @@ Public Class Form1
         '-Valorant Widescreen Fix
         GroupBox3.Visible = True
 
-
+        '-Valorant Widescreen Fix checkbox
         If My.Settings.ValorantWidescreenFix = True Then
             WidescreenFixCheckBox.Checked = True
             Button1.Text = "Enable Widescreen Fix"
         End If
+
+        '-Valorant Delayed Stretchin Time Settings
+        If My.Settings.ValorantDelayStretchFix Then
+            NumericUpDown1.Visible = True
+            Label8.Visible = True
+        ElseIf My.Settings.ValorantDelayStretchFix = False Then
+            NumericUpDown1.Visible = False
+            Label8.Visible = False
+        End If
+
         '-End of Valorant Widescreen Fix
 
     End Sub
@@ -1894,6 +1911,15 @@ Public Class Form1
         My.Settings.ValorantDelayStretchFix = DelayValSwapCheckBox.Checked
         My.Settings.Save()
 
+        ' Show/Hide Delayed Time Settings
+        If DelayValSwapCheckBox.Checked Then
+            NumericUpDown1.Visible = True
+            Label8.Visible = True
+        ElseIf DelayValSwapCheckBox.Checked = False Then
+            NumericUpDown1.Visible = False
+            Label8.Visible = False
+        End If
+
     End Sub
 
     Private Sub XDefiantPictureBox_Click(sender As Object, e As EventArgs) Handles XDefiantPictureBox.Click
@@ -1915,6 +1941,14 @@ Public Class Form1
 
         Else
         End If
+
+    End Sub
+
+    Private Sub NumericUpDown1_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown1.ValueChanged
+
+        ' Delayed Valorant Stretching Time NumericUpDown
+        My.Settings.ValorantDelayStretchedTime = NumericUpDown1.Value
+        My.Settings.Save()
 
     End Sub
 End Class
