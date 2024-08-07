@@ -1,4 +1,5 @@
-﻿Imports Microsoft.Win32
+﻿Imports System.Windows.Forms
+Imports Microsoft.Win32
 
 Module FindInstallLocation_Module
 
@@ -30,6 +31,22 @@ Module FindInstallLocation_Module
             installPath = FindInstallPathInDictionary(programName, programRegistryPathsVariations)
         End If
 
+        ' If not found in after all checks let user pick
+        If String.IsNullOrEmpty(installPath) AndAlso programName = "Valorant" Then
+            If String.IsNullOrEmpty(My.Settings.RiotClientServicesFolderManual) Then
+                Using folderBrowser As New FolderBrowserDialog()
+                    folderBrowser.Description = "Choose Folder containing RiotClientServices.exe"
+                    If folderBrowser.ShowDialog() = DialogResult.OK Then
+                        My.Settings.RiotClientServicesFolderManual = StandardizePath(folderBrowser.SelectedPath)
+                        My.Settings.Save()
+                        installPath = StandardizePath(folderBrowser.SelectedPath)
+                    End If
+                End Using
+            Else
+                installPath = My.Settings.RiotClientServicesFolderManual
+            End If
+        End If
+
         ' If the install path is still not found, return a message indicating failure
         If String.IsNullOrEmpty(installPath) Then
             Return $"Installation path for '{programName}' not found."
@@ -59,6 +76,7 @@ Module FindInstallLocation_Module
             If Not String.IsNullOrEmpty(installPath) Then
                 Return StandardizePath(installPath)
             End If
+
         End If
 
         Return Nothing
