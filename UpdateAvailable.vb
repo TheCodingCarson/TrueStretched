@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Net.Http
 Imports System.Reflection
+Imports System.Reflection.Emit
 Imports System.Windows.Forms
 Imports Newtonsoft.Json.Linq
 
@@ -125,10 +126,21 @@ Public Class UpdateAvailable
             ' Check if an update is available and safely update Button1.Enabled on the UI thread
             Dim updateAvailable As Boolean = (newVersion > currentVersion) AndAlso (isBeta = False OrElse (isBeta = True AndAlso betaSetting = True)) OrElse (newVersion = currentVersion AndAlso isBeta = True AndAlso betaSetting = True AndAlso newBetaLetter > currentBetaLetter)
 
+            ' No Update Avaliable
             If Not updateAvailable Then
                 Me.Invoke(Sub() Text = "True Stretched - No Updates Available")
                 Me.Invoke(Sub() Label1.Text = "Current Version Up to Date:")
                 Me.Invoke(Sub() Label2.Location = New Point(179, 9))
+
+                'Set Version label to Current Version (Fixes issue when build is higher then public build)
+                currentVersionLong = Assembly.GetExecutingAssembly().GetName().Version
+                Dim currentVersionString As String = String.Format("{0}.{1}.{2}", currentVersionLong.Major, currentVersionLong.Minor, currentVersionLong.Build)
+
+                If My.Settings.BetaBuild = True Then
+                    Label2.Text = "Version: " & currentVersionString & My.Settings.BetaLetter & " Beta"
+                Else
+                    Label2.Text = "Version: " & currentVersionString
+                End If
 
                 Me.Invoke(Sub() Button1.Enabled = False)
                 Me.Invoke(Sub() Button2.Enabled = False)
