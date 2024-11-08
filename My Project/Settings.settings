@@ -39,10 +39,10 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BetaBuild" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="BetaLetter" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">a</Value>
     </Setting>
     <Setting Name="SkippedVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
