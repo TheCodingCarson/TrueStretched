@@ -56,9 +56,6 @@
     <Setting Name="ValorantFirstTime" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ValorantDelayStretchFix" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="ValorantDelayStretchedTime" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">45</Value>
     </Setting>
