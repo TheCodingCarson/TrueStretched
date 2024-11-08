@@ -85,17 +85,22 @@ Public Class Form1
             Me.Text = "True Stretched (Beta " + My.Settings.BetaLetter.ToUpper() + ")"
         End If
 
-        ' Ensure Native & Stretched Resolutions Don't match (Fixes "Disable True Stretched" being the only option)
-        If GetGameMonitor("Resolution") = My.Settings.StretchedResolution Then
-            My.Settings.StretchedResolution = "1440x1080"
-            My.Settings.Save()
-        Else
-        End If
+        'Only Check for Saved Monitor Information if program has completed first run
+        If My.Settings.FirstRun = False Then
 
-        'Check to see if opening long already enabled
-        If GetMonitorResolution(, GetGameMonitor("DeviceName")) = My.Settings.StretchedResolution Then
-            StretchedEnabled = True
-            Button1.Text = "Disable True Stretched"
+            ' Ensure Native & Stretched Resolutions Don't match (Fixes "Disable True Stretched" being the only option)
+            If GetGameMonitor("Resolution") = My.Settings.StretchedResolution Then
+                My.Settings.StretchedResolution = "1440x1080"
+                My.Settings.Save()
+            Else
+            End If
+
+            'Check to see if opening long already enabled
+            If GetMonitorResolution(, GetGameMonitor("DeviceName")) = My.Settings.StretchedResolution Then
+                StretchedEnabled = True
+                Button1.Text = "Disable True Stretched"
+            End If
+
         End If
 
         'Load Last Selected Game & Guide
@@ -147,37 +152,30 @@ Public Class Form1
         Label5.BackColor = Color.Transparent
         LinkLabel1.BackColor = Color.Transparent
         WidescreenFixCheckBox.BackColor = Color.Transparent
-        Label7.BackColor = Color.Transparent
-
-        '-Valorant Delayed Stretching Fix Checkbox
-        DelayValSwapCheckBox.Checked = My.Settings.ValorantDelayStretchFix
-        DelayValSwapCheckBox.BackColor = Color.Transparent
-        Label6.BackColor = Color.Transparent
-
-        ' -Valorant Delayed Stretchin Time Settings
-        If My.Settings.ValorantDelayStretchFix Then
-            NumericUpDown1.Visible = True
-            Label8.Visible = True
-        ElseIf My.Settings.ValorantDelayStretchFix = False Then
-            NumericUpDown1.Visible = False
-            Label8.Visible = False
-        End If
         NumericUpDown1.Value = My.Settings.ValorantDelayStretchedTime
         Label8.BackColor = Color.Transparent
+        Label9.BackColor = Color.Transparent
 
-        'Tooltips for Game Icons
+        'Tooltips Settings
         Dim toolTip1 As New System.Windows.Forms.ToolTip With {
-            .AutoPopDelay = 5000,
-            .InitialDelay = 1000,
+            .AutoPopDelay = 10000,
+            .InitialDelay = 500,
             .ReshowDelay = 500,
             .ShowAlways = True
         }
 
+        'Tooltips for Game Icons
         toolTip1.SetToolTip(Me.ApexPictureBox, "Apex Legends")
         toolTip1.SetToolTip(Me.Farlight84PictureBox, "Farlight 84")
         toolTip1.SetToolTip(Me.FortnitePictureBox, "Fortnite")
         toolTip1.SetToolTip(Me.ValorantPictureBox, "Valorant")
         toolTip1.SetToolTip(Me.XDefiantPictureBox, "XDefiant")
+
+        'General Tooltips
+        toolTip1.SetToolTip(Me.PictureBox2, "Settings")
+        toolTip1.SetToolTip(Me.Label9, "Fixes Stretching Before Game Opens")
+        toolTip1.SetToolTip(Me.NumericUpDown1, "Fixes Stretching Before Game Opens")
+        toolTip1.SetToolTip(Me.WidescreenFixCheckBox, "Enabling This Options **DISABLES** Stretching The Resolution!!!")
 
         'Check for Updates on Startup (Make Sure Application Has Network Access)
         If My.Settings.CheckForUpdateOnStart = True Then
@@ -293,10 +291,16 @@ Public Class Form1
 
     Private Async Sub Button1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles Button1.Click
 
-        ' Get Stretched and Native Resoultion in and format for needed
+        ' Get Stretched in format needed
         Dim StretchedResolution = ParseResolution(My.Settings.StretchedResolution)
-        Dim NativeResolution = ParseResolution(GetGameMonitor("MaxResolution"))
 
+        ' Get Native Resoultion in format needed (Allow Global Variable Override)
+        Dim NativeResolution
+        If (OverrideNative) Then
+            NativeResolution = ParseResolution(OverrideNativeRes)
+        Else
+            NativeResolution = ParseResolution(GetGameMonitor("MaxResolution"))
+        End If
 
         '---Apex Legends Mode Code Starts---
         If Game = "Apex Legends" Then
@@ -482,15 +486,9 @@ Public Class Form1
                         Button1.Text = "Enabling True Stretched"
                         Button1.Enabled = False
 
-                        If DelayValSwapCheckBox.Checked Then
-                            ' Wait Users Set Seconds Before Continuing
-                            TrueLog("Info", "Valorant Delayed Stretching Enabled - Waiting User Set Seconds")
-                            Await CountdownTimer(My.Settings.ValorantDelayStretchedTime, True, True)
-                        Else
-                            ' 15 Second Countdown Before Continuing
-                            TrueLog("Info", "Valorant Delayed Stretching Disabled - Waiting 15 Seconds")
-                            Await CountdownTimer(15, True, True)
-                        End If
+                        ' Wait Users Set Seconds Before Continuing
+                        TrueLog("Info", "Valorant Delayed Stretching Enabled - Waiting " + My.Settings.ValorantDelayStretchedTime + " Seconds")
+                        Await CountdownTimer(My.Settings.ValorantDelayStretchedTime, True, True)
 
                         ' Renable Main Button
                         Button1.Enabled = True
@@ -1876,15 +1874,6 @@ Public Class Form1
             Button1.Text = "Enable Widescreen Fix"
         End If
 
-        '-Valorant Delayed Stretchin Time Settings
-        If My.Settings.ValorantDelayStretchFix Then
-            NumericUpDown1.Visible = True
-            Label8.Visible = True
-        ElseIf My.Settings.ValorantDelayStretchFix = False Then
-            NumericUpDown1.Visible = False
-            Label8.Visible = False
-        End If
-
         '-End of Valorant Widescreen Fix
 
     End Sub
@@ -1901,23 +1890,6 @@ Public Class Form1
         Else
             WidescreenFixCheckBox.Checked = False
             Button1.Text = "Enable True Stretched"
-        End If
-
-    End Sub
-
-    Private Sub DelayValSwapCheckBox_CheckedChanged(sender As Object, e As EventArgs) Handles DelayValSwapCheckBox.CheckedChanged
-
-        '-Valorant Delayed Stretching Fix Checkbox
-        My.Settings.ValorantDelayStretchFix = DelayValSwapCheckBox.Checked
-        My.Settings.Save()
-
-        ' Show/Hide Delayed Time Settings
-        If DelayValSwapCheckBox.Checked Then
-            NumericUpDown1.Visible = True
-            Label8.Visible = True
-        ElseIf DelayValSwapCheckBox.Checked = False Then
-            NumericUpDown1.Visible = False
-            Label8.Visible = False
         End If
 
     End Sub
