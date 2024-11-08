@@ -49,6 +49,7 @@ Module FindInstallLocation_Module
 
         ' If the install path is still not found, return a message indicating failure
         If String.IsNullOrEmpty(installPath) Then
+            ' **** UPDATE THIS - Don't know what I was thinking this shouldn't return a sentence with a variable if it fails to find the install (that's just dumb) ****
             Return $"Installation path for '{programName}' not found."
         Else
             Return installPath
