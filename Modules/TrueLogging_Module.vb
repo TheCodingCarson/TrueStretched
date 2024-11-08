@@ -106,11 +106,4 @@ Module TrueLogging_Module
         File.AppendAllText(LogFilePath, startupInfo.ToString())
     End Sub
 
-    ' Example helper method to check if the current user is an administrator
-    Private Function IsUserAdministrator() As Boolean
-        Dim identity = System.Security.Principal.WindowsIdentity.GetCurrent()
-        Dim principal = New System.Security.Principal.WindowsPrincipal(identity)
-        Return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator)
-    End Function
-
 End Module
