@@ -6,6 +6,10 @@
     "True Stretched (Dev Mode)": {
       "commandName": "Project",
       "commandLineArgs": "--Dev"
+    },
+    "True Stretched (Native Override)": {
+      "commandName": "Project",
+      "commandLineArgs": "--OverrideNative 9999x9999"
     }
   }
 }
