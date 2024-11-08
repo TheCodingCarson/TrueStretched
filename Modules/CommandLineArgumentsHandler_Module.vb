@@ -1,4 +1,6 @@
-﻿Namespace My
+﻿Imports System.Text.RegularExpressions
+
+Namespace My
 
     Partial Friend Class MyApplication
 
@@ -9,7 +11,8 @@
             Dim debugoutputargs As New List(Of String)
 
             ' test
-            For Each arg As String In args
+            For i As Integer = 0 To args.Length - 1
+                Dim arg = args(i)
                 Select Case arg
                     Case "--Dev"
                         DevBuild = True
@@ -17,10 +20,37 @@
                     Case "--AutoDisable"
                         AutoDisable = True
                         debugoutputargs.Add("--AutoDisable")
+                    Case "--OverrideNative"
+                        ' Regular expression to match a valid resolution such as "1920x1080"
+                        Dim resolutionPattern As String = "^\d+x\d+$"
+                        Dim regex As New Regex(resolutionPattern)
+
+                        ' Check if the next argument exists and matches a valid resolution format
+                        If i + 1 < args.Length Then
+                            Dim nextArg = args(i + 1)
+
+                            ' Validate if the next argument matches the required resolution format (e.g., "1920x1080")
+                            If regex.IsMatch(nextArg) Then
+                                ' Successful validation of "--OverrideNative" argument format
+                                OverrideNative = True
+                                OverrideNativeRes = nextArg
+                                debugoutputargs.Add("--OverrideNative")
+                                debugoutputargs.Add("OverrideNative Resolution: " & OverrideNativeRes)
+                                i += 1 ' Skip over the resolution part in the next iteration
+                            Else
+                                ' The next argument is not a valid resolution
+                                debugoutputargs.Add("--OverrideNative")
+                                debugoutputargs.Add("Invalid or missing resolution after --OverrideNative, continuing...")
+                            End If
+                        Else
+                            ' No next argument exists (no resolution provided)
+                            debugoutputargs.Add("--OverrideNative")
+                            debugoutputargs.Add("No resolution provided after --OverrideNative, continuing...")
+                        End If
                 End Select
             Next
 
-            #If DEBUG Then
+#If DEBUG Then
             If debugoutputargs IsNot Nothing Then
                 Debug.WriteLine("")
                 Debug.WriteLine("INFO: Received command-line argument:")
@@ -31,7 +61,7 @@
             Else
                 Debug.WriteLine("INFO: Didn't receive command-line arguments")
             End If
-            #End If
+#End If
 
             'Start TrueLog
             Dim TrueLogStartArgsList As String = String.Join(" ", debugoutputargs)
