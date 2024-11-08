@@ -69,8 +69,8 @@ Public Class SettingsForm
 
         'Tooltips for options
         Dim toolTip1 As New System.Windows.Forms.ToolTip With {
-            .AutoPopDelay = 5000,
-            .InitialDelay = 1000,
+            .AutoPopDelay = 10000,
+            .InitialDelay = 500,
             .ReshowDelay = 500,
             .ShowAlways = True
         }
@@ -83,6 +83,9 @@ Public Class SettingsForm
         End If
 
         ' General Tooltips
+        toolTip1.SetToolTip(Me.Button2, "Resets All Saved Monitor Settings & Rechecks Monitors")
+        toolTip1.SetToolTip(Me.Label1, "Native Resolution Can Be Overrode Using '--OverrideNative WIDTHxHEIGHT' As a Start Argument")
+        toolTip1.SetToolTip(Me.TextBox1, "Native Resolution Can Be Overrode Using '--OverrideNative WIDTHxHEIGHT' As a Start Argument")
         toolTip1.SetToolTip(Me.ComboBox2, "Any Resolution Can Be Entered As WIDTHxHEIGHT")
 
         ' Log Completed Gettings All Settings
@@ -172,8 +175,12 @@ Public Class SettingsForm
             ComboBox3.SelectedValue = primarySelection
         End If
 
-        ' Update TextBox1 Native Resolution Display
-        TextBox1.Text = GetGameMonitor("MaxResolution")
+        ' Update TextBox1 Native Resolution Display (Allow Global Variable Override)
+        If (OverrideNative) Then
+            TextBox1.Text = OverrideNativeRes
+        Else
+            TextBox1.Text = GetGameMonitor("MaxResolution")
+        End If
 
         ' Set FormLoading to False To Allow Gaming Monitor to be set by user
         FormLoading = False
@@ -333,8 +340,12 @@ Public Class SettingsForm
         ' Save Primary monitor to Game Monitor
         My.Settings.GameMonitor = GetPrimaryMonitor()
 
-        ' GetPrimaryMonitor("Resolution") to update primary monitor's resolution correctly.
-        TextBox1.Text = GetPrimaryMonitor("MaxResolution")
+        ' GetPrimaryMonitor("Resolution") to update primary monitor's resolution correctly. (Allowing for Global Override Variable)
+        If (OverrideNative) Then
+            TextBox1.Text = OverrideNativeRes
+        Else
+            TextBox1.Text = GetPrimaryMonitor("MaxResolution")
+        End If
 
         ' Save settings
         My.Settings.Save()
@@ -355,8 +366,12 @@ Public Class SettingsForm
             My.Settings.GameMonitor = monitorFullInfo
             My.Settings.Save()
 
-            ' Update Native Display Resolution Textbox
-            TextBox1.Text = GetGameMonitor("MaxResolution")
+            ' Update Native Display Resolution Textbox (Allow Global Variable Override)
+            If (OverrideNative) Then
+                TextBox1.Text = OverrideNativeRes
+            Else
+                TextBox1.Text = GetGameMonitor("MaxResolution")
+            End If
 
         End If
 
