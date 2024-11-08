@@ -45,12 +45,10 @@ Partial Class Form1
         Label5 = New Label()
         Farlight84PictureBox = New PictureBox()
         GroupBox3 = New GroupBox()
+        Label9 = New Label()
         Label8 = New Label()
         NumericUpDown1 = New NumericUpDown()
-        Label6 = New Label()
-        DelayValSwapCheckBox = New CheckBox()
         WidescreenFixCheckBox = New CheckBox()
-        Label7 = New Label()
         XDefiantPictureBox = New PictureBox()
         CType(PictureBox2, ISupportInitialize).BeginInit()
         CType(PictureBox1, ISupportInitialize).BeginInit()
@@ -237,25 +235,33 @@ Partial Class Form1
         ' GroupBox3
         ' 
         GroupBox3.BackColor = Color.Transparent
+        GroupBox3.Controls.Add(Label9)
         GroupBox3.Controls.Add(Label8)
         GroupBox3.Controls.Add(NumericUpDown1)
-        GroupBox3.Controls.Add(Label6)
-        GroupBox3.Controls.Add(DelayValSwapCheckBox)
         GroupBox3.Controls.Add(WidescreenFixCheckBox)
-        GroupBox3.Controls.Add(Label7)
         GroupBox3.ForeColor = Color.White
-        GroupBox3.Location = New Point(14, 203)
+        GroupBox3.Location = New Point(14, 240)
         GroupBox3.Name = "GroupBox3"
-        GroupBox3.Size = New Size(221, 162)
+        GroupBox3.Size = New Size(221, 125)
         GroupBox3.TabIndex = 24
         GroupBox3.TabStop = False
         GroupBox3.Text = "Valorant Extras"
         GroupBox3.Visible = False
         ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label9.Location = New Point(6, 69)
+        Label9.Name = "Label9"
+        Label9.Size = New Size(123, 15)
+        Label9.TabIndex = 7
+        Label9.Text = "Game Opening Delay:"
+        ' 
         ' Label8
         ' 
         Label8.AutoSize = True
-        Label8.Location = New Point(59, 133)
+        Label8.Location = New Point(59, 93)
         Label8.Name = "Label8"
         Label8.Size = New Size(138, 15)
         Label8.TabIndex = 6
@@ -263,48 +269,21 @@ Partial Class Form1
         ' 
         ' NumericUpDown1
         ' 
-        NumericUpDown1.Location = New Point(6, 128)
+        NumericUpDown1.Location = New Point(6, 88)
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(47, 23)
         NumericUpDown1.TabIndex = 5
         ' 
-        ' Label6
-        ' 
-        Label6.AutoSize = True
-        Label6.Location = New Point(6, 105)
-        Label6.Name = "Label6"
-        Label6.Size = New Size(197, 15)
-        Label6.TabIndex = 4
-        Label6.Text = "Fixes Stretching Before Game Opens"
-        ' 
-        ' DelayValSwapCheckBox
-        ' 
-        DelayValSwapCheckBox.AutoSize = True
-        DelayValSwapCheckBox.Location = New Point(6, 83)
-        DelayValSwapCheckBox.Name = "DelayValSwapCheckBox"
-        DelayValSwapCheckBox.Size = New Size(112, 19)
-        DelayValSwapCheckBox.TabIndex = 3
-        DelayValSwapCheckBox.Text = "Delay Stretching"
-        DelayValSwapCheckBox.UseVisualStyleBackColor = True
-        ' 
         ' WidescreenFixCheckBox
         ' 
         WidescreenFixCheckBox.AutoSize = True
-        WidescreenFixCheckBox.Location = New Point(6, 22)
+        WidescreenFixCheckBox.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        WidescreenFixCheckBox.Location = New Point(6, 26)
         WidescreenFixCheckBox.Name = "WidescreenFixCheckBox"
-        WidescreenFixCheckBox.Size = New Size(150, 19)
+        WidescreenFixCheckBox.Size = New Size(152, 19)
         WidescreenFixCheckBox.TabIndex = 2
         WidescreenFixCheckBox.Text = "Widescreen Monitor Fix"
         WidescreenFixCheckBox.UseVisualStyleBackColor = True
-        ' 
-        ' Label7
-        ' 
-        Label7.AutoSize = True
-        Label7.Location = New Point(6, 44)
-        Label7.Name = "Label7"
-        Label7.Size = New Size(196, 15)
-        Label7.TabIndex = 1
-        Label7.Text = "Fixes widescreen monitor black bars"
         ' 
         ' XDefiantPictureBox
         ' 
@@ -378,11 +357,9 @@ Partial Class Form1
     Friend WithEvents LinkLabel1 As LinkLabel
     Friend WithEvents Farlight84PictureBox As PictureBox
     Friend WithEvents GroupBox3 As GroupBox
-    Friend WithEvents Label7 As Label
     Friend WithEvents WidescreenFixCheckBox As CheckBox
-    Friend WithEvents DelayValSwapCheckBox As CheckBox
-    Friend WithEvents Label6 As Label
     Friend WithEvents XDefiantPictureBox As PictureBox
     Friend WithEvents Label8 As Label
     Friend WithEvents NumericUpDown1 As NumericUpDown
+    Friend WithEvents Label9 As Label
 End Class
