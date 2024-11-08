@@ -190,41 +190,32 @@ Public Module MonitorManagement_Module
     End Function
 
     Public Function GetMonitorMaxResolution(display As Display) As String
-        Dim scope As New ManagementScope()
-        Dim query As New ObjectQuery("SELECT * FROM CIM_VideoControllerResolution")
+        Dim devMode As New DEVMODE
+        devMode.dmSize = CShort(Marshal.SizeOf(GetType(DEVMODE)))
 
-        ' Use a ManagementObjectSearcher to execute the WMI query
-        Using searcher As New ManagementObjectSearcher(scope, query)
-            Dim results As ManagementObjectCollection = searcher.Get()
-            Dim maxHResolution As UInt32 = 0
-            Dim maxVResolution As UInt32 = 0
+        ' Adjust the DeviceName to use in EnumDisplaySettings
+        Dim deviceNameAdjusted As String = display.DisplayFullName.Split("\Monitor")(0)
 
-            ' Iterate through each result item
-            For Each item As ManagementObject In results
-                ' Get the horizontal and vertical resolutions from the current item
-                Dim horizontalResolution As UInt32 = CType(item("HorizontalResolution"), UInt32)
-                Dim verticalResolution As UInt32 = CType(item("VerticalResolution"), UInt32)
+        Dim maxHResolution As Integer = 0
+        Dim maxVResolution As Integer = 0
+        Dim i As Integer = 0
 
-                ' Update the maximum horizontal resolution if the current one is greater
-                If horizontalResolution > maxHResolution Then
-                    maxHResolution = horizontalResolution
-                End If
-
-                ' Update the maximum vertical resolution if the current one is greater
-                If verticalResolution > maxVResolution Then
-                    maxVResolution = verticalResolution
-                End If
-            Next
-
-            ' Return the maximum resolution as a string in the format "WidthxHeight"
-            If maxHResolution > 0 AndAlso maxVResolution > 0 Then
-                Return $"{maxHResolution}x{maxVResolution}"
-            Else
-                ' Log Error if no valid resolution was found
-                TrueLog("Error", $"Unable to retrieve display {display.DeviceName} max resolution")
-                Return "0x0"
+        ' Enumerate all display settings for the given device
+        While EnumDisplaySettings(deviceNameAdjusted, i, devMode)
+            If devMode.dmPelsWidth > maxHResolution OrElse (devMode.dmPelsWidth = maxHResolution AndAlso devMode.dmPelsHeight > maxVResolution) Then
+                maxHResolution = devMode.dmPelsWidth
+                maxVResolution = devMode.dmPelsHeight
             End If
-        End Using
+            i += 1
+        End While
+
+        ' Check max resolution result
+        If maxHResolution > 0 AndAlso maxVResolution > 0 Then
+            Return $"{maxHResolution}x{maxVResolution}"
+        Else
+            TrueLog("Error", $"Unable to retrieve max resolution for display {display.DeviceName}.")
+            Return "0x0"
+        End If
     End Function
 
     Private Function GetMonitorLocation(CurrentDisplay As Display)
@@ -384,6 +375,8 @@ Public Module MonitorManagement_Module
                 Return targetMonitor.HardwareID
             Case "resolution"
                 Return targetMonitor.Resolution
+            Case "maxresolution"
+                Return targetMonitor.MaxResolution
             Case "location"
                 Return targetMonitor.Location
             Case "orientation"
@@ -603,12 +596,15 @@ Public Module MonitorManagement_Module
     ' <param name="detailAttribute">Optional. The specific detail to retrieve. If omitted, returns all details.</param>
     ' <returns>A string containing the requested monitor information.</returns>
     Public Function GetSavedMonitor(Optional ByVal identifierAttribute As String = "Primary", Optional ByVal detailAttribute As String = "") As String
-        Dim savedInfo As String = If(identifierAttribute.Equals("Gaming", StringComparison.OrdinalIgnoreCase), My.Settings.GameMonitor, My.Settings.Monitors)
-        If String.IsNullOrEmpty(savedInfo) Then
+        Dim savedInfo As String
+
+        Try
+            savedInfo = If(identifierAttribute.Equals("Gaming", StringComparison.OrdinalIgnoreCase), My.Settings.GameMonitor, My.Settings.Monitors)
+        Catch ex As Exception
             ' Log Error
             TrueLog("Error", "Game Monitor information not found to save")
             Return "Monitor information not found."
-        End If
+        End Try
 
         Dim monitors As New List(Of Dictionary(Of String, String))()
         Dim monitorLines As String() = savedInfo.Split(New String() {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
