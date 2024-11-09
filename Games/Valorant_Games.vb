@@ -1,5 +1,4 @@
 ﻿Imports System.IO
-Imports System.Threading
 Imports System.Windows.Forms
 
 Module Valorant_Games
@@ -19,13 +18,14 @@ Module Valorant_Games
     ' Notes: Game needs to be closed before running!
     '
     ' {-Summary-}
+    Public ValorantProcess As Process = Nothing
 
-    Public Function EnableValorantStretched()
+    Public Async Function EnableValorantStretched() As Task(Of Boolean)
         ' Get Stretched in format needed
         Dim StretchedResolution = ParseResolution(My.Settings.StretchedResolution)
 
         ' Get Native Resoultion in format needed (Allow Global Variable Override)
-        Dim NativeResolution
+        Dim NativeResolution As (Width As Integer, Height As Integer)
         If (OverrideNative) Then
             NativeResolution = ParseResolution(OverrideNativeRes)
         Else
@@ -65,23 +65,45 @@ Module Valorant_Games
             Form1.Label3.Text = "Starting Valorant"
 
             ' Launch Valorant
-            Dim proc As Process = Nothing
-            proc = Process.Start(valstartInfo)
-
-            ' Wait for Valorant to Open (***Should do this better***)
-            Form1.Label3.Text = "Waiting 45s For Valorant"
-            Thread.Sleep(45000) ' Wait 35 Seconds for Valorant to Open
+            ValorantProcess = Process.Start(valstartInfo)
 
             ' Check if Valorant started successfully
-            If proc IsNot Nothing AndAlso Not proc.HasExited Then
+            Dim WaitTime As Integer = 60
+            Dim ValStarted As Boolean = False
+            Dim WaitTimeExpired As Boolean = False
+            Do
+                ' Update Status Label
+                Form1.Label3.Text = "Waiting for Valorant: " + WaitTime.ToString() + "s"
+
+                If WaitTime = 0 Then
+                    ' Valorant Failed to Open in Time
+                    WaitTimeExpired = True
+                Else
+                    WaitTime -= 1
+
+                    ' Check for Valorant Process
+                    If ValorantProcess IsNot Nothing AndAlso Not ValorantProcess.HasExited Then
+                        ' Valorant Is Running
+                        ValStarted = True
+                        ' End While Loop
+                        WaitTimeExpired = True
+                    End If
+                End If
+
+                Await Task.Delay(1000) ' Wait 1 Second Before looping
+            Loop Until WaitTimeExpired
+
+            If ValStarted Then
                 ' Log Valorant Successful Start to File
                 TrueLog("Info", "Valorant Started Successfully")
 
                 ' Return True for Succesfully Enabled Stretch
                 Return True
-            Else
+
+            Else ' Valorant Failed to Open in Time
+
                 ' Log Failed to Start Valorant to File
-                TrueLog("Error", "Valorant Failed to Start")
+                TrueLog("Error", "Valorant Failed to Start after 60 seconds")
 
                 ' Reutrn to Native Resolution
                 SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
@@ -92,6 +114,7 @@ Module Valorant_Games
 
                 ' Return False for Failed to Stretch
                 Return False
+
             End If
 
         Else
@@ -134,6 +157,14 @@ Module Valorant_Games
         ValorantConfigFileSwitch()
         TrueLog("Info", "Completed Updating Valorant Config File!")
         StretchedEnabled = False
+
+        ' Stop Check For Window Timer if Running
+        If Form1.CheckWindowTimer.Enabled Then
+            Form1.CheckWindowTimer.Stop()
+        End If
+
+        ' Reset Valorant Process to 'Nothing'
+        ValorantProcess = Nothing
 
         ' Log Completed Disabling Valorant Stretched to File
         TrueLog("Info", "Completed Disabling Valorant True Stretched Res!")
