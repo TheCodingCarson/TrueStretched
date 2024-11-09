@@ -1,5 +1,5 @@
 ﻿Imports System.IO
-Imports System.Reflection.Emit
+Imports System.Threading
 Imports System.Windows.Forms
 
 Module Valorant_Games
@@ -20,7 +20,7 @@ Module Valorant_Games
     '
     ' {-Summary-}
 
-    Public Function EnableValorantStretched() As Boolean
+    Public Function EnableValorantStretched()
         ' Get Stretched in format needed
         Dim StretchedResolution = ParseResolution(My.Settings.StretchedResolution)
 
@@ -64,12 +64,13 @@ Module Valorant_Games
             valstartInfo.UseShellExecute = True
             Form1.Label3.Text = "Starting Valorant"
 
-            ' Wait for Valorant to Open
-            Threading.Thread.Sleep(45000) 'Wait 45 seconds
-
             ' Launch Valorant
             Dim proc As Process = Nothing
             proc = Process.Start(valstartInfo)
+
+            ' Wait for Valorant to Open (***Should do this better***)
+            Form1.Label3.Text = "Waiting 45s For Valorant"
+            Thread.Sleep(45000) ' Wait 35 Seconds for Valorant to Open
 
             ' Check if Valorant started successfully
             If proc IsNot Nothing AndAlso Not proc.HasExited Then
