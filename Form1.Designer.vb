@@ -45,9 +45,6 @@ Partial Class Form1
         Label5 = New Label()
         Farlight84PictureBox = New PictureBox()
         GroupBox3 = New GroupBox()
-        Label9 = New Label()
-        Label8 = New Label()
-        NumericUpDown1 = New NumericUpDown()
         WidescreenFixCheckBox = New CheckBox()
         XDefiantPictureBox = New PictureBox()
         CType(PictureBox2, ISupportInitialize).BeginInit()
@@ -59,7 +56,6 @@ Partial Class Form1
         GroupBox1.SuspendLayout()
         CType(Farlight84PictureBox, ISupportInitialize).BeginInit()
         GroupBox3.SuspendLayout()
-        CType(NumericUpDown1, ISupportInitialize).BeginInit()
         CType(XDefiantPictureBox, ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -235,48 +231,20 @@ Partial Class Form1
         ' GroupBox3
         ' 
         GroupBox3.BackColor = Color.Transparent
-        GroupBox3.Controls.Add(Label9)
-        GroupBox3.Controls.Add(Label8)
-        GroupBox3.Controls.Add(NumericUpDown1)
         GroupBox3.Controls.Add(WidescreenFixCheckBox)
         GroupBox3.ForeColor = Color.White
-        GroupBox3.Location = New Point(14, 240)
+        GroupBox3.Location = New Point(14, 305)
         GroupBox3.Name = "GroupBox3"
-        GroupBox3.Size = New Size(221, 125)
+        GroupBox3.Size = New Size(221, 60)
         GroupBox3.TabIndex = 24
         GroupBox3.TabStop = False
         GroupBox3.Text = "Valorant Extras"
         GroupBox3.Visible = False
         ' 
-        ' Label9
-        ' 
-        Label9.AutoSize = True
-        Label9.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Label9.Location = New Point(6, 69)
-        Label9.Name = "Label9"
-        Label9.Size = New Size(123, 15)
-        Label9.TabIndex = 7
-        Label9.Text = "Game Opening Delay:"
-        ' 
-        ' Label8
-        ' 
-        Label8.AutoSize = True
-        Label8.Location = New Point(59, 93)
-        Label8.Name = "Label8"
-        Label8.Size = New Size(138, 15)
-        Label8.TabIndex = 6
-        Label8.Text = "Time to delay in seconds"
-        ' 
-        ' NumericUpDown1
-        ' 
-        NumericUpDown1.Location = New Point(6, 88)
-        NumericUpDown1.Name = "NumericUpDown1"
-        NumericUpDown1.Size = New Size(47, 23)
-        NumericUpDown1.TabIndex = 5
-        ' 
         ' WidescreenFixCheckBox
         ' 
         WidescreenFixCheckBox.AutoSize = True
+        WidescreenFixCheckBox.Enabled = False
         WidescreenFixCheckBox.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         WidescreenFixCheckBox.Location = New Point(6, 26)
         WidescreenFixCheckBox.Name = "WidescreenFixCheckBox"
@@ -333,7 +301,6 @@ Partial Class Form1
         CType(Farlight84PictureBox, ISupportInitialize).EndInit()
         GroupBox3.ResumeLayout(False)
         GroupBox3.PerformLayout()
-        CType(NumericUpDown1, ISupportInitialize).EndInit()
         CType(XDefiantPictureBox, ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
@@ -359,7 +326,4 @@ Partial Class Form1
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents WidescreenFixCheckBox As CheckBox
     Friend WithEvents XDefiantPictureBox As PictureBox
-    Friend WithEvents Label8 As Label
-    Friend WithEvents NumericUpDown1 As NumericUpDown
-    Friend WithEvents Label9 As Label
 End Class
