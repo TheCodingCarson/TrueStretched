@@ -257,8 +257,6 @@ Public Class SettingsForm
         If ComboBox2.Text.Equals(TextBox1.Text) Then
             ComboBox2.Text = My.Settings.StretchedResolution
             ComboBox2.Focus()
-        Else
-            Me.ActiveControl = Nothing
         End If
 
     End Sub
