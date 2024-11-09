@@ -41,7 +41,6 @@ Public Class Form1
     Dim Game As String = My.Settings.SelectedGame
     Dim GPU As String = My.Settings.MainGPU
     Dim StretchedEnabled As Boolean = False
-    Dim IsWindowFound As Boolean = False
     Dim ApexMenuMatchFound As Boolean = False
     Dim AutoCloseCounter As Integer = 5
     Dim AutoMinimizeCounter As Integer = 5
@@ -152,9 +151,6 @@ Public Class Form1
         Label5.BackColor = Color.Transparent
         LinkLabel1.BackColor = Color.Transparent
         WidescreenFixCheckBox.BackColor = Color.Transparent
-        NumericUpDown1.Value = My.Settings.ValorantDelayStretchedTime
-        Label8.BackColor = Color.Transparent
-        Label9.BackColor = Color.Transparent
 
         'Tooltips Settings
         Dim toolTip1 As New System.Windows.Forms.ToolTip With {
@@ -173,8 +169,6 @@ Public Class Form1
 
         'General Tooltips
         toolTip1.SetToolTip(Me.PictureBox2, "Settings")
-        toolTip1.SetToolTip(Me.Label9, "Fixes Stretching Before Game Opens")
-        toolTip1.SetToolTip(Me.NumericUpDown1, "Fixes Stretching Before Game Opens")
         toolTip1.SetToolTip(Me.WidescreenFixCheckBox, "Enabling This Options **DISABLES** Stretching The Resolution!!!")
 
         'Check for Updates on Startup (Make Sure Application Has Network Access)
@@ -295,7 +289,7 @@ Public Class Form1
         Dim StretchedResolution = ParseResolution(My.Settings.StretchedResolution)
 
         ' Get Native Resoultion in format needed (Allow Global Variable Override)
-        Dim NativeResolution
+        Dim NativeResolution As (Width As Integer, Height As Integer)
         If (OverrideNative) Then
             NativeResolution = ParseResolution(OverrideNativeRes)
         Else
@@ -307,8 +301,7 @@ Public Class Form1
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
-                CheckForWindow("Apex Legends")
-                If IsWindowFound = False Then
+                If Not CheckForWindow("Apex Legends") Then
                     Dim url As String = "steam://rungameid/1172470"
                     Dim psi As New ProcessStartInfo(url) With {
                         .UseShellExecute = True
@@ -349,8 +342,7 @@ Public Class Form1
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
-                CheckForWindow("Farlight 84")
-                If IsWindowFound = False Then
+                If Not CheckForWindow("Farlight 84") Then
                     Dim url As String = "steam://rungameid/1928420"
                     Dim psi As New ProcessStartInfo(url) With {
                         .UseShellExecute = True
@@ -401,8 +393,7 @@ Public Class Form1
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
-                CheckForWindow("Fortnite")
-                If IsWindowFound = False Then
+                If Not CheckForWindow("Fortnite") Then
                     Dim url As String = "com.epicgames.launcher://apps/fn%3A4fe75bbc5a674f4f9b356b5c90567da5%3AFortnite?action=launch&silent=true"
                     Dim psi As New ProcessStartInfo(url) With {
                         .UseShellExecute = True
@@ -452,144 +443,39 @@ Public Class Form1
 
             If Button1.Text = "Enable True Stretched" Then 'Enable True Stretched
 
-                ' Log Valorant Start of Enabling Stretched to File
-                TrueLog("Info", "Enabling Valorant Stretched...")
+                ' Disable Enable Button Long Starting Valorant
+                Button1.Text = "Enabling True Stretched"
+                Button1.Enabled = False
 
-                CheckForWindow("VALORANT")
-                If IsWindowFound = False Then
-                    ' Switch Config Files For Stretched
-                    TrueLog("Info", "Valorant isn't running proceeding")
-                    Label3.Text = "Switching Valorant Config"
-                    ValorantConfigFileSwitch()
+                If (EnableValorantStretched()) Then
+                    ' Update Status Label
+                    Label3.ForeColor = Color.Green
+                    Label3.Text = "Valorant True Stretched Enabled!"
 
-                    ' Valorant Launch Parameters
-                    Dim valstartInfo As New ProcessStartInfo()
-                    Dim valinstallLocation As String = FindInstallLocation("Valorant")
-                    Dim valexeLocation As String = valinstallLocation + "\RiotClientServices.exe"
-                    valstartInfo.FileName = valexeLocation
-                    valstartInfo.WorkingDirectory = valinstallLocation
-                    valstartInfo.Arguments = "--launch-product=valorant --launch-patchline=live"
-                    valstartInfo.WindowStyle = ProcessWindowStyle.Normal
-                    valstartInfo.UseShellExecute = True
-                    Label3.Text = "Starting Valorant"
+                    ' Update Button1
+                    Button1.Text = "Disable True Stretched"
 
-                    ' Launch Valorant
-                    Dim proc As Process = Nothing
-                    proc = Process.Start(valstartInfo)
-
-                    ' Check if Valorant started successfully
-                    If proc IsNot Nothing AndAlso Not proc.HasExited Then
-                        ' Log Valorant Successful Start to File
-                        TrueLog("Info", "Valorant Started Successfully")
-
-                        ' Disable Enable Button Long Starting Valorant
-                        Button1.Text = "Enabling True Stretched"
-                        Button1.Enabled = False
-
-                        ' Wait Users Set Seconds Before Continuing
-                        TrueLog("Info", "Valorant Delayed Stretching Enabled - Waiting " + My.Settings.ValorantDelayStretchedTime + " Seconds")
-                        Await CountdownTimer(My.Settings.ValorantDelayStretchedTime, True, True)
-
-                        ' Renable Main Button
-                        Button1.Enabled = True
-
-                        If My.Settings.SetDisplayResolution = True Then
-                            ' Change the resolution of the screen (Unless using Wide Screen Fix then set to native)
-                            '-Widescreen Fix-
-                            If WidescreenFixCheckBox.Checked = True Then
-                                ' Skip changing resolution if Widescreen Fix is enabled
-                                ' Log to File
-                                TrueLog("Info", "Valorant Skipping resolution change, Widescreen Fix is enabled")
-                            Else
-                                '-End of Widescreen Fix-
-                                Label3.Text = "Changing Screen Resolution"
-
-                                ' Log to File
-                                TrueLog("Info", "Changing Monitor Resolution...")
-
-                                SetMonitorResolution(GetGameMonitor("DeviceName"), StretchedResolution.Width, StretchedResolution.Height)
-                                StretchedEnabled = True
-
-                                TrueLog("Info", "Changing Monitor Completed")
-                            End If
-                        End If
-                        ' Switch to True Stretched Valorant - Remove Black Bars & Log to File
-                        TrueLog("Info", "Stretching Valorant...")
-                        RemoveBorderAndMaximizeValorant()
-                        If Label3.Text = "Game is not running!" Then
-                            SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
-                            Label3.ForeColor = Color.Red
-                            Label3.Text = "Game is not running!"
-
-                            ' Log Error
-                            TrueLog("Error", "Stretching Valorant Failed - Game is not running!")
-                        Else
-                            Label3.ForeColor = Color.Green
-                            If WidescreenFixCheckBox.Checked = True Then
-                                ' Set success label depending on enabling "True Stretched Res" or "Widescreen Fix"
-                                Label3.Text = "Successfully enabled Widescreen Fix"
-
-                                ' Log Stretch Success
-                                TrueLog("Info", "Valorant Widescreen Fix Mode Enabled")
-                                TrueLog("Info", "Successfully enabled Widescreen Fix - Stretching Complete!")
-                            Else
-                                Label3.Text = "Successfully enabled True Stretched Res"
-
-                                ' Log Stretch Success
-                                TrueLog("Info", "Valorant Widescreen Fix Mode Disabled")
-                                TrueLog("Info", "Successfully enabled True Stretched Res - Stretching Complete!")
-                            End If
-
-                            If WidescreenFixCheckBox.Checked = True Then
-                                'If Widescreen Fix is enabled only close after Enabling Widescreen fix (Auto Minimize makes no sense for Widescreen Fix)
-                                AutoCloseTimer.Start()
-                            Else
-                                If My.Settings.AutoClose = True Then
-                                    AutoCloseTimer.Start()
-                                ElseIf My.Settings.AutoMinimize = True Then
-                                    AutoMinimizeTimer.Start()
-                                End If
-                            End If
-
-                        End If
-                    Else
-                        ' Log Failed to Start Valorant to File
-                        TrueLog("Error", "Valorant Failed to Start")
+                    ' Auto Minimize or Auto Close is User has the option enabled
+                    If My.Settings.AutoClose = True Then
+                        AutoCloseTimer.Start()
+                    ElseIf My.Settings.AutoMinimize = True Then
+                        AutoMinimizeTimer.Start()
                     End If
-
-
                 Else
-                    ' Ask User to close Valorant
-                    MessageBox.Show("Please close Valorant before running True Stretched!")
-
-                    ' Log Error to File
-                    TrueLog("Error", "Valorant already running, canceling.")
+                    ' Update Status Label
+                    Label3.ForeColor = Color.Red
+                    Label3.Text = "Error Stretching Valorant!"
                 End If
-
-
             Else 'Disable True Stretched
+                ' Disable Enable Button Long Starting Valorant
                 Button1.Text = "Enable True Stretched"
+                Button1.Enabled = False
 
-                ' Log Disabling Valorant Stretched to File
-                TrueLog("Info", "Disabling Valorant True Stretched Res...")
-
-                If My.Settings.RevertDisplayResolution = True Then
-                    SetMonitorResolution(GetGameMonitor("DeviceName"), NativeResolution.Width, NativeResolution.Height)
-
-                    ' Log Reverting Monitor Resolution to File
-                    TrueLog("Info", "Reverting Monitor Resolution Completed")
+                If (DisableValorantStretched()) Then
+                    ' Update Status Label
+                    Label3.ForeColor = Color.Green
+                    Label3.Text = "Valorant True Stretched Disabled!"
                 End If
-
-                ' Log Updating Config File to File
-                TrueLog("Info", "Updating Valorant Config File...")
-                ValorantConfigFileSwitch()
-                TrueLog("Info", "Completed Updating Valorant Config File!")
-                Label3.ForeColor = Color.Green
-                Label3.Text = "Successfully disabled True Stretched Res"
-                StretchedEnabled = False
-
-                ' Log Completed Disabling Valorant Stretched to File
-                TrueLog("Info", "Completed Disabling Valorant True Stretched Res!")
             End If
             '---Valorant Mode Code Ends---
 
@@ -601,8 +487,7 @@ Public Class Form1
                 ' Log XDefiant Start of Enabling Stretched to File
                 TrueLog("Info", "Enabling XDefiant Stretched...")
 
-                CheckForWindow("XDefiant")
-                If IsWindowFound = False Then
+                If Not CheckForWindow("XDefiant") Then
                     Dim url As String = "uplay://launch/15657/0"
                     Dim psi As New ProcessStartInfo(url) With {
                         .UseShellExecute = True
@@ -669,16 +554,9 @@ Public Class Form1
 
         End If
 
+        ' Renable Main Button
+        Button1.Enabled = True
 
-    End Sub
-
-    Public Sub CheckForWindow(windowName As String)
-        Dim hwnd As IntPtr = FindWindow(Nothing, windowName)
-        If hwnd = IntPtr.Zero Then
-            IsWindowFound = False
-        Else
-            IsWindowFound = True
-        End If
     End Sub
 
     Public Sub ApexMenuMatchWait()
@@ -1241,88 +1119,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ValorantConfigFileSwitch()
-
-        ' Valorant Get Config Location (Handle Errors)
-        Dim filePath As String = FindConfigLocation("Valorant")
-        If filePath = "'Valorant' not found in configuration paths." OrElse
-        filePath = "'Valorant Last Riot User ID' not found in 'RiotLocalMachine.ini'" OrElse
-        filePath = "'Valorant Last Riot User ID' configuration folder not found." Then
-            ' Valorant Last User Riot ID Config File ERROR
-            Label3.ForeColor = Color.Red
-            Label3.Text = filePath
-        Else
-            ' Valorant Last User Riot ID Config File Found
-            ' Set the desired screen resolution
-            Dim gameMonitorString As String = GetGameMonitor("Resolution")
-            Dim gameMonitor As Size = GetMonitorSizeFromString(gameMonitorString)
-            Dim width As String = gameMonitor.Width
-            Dim height As String = gameMonitor.Height
-            Dim UseLetterbox As String = "False"
-            Dim FullscreenMode As String = "2"
-            Dim LastRecommendedScreenWidthHeight As String = "-1.000000"
-            Dim UseDesiredScreenHeight As String = "False"
-
-            If File.Exists(filePath) Then
-                ' Create a FileInfo object
-                Dim fileInfo As New FileInfo(filePath)
-
-                Dim lines As List(Of String) = File.ReadAllLines(filePath).ToList()
-
-                ' Track if fullscreen line exists
-                Dim fullscreenModeExists As Boolean = False
-
-                For i As Integer = 0 To lines.Count - 1
-
-                    If lines(i).StartsWith("FullscreenMode=") Then
-                        lines(i) = "FullscreenMode=" & FullscreenMode
-                        fullscreenModeExists = True
-                    ElseIf lines(i).StartsWith("LastConfirmedFullscreenMode=") Then
-                        lines(i) = "LastConfirmedFullscreenMode=" & FullscreenMode
-                    ElseIf lines(i).StartsWith("PreferredFullscreenMode=") Then
-                        lines(i) = "PreferredFullscreenMode=" & FullscreenMode
-                    ElseIf lines(i).StartsWith("bShouldLetterbox=") Then
-                        lines(i) = "bShouldLetterbox=" & UseLetterbox
-                    ElseIf lines(i).StartsWith("bLastConfirmedShouldLetterbox=") Then
-                        lines(i) = "bLastConfirmedShouldLetterbox=" & UseLetterbox
-                    ElseIf lines(i).StartsWith("ResolutionSizeX=") Then
-                        lines(i) = "ResolutionSizeX=" & width
-                    ElseIf lines(i).StartsWith("ResolutionSizeY=") Then
-                        lines(i) = "ResolutionSizeY=" & height
-                    ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeX=") Then
-                        lines(i) = "LastUserConfirmedResolutionSizeX=" & width
-                    ElseIf lines(i).StartsWith("LastUserConfirmedResolutionSizeY=") Then
-                        lines(i) = "LastUserConfirmedResolutionSizeY=" & height
-                    ElseIf lines(i).StartsWith("DesiredScreenWidth=") Then
-                        lines(i) = "DesiredScreenWidth=" & width
-                    ElseIf lines(i).StartsWith("DesiredScreenHeight=") Then
-                        lines(i) = "DesiredScreenHeight=" & height
-                    ElseIf lines(i).StartsWith("LastUserConfirmedDesiredScreenWidth=") Then
-                        lines(i) = "LastUserConfirmedDesiredScreenWidth=" & width
-                    ElseIf lines(i).StartsWith("LastUserConfirmedDesiredScreenHeight=") Then
-                        lines(i) = "LastUserConfirmedDesiredScreenHeight=" & height
-                    ElseIf lines(i).StartsWith("LastRecommendedScreenWidth=") Then
-                        lines(i) = "LastRecommendedScreenWidth=" & LastRecommendedScreenWidthHeight
-                    ElseIf lines(i).StartsWith("LastRecommendedScreenHeight=") Then
-                        lines(i) = "LastRecommendedScreenHeight=" & LastRecommendedScreenWidthHeight
-                    ElseIf lines(i).StartsWith("bUseDesiredScreenHeight=") Then
-                        lines(i) = "bUseDesiredScreenHeight=" & UseDesiredScreenHeight
-                    End If
-                Next
-
-                ' If "FullscreenMode=" line does not exist, insert it at the 6th position
-                If Not fullscreenModeExists Then
-                    lines.Insert(5, "FullscreenMode=" & FullscreenMode)
-                End If
-
-                File.WriteAllLines(filePath, lines.ToArray())
-                ' Log Valorant Config Update Success to File
-                TrueLog("Info", "Valorant Config Update File Successfully!")
-            End If
-        End If
-
-    End Sub
-
     Private Sub RemoveBorderAndMaximizeValorant()
 
         Dim targetWindowTitle As String = "VALORANT"
@@ -1480,10 +1276,6 @@ Public Class Form1
             File.WriteAllLines(ApexConfigFilePath, lines.ToArray())
         End If
     End Sub
-
-    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function FindWindow(lpClassName As String, lpWindowName As String) As IntPtr
-    End Function
 
     Public Shared Sub FullToWinToFullScreenApex()
         Dim hWnd As IntPtr = FindWindow(Nothing, "Apex Legends")
@@ -1913,14 +1705,6 @@ Public Class Form1
 
         Else
         End If
-
-    End Sub
-
-    Private Sub NumericUpDown1_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown1.ValueChanged
-
-        ' Delayed Valorant Stretching Time NumericUpDown
-        My.Settings.ValorantDelayStretchedTime = NumericUpDown1.Value
-        My.Settings.Save()
 
     End Sub
 End Class
