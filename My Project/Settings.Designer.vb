@@ -272,18 +272,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("45")>  _
-        Public Property ValorantDelayStretchedTime() As Integer
-            Get
-                Return CType(Me("ValorantDelayStretchedTime"),Integer)
-            End Get
-            Set
-                Me("ValorantDelayStretchedTime") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("")>  _
         Public Property RiotClientServicesFolderManual() As String
             Get
