@@ -447,7 +447,7 @@ Public Class Form1
                 Button1.Text = "Enabling True Stretched"
                 Button1.Enabled = False
 
-                If (EnableValorantStretched()) Then
+                If Await EnableValorantStretched() Then
                     ' Update Status Label
                     Label3.ForeColor = Color.Green
                     Label3.Text = "Valorant True Stretched Enabled!"
@@ -1486,38 +1486,16 @@ Public Class Form1
 
             '--Valorant Section---
         ElseIf Game = "Valorant" Then
-            Dim targetWindowTitle As String = "VALORANT"
-            Dim targetHWnd As IntPtr = IntPtr.Zero
+            If ValorantProcess IsNot Nothing Then
 
-            EnumWindows(
-                Function(hWnd As IntPtr, lParam As IntPtr) As Boolean
-                    Dim windowTextLength As Integer = GetWindowTextLength(hWnd) + 1
-                    Dim windowText As New StringBuilder(windowTextLength)
-                    Dim unused2 = GetWindowText(hWnd, windowText, windowTextLength)
-
-                    If windowText.ToString().Contains(targetWindowTitle) Then
-                        targetHWnd = hWnd
-                        Return False ' Stop enumerating
-                    End If
-
-                    Return True ' Continue enumerating
-                End Function,
-                IntPtr.Zero
-            )
-
-            If targetHWnd <> IntPtr.Zero Then
-                Dim processId As Integer = 0
-                Dim unused5 = GetWindowThreadProcessId(targetHWnd, processId)
-
-                Dim process As Process = Process.GetProcessById(processId)
-
-                If process.HasExited Then
-                    ' "VALORANT" window is closed, Unminimize Form1 And Change Label3
+                If ValorantProcess.HasExited Then
+                    ' "VALORANT" process has exited closed, Unminimize Form1 And Change Label3
                     Label3.Text = "Valorant Closed, Unminimized"
                     Me.WindowState = FormWindowState.Normal
                     If DevBuild = True Then
                         DevMenu.Show()
                     End If
+                    ValorantProcess = Nothing ' Set Process to 'Nothing'
                     CheckWindowTimer.Stop()
                 End If
             Else
@@ -1527,6 +1505,7 @@ Public Class Form1
                 If DevBuild = True Then
                     DevMenu.Show()
                 End If
+                ValorantProcess = Nothing ' Set Process to 'Nothing'
                 CheckWindowTimer.Stop()
 
                 ' "VALORANT" - Disable True Stretched Automatically
