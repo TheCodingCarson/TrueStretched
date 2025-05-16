@@ -7,9 +7,9 @@
       "commandName": "Project",
       "commandLineArgs": "--Dev"
     },
-    "True Stretched (Native Override)": {
+    "True Stretched (Arg Tests)": {
       "commandName": "Project",
-      "commandLineArgs": "--OverrideNative 9999x9999"
+      "commandLineArgs": "--AutoStretch Valorant"
     }
   }
 }

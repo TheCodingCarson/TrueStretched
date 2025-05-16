@@ -14,12 +14,15 @@ Namespace My
             For i As Integer = 0 To args.Length - 1
                 Dim arg = args(i)
                 Select Case arg
+
                     Case "--Dev"
                         DevBuild = True
                         debugoutputargs.Add("--Dev")
+
                     Case "--AutoDisable"
                         AutoDisable = True
                         debugoutputargs.Add("--AutoDisable")
+
                     Case "--OverrideNative"
                         ' Regular expression to match a valid resolution such as "1920x1080"
                         Dim resolutionPattern As String = "^\d+x\d+$"
@@ -47,6 +50,51 @@ Namespace My
                             debugoutputargs.Add("--OverrideNative")
                             debugoutputargs.Add("No resolution provided after --OverrideNative, continuing...")
                         End If
+
+                    Case "--AutoStretch"
+                        debugoutputargs.Add("--AutoStretch")
+
+                        If i + 1 < args.Length Then
+                            Dim nextArg = args(i + 1)
+
+                            If Not (nextArg = "") Then
+                                ' Check for valid AutoStretch Game Choice
+                                Select Case nextArg
+                                    Case "ApexLegends"
+                                        AutoStretch = True
+                                        My.Settings.SelectedGame = "Apex Legends"
+                                        My.Settings.Save()
+                                        debugoutputargs.Add("AutoStretchGame Selected: " & nextArg)
+                                    Case "Farlight84"
+                                        AutoStretch = True
+                                        My.Settings.SelectedGame = "Farlight 84"
+                                        My.Settings.Save()
+                                        debugoutputargs.Add("AutoStretchGame Selected: " & nextArg)
+                                    Case "Fortnite"
+                                        AutoStretch = True
+                                        My.Settings.SelectedGame = "Fortnite"
+                                        My.Settings.Save()
+                                        debugoutputargs.Add("AutoStretchGame Selected: " & nextArg)
+                                    Case "Valorant"
+                                        AutoStretch = True
+                                        My.Settings.SelectedGame = "Valorant"
+                                        My.Settings.Save()
+                                        debugoutputargs.Add("AutoStretchGame Selected: " & nextArg)
+                                    Case "XDefiant"
+                                        AutoStretch = True
+                                        My.Settings.SelectedGame = "XDefiant"
+                                        My.Settings.Save()
+                                        debugoutputargs.Add("AutoStretchGame Selected: " & nextArg)
+                                End Select
+                            End If
+
+                        End If
+
+                        If Not AutoStretch Then
+                            ' Selected AutoStretch Game is Invalid or Missing
+                            debugoutputargs.Add("Invalid or missing game after --AutoStretch, continuing...")
+                        End If
+
                 End Select
             Next
 

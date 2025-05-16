@@ -200,6 +200,19 @@ Public Class Form1
             Button1.PerformClick()
         End If
 
+        ' Auto Launch Stretched Game is command line argument exists
+        If AutoStretch = True Then
+            If StretchedEnabled Then
+                ' If Stretched is already enabled check for AutoDisable Argument
+                If StretchedEnabled AndAlso AutoDisable Then
+                    Button1.PerformClick()
+                End If
+            Else
+                ' Auto Enable Stretched from specified game in argument
+                Button1.PerformClick()
+            End If
+        End If
+
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles MyBase.Resize
