@@ -44,6 +44,7 @@ Public Class Form1
     Dim ApexMenuMatchFound As Boolean = False
     Dim AutoCloseCounter As Integer = 5
     Dim AutoMinimizeCounter As Integer = 5
+    Dim RightClickedGame As String = ""
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -1565,100 +1566,129 @@ Public Class Form1
 
     End Sub
 
-    Private Sub ApexPictureBox_Click(sender As Object, e As EventArgs) Handles ApexPictureBox.Click
+    Private Sub ApexPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles ApexPictureBox.MouseClick
 
-        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
+        If e.Button = MouseButtons.Left Then '===Left Click===
 
-        If StretchedEnabled = False Then
-            Game = "Apex Legends"
-            Button1.Text = "Enable True Stretched"
-            Label4.Location = New Point(45, 11)
-            Label4.Text = Game
-            GroupBox1.Text = "Apex Guide"
-            LinkLabel1.Location = New Point(0, 65)
-            LinkLabel1.Text = "https://TrueStretched.com/ApexLegends"
-            Me.BackgroundImage = My.Resources.Apex_Background
-            My.Settings.SelectedGame = Game
-            My.Settings.GameLabelLocation = Label4.Location
-            My.Settings.Save()
+            GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
-        Else
+            If StretchedEnabled = False Then
+                Game = "Apex Legends"
+                Button1.Text = "Enable True Stretched"
+                Label4.Location = New Point(45, 11)
+                Label4.Text = Game
+                GroupBox1.Text = "Apex Guide"
+                LinkLabel1.Location = New Point(0, 65)
+                LinkLabel1.Text = "https://TrueStretched.com/ApexLegends"
+                Me.BackgroundImage = My.Resources.Apex_Background
+                My.Settings.SelectedGame = Game
+                My.Settings.GameLabelLocation = Label4.Location
+                My.Settings.Save()
+
+            Else
+            End If
+
+        ElseIf e.Button = MouseButtons.Right Then '===Right Click===
+            RightClickedGame = "Apex Legends"
+            GameBoxContextMenuStrip.Show(MousePosition)
         End If
 
     End Sub
 
-    Private Sub Farlight84PictureBox_Click(sender As Object, e As EventArgs) Handles Farlight84PictureBox.Click
+    Private Sub Farlight84PictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles Farlight84PictureBox.MouseClick
 
-        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
+        If e.Button = MouseButtons.Left Then '===Left Click===
 
-        If StretchedEnabled = False Then
-            Game = "Farlight 84"
-            Button1.Text = "Enable True Stretched"
-            Label4.Location = New Point(75, 11)
-            Label4.Text = Game
-            GroupBox1.Text = "Farlight 84 Guide"
-            LinkLabel1.Location = New Point(6, 65)
-            LinkLabel1.Text = "https://TrueStretched.com/Farlight84"
-            Me.BackgroundImage = My.Resources.Farlight84_Background
-            My.Settings.SelectedGame = Game
-            My.Settings.GameLabelLocation = Label4.Location
-            My.Settings.Save()
+            GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
-        Else
+            If StretchedEnabled = False Then
+                Game = "Farlight 84"
+                Button1.Text = "Enable True Stretched"
+                Label4.Location = New Point(75, 11)
+                Label4.Text = Game
+                GroupBox1.Text = "Farlight 84 Guide"
+                LinkLabel1.Location = New Point(6, 65)
+                LinkLabel1.Text = "https://TrueStretched.com/Farlight84"
+                Me.BackgroundImage = My.Resources.Farlight84_Background
+                My.Settings.SelectedGame = Game
+                My.Settings.GameLabelLocation = Label4.Location
+                My.Settings.Save()
+
+            Else
+            End If
+
+        ElseIf e.Button = MouseButtons.Right Then '===Right Click===
+            RightClickedGame = "Farlight 84"
+            GameBoxContextMenuStrip.Show(MousePosition)
         End If
 
     End Sub
 
-    Private Sub FortnitePictureBox_Click(sender As Object, e As EventArgs) Handles FortnitePictureBox.Click
+    Private Sub FortnitePictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles FortnitePictureBox.MouseClick
 
-        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
+        If e.Button = MouseButtons.Left Then '===Left Click===
 
-        If StretchedEnabled = False Then
-            Game = "Fortnite"
-            Button1.Text = "Enable True Stretched"
-            Label4.Location = New Point(75, 11)
-            Label4.Text = Game
-            GroupBox1.Text = "Fortnite Guide"
-            LinkLabel1.Location = New Point(6, 65)
-            LinkLabel1.Text = "https://TrueStretched.com/Fortnite"
-            Me.BackgroundImage = My.Resources.Fortnight_Background
-            My.Settings.SelectedGame = Game
-            My.Settings.GameLabelLocation = Label4.Location
-            My.Settings.Save()
+            GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
-        Else
+            If StretchedEnabled = False Then
+                Game = "Fortnite"
+                Button1.Text = "Enable True Stretched"
+                Label4.Location = New Point(75, 11)
+                Label4.Text = Game
+                GroupBox1.Text = "Fortnite Guide"
+                LinkLabel1.Location = New Point(6, 65)
+                LinkLabel1.Text = "https://TrueStretched.com/Fortnite"
+                Me.BackgroundImage = My.Resources.Fortnight_Background
+                My.Settings.SelectedGame = Game
+                My.Settings.GameLabelLocation = Label4.Location
+                My.Settings.Save()
+
+            Else
+            End If
+
+        ElseIf e.Button = MouseButtons.Right Then '===Right Click===
+            RightClickedGame = "Fortnite"
+            GameBoxContextMenuStrip.Show(MousePosition)
         End If
+
+
 
     End Sub
 
-    Private Sub ValorantPictureBox_Click(sender As Object, e As EventArgs) Handles ValorantPictureBox.Click
+    Private Sub ValorantPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles ValorantPictureBox.MouseClick
 
-        If StretchedEnabled = False Then
-            Game = "Valorant"
-            Button1.Text = "Enable True Stretched"
-            Label4.Location = New Point(75, 11)
-            Label4.Text = Game
-            GroupBox1.Text = "Valorant Guide"
-            LinkLabel1.Location = New Point(6, 65)
-            LinkLabel1.Text = "https://TrueStretched.com/Valorant"
-            BackgroundImage = My.Resources.Valorant_Background
-            My.Settings.SelectedGame = Game
-            My.Settings.GameLabelLocation = Label4.Location
-            My.Settings.Save()
+        If e.Button = MouseButtons.Left Then '===Left Click===
 
-        Else
+            If StretchedEnabled = False Then
+                Game = "Valorant"
+                Button1.Text = "Enable True Stretched"
+                Label4.Location = New Point(75, 11)
+                Label4.Text = Game
+                GroupBox1.Text = "Valorant Guide"
+                LinkLabel1.Location = New Point(6, 65)
+                LinkLabel1.Text = "https://TrueStretched.com/Valorant"
+                BackgroundImage = My.Resources.Valorant_Background
+                My.Settings.SelectedGame = Game
+                My.Settings.GameLabelLocation = Label4.Location
+                My.Settings.Save()
+
+            Else
+            End If
+
+            '-Valorant Widescreen Fix
+            GroupBox3.Visible = True
+
+            '-Valorant Widescreen Fix checkbox
+            If My.Settings.ValorantWidescreenFix = True Then
+                WidescreenFixCheckBox.Checked = True
+                Button1.Text = "Enable Widescreen Fix"
+            End If
+            '-End of Valorant Widescreen Fix
+
+        ElseIf e.Button = MouseButtons.Right Then '===Right Click===
+            RightClickedGame = "Valorant"
+            GameBoxContextMenuStrip.Show(MousePosition)
         End If
-
-        '-Valorant Widescreen Fix
-        GroupBox3.Visible = True
-
-        '-Valorant Widescreen Fix checkbox
-        If My.Settings.ValorantWidescreenFix = True Then
-            WidescreenFixCheckBox.Checked = True
-            Button1.Text = "Enable Widescreen Fix"
-        End If
-
-        '-End of Valorant Widescreen Fix
 
     End Sub
 
@@ -1678,25 +1708,46 @@ Public Class Form1
 
     End Sub
 
-    Private Sub XDefiantPictureBox_Click(sender As Object, e As EventArgs) Handles XDefiantPictureBox.Click
+    Private Sub XDefiantPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles XDefiantPictureBox.MouseClick
 
-        GroupBox3.Visible = False ' Valorant Extra Options Groupbox
+        If e.Button = MouseButtons.Left Then '===Left Click===
 
-        If StretchedEnabled = False Then
-            Game = "XDefiant"
-            Button1.Text = "Enable True Stretched"
-            Label4.Location = New Point(75, 11)
-            Label4.Text = Game
-            GroupBox1.Text = "XDefiant Guide"
-            LinkLabel1.Location = New Point(6, 65)
-            LinkLabel1.Text = "https://TrueStretched.com/XDefiant"
-            Me.BackgroundImage = My.Resources.XDefiant_Background
-            My.Settings.SelectedGame = Game
-            My.Settings.GameLabelLocation = Label4.Location
-            My.Settings.Save()
+            GroupBox3.Visible = False ' Valorant Extra Options Groupbox
 
-        Else
+            If StretchedEnabled = False Then
+                Game = "XDefiant"
+                Button1.Text = "Enable True Stretched"
+                Label4.Location = New Point(75, 11)
+                Label4.Text = Game
+                GroupBox1.Text = "XDefiant Guide"
+                LinkLabel1.Location = New Point(6, 65)
+                LinkLabel1.Text = "https://TrueStretched.com/XDefiant"
+                Me.BackgroundImage = My.Resources.XDefiant_Background
+                My.Settings.SelectedGame = Game
+                My.Settings.GameLabelLocation = Label4.Location
+                My.Settings.Save()
+
+            Else
+            End If
+
+        ElseIf e.Button = MouseButtons.Right Then '===Right Click===
+            RightClickedGame = "XDefiant"
+            GameBoxContextMenuStrip.Show(MousePosition)
         End If
+
+    End Sub
+
+    Private Sub CreateDesktopShortcutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateDesktopShortcutToolStripMenuItem.Click
+
+        ' Create Desktop Shortcut
+        CreateDesktopShortcut(RightClickedGame)
+
+        ' Status Label Update
+        Label3.ForeColor = Color.White
+        Label3.Text = RightClickedGame + " Shortcut Created"
+
+        ' Clear RightClickedGame Variable
+        RightClickedGame = ""
 
     End Sub
 End Class
