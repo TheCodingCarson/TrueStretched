@@ -47,6 +47,8 @@ Partial Class Form1
         GroupBox3 = New GroupBox()
         WidescreenFixCheckBox = New CheckBox()
         XDefiantPictureBox = New PictureBox()
+        GameBoxContextMenuStrip = New ContextMenuStrip(components)
+        CreateDesktopShortcutToolStripMenuItem = New ToolStripMenuItem()
         CType(PictureBox2, ISupportInitialize).BeginInit()
         CType(PictureBox1, ISupportInitialize).BeginInit()
         CType(PictureBox3, ISupportInitialize).BeginInit()
@@ -57,6 +59,7 @@ Partial Class Form1
         CType(Farlight84PictureBox, ISupportInitialize).BeginInit()
         GroupBox3.SuspendLayout()
         CType(XDefiantPictureBox, ISupportInitialize).BeginInit()
+        GameBoxContextMenuStrip.SuspendLayout()
         SuspendLayout()
         ' 
         ' Button1
@@ -263,6 +266,19 @@ Partial Class Form1
         XDefiantPictureBox.TabIndex = 25
         XDefiantPictureBox.TabStop = False
         ' 
+        ' GameBoxContextMenuStrip
+        ' 
+        GameBoxContextMenuStrip.Items.AddRange(New ToolStripItem() {CreateDesktopShortcutToolStripMenuItem})
+        GameBoxContextMenuStrip.Name = "ContextMenuStrip1"
+        GameBoxContextMenuStrip.ShowImageMargin = False
+        GameBoxContextMenuStrip.Size = New Size(178, 48)
+        ' 
+        ' CreateDesktopShortcutToolStripMenuItem
+        ' 
+        CreateDesktopShortcutToolStripMenuItem.Name = "CreateDesktopShortcutToolStripMenuItem"
+        CreateDesktopShortcutToolStripMenuItem.Size = New Size(177, 22)
+        CreateDesktopShortcutToolStripMenuItem.Text = "Create Desktop Shortcut"
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -302,6 +318,7 @@ Partial Class Form1
         GroupBox3.ResumeLayout(False)
         GroupBox3.PerformLayout()
         CType(XDefiantPictureBox, ISupportInitialize).EndInit()
+        GameBoxContextMenuStrip.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -326,4 +343,6 @@ Partial Class Form1
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents WidescreenFixCheckBox As CheckBox
     Friend WithEvents XDefiantPictureBox As PictureBox
+    Friend WithEvents GameBoxContextMenuStrip As ContextMenuStrip
+    Friend WithEvents CreateDesktopShortcutToolStripMenuItem As ToolStripMenuItem
 End Class
