@@ -95,7 +95,7 @@ Module FindConfigLocation_Module
             ' Check if a matching file was found
             If valorantUserConfigFolderPath IsNot Nothing Then
                 ' Add the rest of the file path to the folder for the last riot id + region code
-                Dim fullvalorantUserConfigFolderPath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + $"/VALORANT/Saved/Config/{valorantUserConfigFolderPath}/Windows/GameUserSettings.ini"
+                Dim fullvalorantUserConfigFolderPath As String = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + $"/VALORANT/Saved/Config/{valorantUserConfigFolderPath}/WindowsClient/GameUserSettings.ini"
                 ' Return full last riot user config path with region code added (and standardized)
                 ValorantConfigReturn = StandardizePath(fullvalorantUserConfigFolderPath)
 

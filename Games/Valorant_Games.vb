@@ -4,7 +4,7 @@ Imports System.Windows.Forms
 Module Valorant_Games
     ' {-Summary-}
     '
-    ' Used to enable true stretched resolution in Valorant after Patch 9.09 (https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-9-09)
+    ' Used to enable true stretched resolution in Valorant after Patch 11.02 Unreal Engine 5.3 Update (https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-11-02)
     '
     ' Usage:
     '        • EnableValorantStretched()  - Enables Valorant Stretched
