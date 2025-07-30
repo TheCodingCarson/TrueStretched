@@ -55,7 +55,7 @@ Module FindConfigLocation_Module
     Private Function ValorantConfigLocationMethod() As String
 
         ' Get last Valorant User ID
-        Dim useridfilepath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VALORANT/Saved/Config/Windows/RiotLocalMachine.ini")
+        Dim useridfilepath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VALORANT/Saved/Config/WindowsClient/RiotLocalMachine.ini")
         Dim LastKnownValorantUser As String = ""
         Dim ValorantConfigReturn As String = ""
 
