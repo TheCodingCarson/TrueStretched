@@ -96,7 +96,7 @@ Partial Class SettingsForm
         CheckBox2.AutoSize = True
         CheckBox2.Location = New Point(6, 47)
         CheckBox2.Name = "CheckBox2"
-        CheckBox2.Size = New Size(260, 19)
+        CheckBox2.Size = New Size(261, 19)
         CheckBox2.TabIndex = 1
         CheckBox2.Text = "Auto Minimize After Enabling True Stretched"
         CheckBox2.UseVisualStyleBackColor = True
@@ -106,7 +106,7 @@ Partial Class SettingsForm
         CheckBox1.AutoSize = True
         CheckBox1.Location = New Point(6, 22)
         CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(240, 19)
+        CheckBox1.Size = New Size(241, 19)
         CheckBox1.TabIndex = 0
         CheckBox1.Text = "Auto Close After Enabling True Stretched"
         CheckBox1.UseVisualStyleBackColor = True
@@ -148,7 +148,7 @@ Partial Class SettingsForm
         ComboBox2.AutoCompleteMode = AutoCompleteMode.Suggest
         ComboBox2.AutoCompleteSource = AutoCompleteSource.ListItems
         ComboBox2.FormattingEnabled = True
-        ComboBox2.Items.AddRange(New Object() {"1440x1080", "1280x1024", "1280x960", "1024x768", "800x600"})
+        ComboBox2.Items.AddRange(New Object() {"1920x1440", "1720x1080", "1440x1080", "1280x1024", "1280x960", "1080x1080", "1024x768", "800x600"})
         ComboBox2.Location = New Point(6, 131)
         ComboBox2.Name = "ComboBox2"
         ComboBox2.Size = New Size(260, 23)
@@ -200,7 +200,7 @@ Partial Class SettingsForm
         Label5.AutoSize = True
         Label5.Location = New Point(38, 37)
         Label5.Name = "Label5"
-        Label5.Size = New Size(202, 15)
+        Label5.Size = New Size(203, 15)
         Label5.TabIndex = 2
         Label5.Text = "Always Free From TrueStretched.com"
         ' 
@@ -259,7 +259,7 @@ Partial Class SettingsForm
         Label6.AutoSize = True
         Label6.Location = New Point(6, 25)
         Label6.Name = "Label6"
-        Label6.Size = New Size(154, 15)
+        Label6.Size = New Size(155, 15)
         Label6.TabIndex = 1
         Label6.Text = "Monitor The Game Runs On"
         ' 
