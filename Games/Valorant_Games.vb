@@ -197,7 +197,7 @@ Module Valorant_Games
             Dim FullscreenMode As String = "2"
             Dim PreferredFullScreenMode As String = "0"
             Dim UseDynamicResolution As String = "False"
-            Dim LastRecommendedScreenWidthHeight As String = "-1.000000"
+            Dim LastRecommendedScreenWHSize As String = "-1.000000"
             Dim DesiredScreenWidth As String = "1280"
             Dim DesiredScreenHeight As String = "720"
             Dim UseDesiredScreenHeight As String = "False"
@@ -244,13 +244,13 @@ Module Valorant_Games
                     ElseIf lines(i).StartsWith("LastUserConfirmedDesiredScreenHeight=") Then
                         lines(i) = "LastUserConfirmedDesiredScreenHeight=" & DesiredScreenHeight
                     ElseIf lines(i).StartsWith("LastRecommendedScreenWidth=") Then
-                        lines(i) = "LastRecommendedScreenWidth=" & LastRecommendedScreenWidthHeight
+                        lines(i) = "LastRecommendedScreenWidth=" & LastRecommendedScreenWHSize
                     ElseIf lines(i).StartsWith("LastRecommendedScreenHeight=") Then
-                        lines(i) = "LastRecommendedScreenHeight=" & LastRecommendedScreenWidthHeight
+                        lines(i) = "LastRecommendedScreenHeight=" & LastRecommendedScreenWHSize
                     ElseIf lines(i).StartsWith("WindowPosX=") Then
                         lines(i) = "WindowPosX=" & WindowPos
                     ElseIf lines(i).StartsWith("WindowPosY=") Then
-                        lines(i) = "WindowPosX=" & WindowPos
+                        lines(i) = "WindowPosY=" & WindowPos
                     ElseIf lines(i).StartsWith("bUseDesiredScreenHeight=") Then
                         lines(i) = "bUseDesiredScreenHeight=" & UseDesiredScreenHeight
                     End If
